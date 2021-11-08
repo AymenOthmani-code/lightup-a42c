@@ -16,6 +16,7 @@ add_library(game game.o game_aux.c)
 target_link_libraries(game_text game)
 target_link_libraries(game_test_tkattan game)
 target_link_libraries(game_test_aothmani game)
+target_link_libraries(game_test_sazarfane game)
 
 add_test(test_tkattan_dummy ./game_test_tkattan dummy)
 add_test(test_aothmani_dummy ./game_test_aothmani dummy)

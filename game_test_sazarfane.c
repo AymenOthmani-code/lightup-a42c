@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "game.h"
+#include "game_aux.h"
 bool test_dummy(){
     return true;
 }

@@ -16,3 +16,5 @@ CTestTestfile.cmake
 DartConfiguration.tcl
 Makefile
 Testing/
+
+.DS_Store
