@@ -15,7 +15,7 @@ Number of tests: 24
 
 |Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
 |---|---|---|---|---|
-|void game_print(cgame g) |Prints game |Easy |Aymen |TODO |
+|void game_print(cgame g) |Prints game |Easy |Aymen |DOING |
 |game game_default(void) |Creates a default game |Medium |Aymen |TODO |
 |game game_default_solution(void) |Creates a default game with solution |Medium |Aymen |TODO |
 
@@ -50,23 +50,23 @@ Check that every square in the returned game have the correct value for state an
 |game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |TODO|
 |game game_copy(cgame g) |Duplicates a game |Easy |Shams |TODO|
 |bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |TODO|
-|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy ||TODO|
-|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |||TODO|
-|square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |||TODO|
-|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |||TODO|
-|square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |||TODO|
-|bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |||TODO|
-|bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |||TODO|
-|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |||TODO|
-|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |||TODO|
-|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |||TODO|
-|bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |||TODO|
-|bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |||TODO|
-|bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |||TODO|
-|void game_play_move(game g, uint i, uint j, square s) |Plays a move in a given square |||TODO|
-|void game_update_flags(game g) |Update all grid flags |||TODO|
-|bool game_is_over(cgame g) |Checks if the game is won |||TODO|
-|void game_restart(game g) |Restarts a game |||TODO|
+|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |TODO|
+|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |TODO|
+|square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |TODO|
+|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Taleiven |TODO|
+|square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |Medium |Taleiven |TODO|
+|bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |Easy |Aymen |TODO|
+|bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |Easy |Aymen |TODO|
+|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |Easy |Shams |TODO|
+|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |Easy |Shams |TODO|
+|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |Easy |Shams |TODO|
+|bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |Easy |Aymen |TODO|
+|bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |Easy |Taleiven |TODO|
+|bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |Hard |Taleiven |TODO|
+|void game_play_move(game g, uint i, uint j, square s) |Plays a move in a given square |Hard |Taleiven |TODO|
+|void game_update_flags(game g) |Update all grid flags |Hard |Taleiven |TODO|
+|bool game_is_over(cgame g) |Checks if the game is won |Hard |Taleiven |TODO|
+|void game_restart(game g) |RestartPs a game |Hard |Taleiven |TODO|
 
 #### Description of functions - game.h
 
@@ -100,91 +100,93 @@ Note: Can use game_equal to check that the two games are identical. See note on 
 **Complexity :** 1/5 \
 **Description:**
 Create two new games using game_new and the same list of squares. Verify that it returns true when passed as parameter. Should use the same specs for the games as in game_new (see game_new note). Can also implement optional part from game_new. \
-Create two new games using game_new and two different list of squares. Verify that it returns false when passed as parameter.
+Create two new games using game_new and two different list of squares. Verify that it returns false when passed as parameter. \
+Note: As all game_new, game_copy and game_equal will use more or less the same lists of squares a function can be made to return a list of a list of squares.
 
 ##### game_delete
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_delete
+Check that the function is called without any runtime errors on the default game and the default game solution.
 
 ##### game_set_square
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 2/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_set_square
+Take the an empty game and check that when the different available states/flags/squares are added the are correct and dont modify anthing else around it.
 
 ##### game_get_square
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_get_square
+Get the squares from the default game and check they are what we expect them to be.
+Note: Ask teacher about the fact that this is already tested in many other functions.
 
 ##### game_get_state
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 2/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_get_state
+Set squares to different values with mixes of states and flags (all combinations should be covered) and check that only the correct state is returned (not the flags).
 
 ##### game_get_flags
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 2/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_get_flags
+Set squares to different values with mixes of states and flags (all combinations should be covered) and check that only the correct flag is returned (not the state).
 
 ##### game_is_blank
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_is_blank
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_is_lightbulb
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_is_lightbulb
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_is_black
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_is_black
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_get_black_number
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_get_black_number
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_is_marked
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_is_marked
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_is_lighted
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_is_lighted
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_has_error
 
-**Time:** X/5 \
-**Complexity :** X/5 \
+**Time:** 1/5 \
+**Complexity :** 1/5 \
 **Description:**
-Description of game_has_error
+Set a square to the correct value, set another square to the other possible non correct values (all combinations of states and flags should be tested) and test for correctness.
 
 ##### game_check_move
 

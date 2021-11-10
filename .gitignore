@@ -17,4 +17,6 @@ DartConfiguration.tcl
 Makefile
 Testing/
 
+build/
+
 .DS_Store
