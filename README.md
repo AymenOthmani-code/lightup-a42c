@@ -15,9 +15,9 @@ Number of tests: 24
 
 |Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
 |---|---|---|---|---|
-|void game_print(cgame g) |Prints game |Easy |Aymen |DOING |
-|game game_default(void) |Creates a default game |Medium |Aymen |TODO |
-|game game_default_solution(void) |Creates a default game with solution |Medium |Aymen |TODO |
+|void game_print(cgame g) |Prints game |Easy |Aymen |DONE |
+|game game_default(void) |Creates a default game |Medium |Aymen |DONE |
+|game game_default_solution(void) |Creates a default game with solution |Medium |Aymen |DONE |
 
 #### Description of functions - game_aux.h
 
@@ -46,11 +46,11 @@ Check that every square in the returned game have the correct value for state an
 
 |Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
 |---|---|---|---|---|
-|game game_new(square *squares) |Creates a new game with default size and initializes it |Medium/Hard |Shams |TODO|
-|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |TODO|
+|game game_new(square *squares) |Creates a new game with default size and initializes it |Medium/Hard |Shams |DONE|
+|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |DOING|
 |game game_copy(cgame g) |Duplicates a game |Easy |Shams |TODO|
 |bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |TODO|
-|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |TODO|
+|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |DOING|
 |void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |TODO|
 |square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |TODO|
 |square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Taleiven |TODO|

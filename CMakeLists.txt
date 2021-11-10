@@ -19,7 +19,9 @@ target_link_libraries(game_test_sazarfane game)
 
 add_test(test_tkattan_dummy ./game_test_tkattan dummy)
 
-add_test(test_aothmani_dummy ./game_test_aothmani dummy)
+add_test(test_game_print ./game_test_aothmani game_print)
+add_test(test_game_default ./game_test_aothmani game_default)
+add_test(test_game_default_solution ./game_test_aothmani game_default_solution)
 
 add_test(test_game_new ./game_test_sazarfane game_new)
 add_test(test_game_new_empty ./game_test_sazarfane game_new_empty)
