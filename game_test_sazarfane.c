@@ -72,18 +72,47 @@ bool test_game_new(){
 /* ********** TEST GAME_NEW_EMPTY ********** */
 
 bool test_game_new_empty(){
+    game g = game_new_empty();
+
+    square array[7*7]= {S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK};
+
+    square array_error[7*7]= {S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK};
+    
+    ASSERT(check_game(array,g));
+    ASSERT(check_game(array_error,g) == false);
     return true;
 }
 
 /* ********** TEST GAME_COPY ********** */
 
 bool test_game_copy(){
+    game g = game_default();
+    game g_sol = game_default_solution();
+
+    game g_copy = game_copy(game_default());
+    game g_copy_sol = game_copy(game_default_solution());
+
+    ASSERT(g = g_copy);
+    ASSERT(g_sol = g_copy_sol);
     return true;
 }
 
 /* ********** TEST GAME_EQUAL ********** */
 
 bool test_game_equal(){
+    game g1 = game_default();
+    game g2 = game_default();
+    game g3 = game_default_solution();
+
+    ASSERT(game_equal(g1,g2));
+    ASSERT(game_equal(g1,g3) == false);
+    ASSERT(game_equal(g2,g3) == false);
     return true;
 }
 
