@@ -172,18 +172,6 @@ bool test_game_get_black_number(){
     return true;
 }
 
-/**
- * @brief Get the number of lightbulbs expected against a black wall.
- * @param g the game
- * @param i row index
- * @param j column index
- * @pre @p g must be a valid pointer toward a game structure.
- * @pre @p i < game height
- * @pre @p j < game width
- * @return the back wall number, or -1 if it is unumbered
- **/
-int game_get_black_number(cgame g, uint i, uint j);
-
 /* ********** TEST GAME_IS_MARKED********** */
 
 bool test_game_is_marked(){

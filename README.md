@@ -47,19 +47,19 @@ Check that every square in the returned game have the correct value for state an
 |Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
 |---|---|---|---|---|
 |game game_new(square *squares) |Creates a new game with default size and initializes it |Medium/Hard |Shams |DONE|
-|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |DOING|
-|game game_copy(cgame g) |Duplicates a game |Easy |Shams |TODO|
-|bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |TODO|
+|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |DONE|
+|game game_copy(cgame g) |Duplicates a game |Easy |Shams |DONE|
+|bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |DONE|
 |void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |DOING|
-|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |TODO|
+|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |DOING|
 |square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |TODO|
 |square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Taleiven |TODO|
 |square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |Medium |Taleiven |TODO|
 |bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |Easy |Aymen |TODO|
 |bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |Easy |Aymen |TODO|
-|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |Easy |Shams |TODO|
-|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |Easy |Shams |TODO|
-|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |Easy |Shams |TODO|
+|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |Easy |Shams |DONE|
+|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |Easy |Shams |DONE|
+|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |Easy |Shams |DONE|
 |bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |Easy |Aymen |TODO|
 |bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |Easy |Taleiven |TODO|
 |bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |Hard |Taleiven |TODO|
