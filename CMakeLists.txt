@@ -34,6 +34,8 @@ add_test(test_game_new_empty ./game_test_sazarfane game_new_empty)
 add_test(test_game_copy ./game_test_sazarfane game_copy)
 add_test(test_game_equal ./game_test_sazarfane game_equal)
 add_test(test_game_set_square ./game_test_sazarfane game_set_square)
+add_test(test_game_get_state ./game_test_sazarfane game_get_state)
 add_test(test_game_is_black ./game_test_sazarfane game_is_black)
 add_test(test_game_get_black_number ./game_test_sazarfane game_get_black_number)
 add_test(test_game_is_marked ./game_test_sazarfane game_is_marked)
+

@@ -91,9 +91,12 @@ bool test_game_new_empty(){
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK
         };
     // Cette array permet de vérifié un cas d'erreur
-    square array_error[7*7]= {S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    square array_error[7*7]= {S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_LIGHTBULB,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
     S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK};
     
     ASSERT(check_game(array,g)); // Comparaison de mon array et du game
@@ -173,6 +176,36 @@ bool test_game_set_square(){
     ASSERT(check_game(array,g) == false); // Compare un array de S_BLANK à un array de S_BLACK pour confirmé que set_square à bien marché
     return true;
 }
+
+/* ********** TEST GAME_GET_STATE ********** */
+
+bool test_game_get_state(){
+    //Création d'un array avec tout les squares
+    square array[7*7]= {
+        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        };
+    //Création du game
+    game g = game_new(array);
+    //Test si chaque square est correctement retourné
+    ASSERT(game_get_state(g,0,0) == S_BLANK);
+    ASSERT(game_get_state(g,0,1) == S_BLACK);
+    ASSERT(game_get_state(g,0,2) == S_BLACK0);
+    ASSERT(game_get_state(g,0,3) == S_BLACK1);
+    ASSERT(game_get_state(g,0,4) == S_BLACK2);
+    ASSERT(game_get_state(g,0,5) == S_BLACK3);
+    ASSERT(game_get_state(g,0,6) == S_BLACK4);
+    ASSERT(game_get_state(g,1,0) == S_BLACKU);
+    ASSERT(game_get_state(g,1,1) == S_LIGHTBULB);
+    ASSERT(game_get_state(g,1,2) == S_MARK);
+    return true;
+}
+
 
 /* ********** TEST GAME_IS_BLACK ********** */
 
@@ -282,6 +315,7 @@ bool test_game_is_marked(){
     return true;
 }
 
+
 /* ********** TEST DUMMY ********** */
 
 bool test_dummy(){
@@ -317,6 +351,8 @@ int main(int argc, char *argv[])
         ok = test_game_equal();
     else if (strcmp("game_set_square", argv[1]) == 0)
         ok = test_game_set_square(); 
+        else if (strcmp("game_get_state", argv[1]) == 0)
+        ok = test_game_get_state(); 
     else if (strcmp("game_is_black", argv[1]) == 0)
         ok = test_game_is_black(); 
     else if (strcmp("game_get_black_number", argv[1]) == 0)

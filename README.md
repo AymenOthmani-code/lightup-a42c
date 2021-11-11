@@ -51,9 +51,9 @@ Check that every square in the returned game have the correct value for state an
 |game game_copy(cgame g) |Duplicates a game |Easy |Shams |DONE|
 |bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |DONE|
 |void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |DOING|
-|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |DOING|
+|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |DONE|
 |square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |TODO|
-|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Taleiven |TODO|
+|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Shams |DONE|
 |square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |Medium |Taleiven |TODO|
 |bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |Easy |Aymen |TODO|
 |bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |Easy |Aymen |TODO|
