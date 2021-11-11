@@ -160,6 +160,37 @@ bool test_game_get_black_number(){
 /* ********** TEST GAME_IS_MARKED********** */
 
 bool test_game_is_marked(){
+    square array_error [7*7]={S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
+    S_BLACK,S_BLACK,S_BLANK,S_LIGHTBULB,S_BLACK,S_BLANK,S_BLANK,
+    S_BLANK,S_BLANK,S_BLACK,S_BLACK,S_BLANK,S_LIGHTBULB,S_BLACK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK,S_BLACK,S_BLACK,
+    S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,
+    S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+    S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK};
+
+    square array [7*7]={S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+    S_LIGHTBULB,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLACK,S_MARK,S_BLANK,
+    S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_LIGHTBULB,S_MARK,
+    S_BLANK,S_BLANK,S_BLANK,S_MARK,S_LIGHTBULB,S_BLANK,S_BLANK,
+    S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_LIGHTBULB,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK,S_BLACKU,S_MARK,
+    S_BLACK,S_BLANK,S_BLACK,S_LIGHTBULB,S_MARK,S_BLACK,S_BLANK,};
+    
+    game g = game_new(array);
+    game g_error = game_new(array_error);
+    for (int x = 0; x < 7; x++){
+        for (int y = 0; y < 7;y++){
+            bool not = game_is_marked(g_error,x,y);
+            ASSERT( not == false);
+        }
+    }
+    ASSERT(game_is_marked(g,0,2));
+    ASSERT(game_is_marked(g,1,5));
+    ASSERT(game_is_marked(g,2,6));
+    ASSERT(game_is_marked(g,3,3));
+    ASSERT(game_is_marked(g,4,1));
+    ASSERT(game_is_marked(g,5,6));
+    ASSERT(game_is_marked(g,6,4));
     return true;
 }
 
