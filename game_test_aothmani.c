@@ -17,17 +17,22 @@
       abort();                                                                        \
     }                                                                                 \
   } while (0)
-
+/* ********** TEST dummy********** */
 bool test_dummy()
 {
   return true;
 }
+
+/* ********** TEST game_print ********** */
+
 bool test_game_print()
 {
   game mygame = game_new_empty();
   game_print(mygame);
   return true;
 }
+
+/* ********** TEST game_default ********** */
 
 bool test_game_default()
 {
@@ -50,23 +55,89 @@ bool test_game_default()
   return true;
 }
 
+/* ********** TEST game_default_solution ********** */
+
 bool test_game_default_solution()
 {
   game mydefaultgamesolution = game_default_solution();
-  square array_solution[7*7]= {S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACK1,S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,
- S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLACK2,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,
- S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACKU,S_BLACK2,
- S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,
- S_BLACK1,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,
- S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACK2,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,
- S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED};
-  for (int i=0;i<DEFAULT_SIZE;i++){
-    for(int j=0;j<DEFAULT_SIZE;j++){
-      
+  square array_solution[7 * 7] = {S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLACK1, S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED,
+                                  S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_BLACK2, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED,
+                                  S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLACKU, S_BLACK2,
+                                  S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED,
+                                  S_BLACK1, S_BLACKU, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED,
+                                  S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLACK2, S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED,
+                                  S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED, S_BLACKU, S_BLANK | F_LIGHTED, S_BLANK | F_LIGHTED};
+  for (int i = 0; i < DEFAULT_SIZE; i++)
+  {
+    for (int j = 0; j < DEFAULT_SIZE; j++)
+    {
+
       ASSERT(game_get_square(mydefaultgamesolution, i, j) == array_solution[j + 7 * i]);
     }
   }
-  return true ;
+  return true;
+}
+
+/* ********** TEST game_delete********** */
+
+bool test_game_delete()
+{
+  game g = game_default();
+  game_delete(g);
+  return true;
+}
+
+/* ********** TEST game_is_blank ********** */
+
+bool test_game_is_blank()
+{
+  game g = game_default();
+  for (unsigned int i = 0; i < DEFAULT_SIZE; i++)
+  {
+    for (unsigned int j = 0; j < DEFAULT_SIZE; j++)
+    {
+      if (game_is_blank(g, i, j) == true)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/* ********** TEST game_get_square ********** */
+
+bool test_game_get_square()
+{
+  game g = game_default();
+  for (unsigned int i = 0; i < DEFAULT_SIZE; i++)
+  {
+    for (unsigned int j = 0; j < DEFAULT_SIZE; j++)
+    {
+      if ((game_get_square(g, i, j) == S_BLANK) || (game_get_square(g, i, j) == S_LIGHTBULB) ||
+       (game_get_square(g, i, j) == S_LIGHTBULB) || (game_get_square(g, i, j) == S_MARK) || (game_get_square(g, i, j) == S_BLACK) ||
+        (game_get_square(g, i, j) == S_BLACK) || (game_get_square(g, i, j) == S_BLACK1) || (game_get_square(g, i, j) == S_BLACK2) ||
+         (game_get_square(g, i, j) == S_BLACK3) || (game_get_square(g, i, j) == S_BLACK4) || (game_get_square(g, i, j) == S_BLACK4) ||
+          (game_get_square(g, i, j) == S_BLACKU))
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+/* ********** TEST game_is_lightbulb ********** */
+
+bool test_game_is_lightbulb()
+{
+    return true;
+}
+
+/* ********** TEST game_is_lighted ********** */
+
+bool test_game_is_lighted()
+{
+  return true;
 }
 
 void usage(int argc, char *argv[])
@@ -91,7 +162,17 @@ int main(int argc, char *argv[])
   else if (strcmp("game_default", argv[1]) == 0)
     ok = test_game_default();
   else if (strcmp("game_default_solution", argv[1]) == 0)
-    ok =test_game_default_solution();
+    ok = test_game_default_solution();
+  else if (strcmp("game_delete", argv[1]) == 0)
+    ok = test_game_delete();
+  else if (strcmp("game_is_blank", argv[1]) == 0)
+    ok = test_game_is_blank();
+  else if (strcmp("game_get_square", argv[1]) == 0)
+    ok = test_game_get_square();
+  else if (strcmp("game_is_lightbulb", argv[1]) == 0)
+    ok = test_game_is_lightbulb();
+  else if (strcmp("game_is_lighted", argv[1]) == 0)
+    ok = test_game_is_lighted();
   else
   {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
