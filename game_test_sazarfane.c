@@ -154,8 +154,35 @@ bool test_game_is_black(){
 /* ********** TEST GAME_GET_BLACK_NUMBER ********** */
 
 bool test_game_get_black_number(){
+    square array [7*7]={S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
+    S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,
+    S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,
+    S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,
+    S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,
+    S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+    S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK};
+    game g = game_new(array);
+    ASSERT(game_get_black_number(g,0,0) == 0);
+    ASSERT(game_get_black_number(g,0,1) == 0);
+    ASSERT(game_get_black_number(g,0,2) == 1);
+    ASSERT(game_get_black_number(g,0,3) == 2);
+    ASSERT(game_get_black_number(g,0,4) == 3);
+    ASSERT(game_get_black_number(g,0,5) == 4);
+    ASSERT(game_get_black_number(g,0,6) == -1);
     return true;
 }
+
+/**
+ * @brief Get the number of lightbulbs expected against a black wall.
+ * @param g the game
+ * @param i row index
+ * @param j column index
+ * @pre @p g must be a valid pointer toward a game structure.
+ * @pre @p i < game height
+ * @pre @p j < game width
+ * @return the back wall number, or -1 if it is unumbered
+ **/
+int game_get_black_number(cgame g, uint i, uint j);
 
 /* ********** TEST GAME_IS_MARKED********** */
 
