@@ -125,6 +125,29 @@ bool test_game_set_square(){
 /* ********** TEST GAME_IS_BLACK ********** */
 
 bool test_game_is_black(){
+    square array [7*7]={S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,
+    S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,
+    S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,
+    S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,
+    S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,
+    S_BLACK,S_BLACK0,S_BLACK1,S_BLACK};
+
+    square array_error [7*7]={S_BLANK,S_LIGHTBULB,S_MARK,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,
+    S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,
+    S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,
+    S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,
+    S_BLANK,S_BLANK,S_BLANK,S_BLANK};
+    
+    game g = game_new(array);
+    game g_error = game_new(array_error);
+    for (int x = 0; x < 7; x++){
+        for (int y = 0; y < 7;y++){
+            bool not = game_is_black(g_error,x,y);
+            bool good = game_is_black(g,x,y);
+            ASSERT(good);
+            ASSERT( not == false);
+        }
+    }
     return true;
 }
 
