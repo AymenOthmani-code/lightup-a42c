@@ -136,17 +136,10 @@ bool test_game_get_square()
   {
     for (unsigned int j = 0; j < DEFAULT_SIZE; j++)
     {
-      if ((game_get_square(g, i, j) == S_BLANK) || (game_get_square(g, i, j) == S_LIGHTBULB) ||
-          (game_get_square(g, i, j) == S_LIGHTBULB) || (game_get_square(g, i, j) == S_MARK) || (game_get_square(g, i, j) == S_BLACK) ||
-          (game_get_square(g, i, j) == S_BLACK) || (game_get_square(g, i, j) == S_BLACK1) || (game_get_square(g, i, j) == S_BLACK2) ||
-          (game_get_square(g, i, j) == S_BLACK3) || (game_get_square(g, i, j) == S_BLACK4) || (game_get_square(g, i, j) == S_BLACK4) ||
-          (game_get_square(g, i, j) == S_BLACKU))
-      {
-        return true;
-      }
+      ASSERT(game_get_square(g,i,j)==array[j + 7 * i]);
     }
   }
-  return false;
+  return true;
 }
 /* ********** TEST game_is_lightbulb ********** */
 
