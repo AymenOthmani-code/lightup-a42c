@@ -20,14 +20,12 @@
 /* ********** TEST COMMUN ********** */
 
 bool check_game(square *liste, game g){
-    int gameWidth = DEFAULT_SIZE;
-    int gameHeight = DEFAULT_SIZE;
-    for (uint y = 0; y < gameHeight; y++)
+    for (uint y = 0; y < DEFAULT_SIZE; y++)
     {
-        for (uint x = 0; x < gameWidth; x++)
+        for (uint x = 0; x < DEFAULT_SIZE; x++)
         {
             square carre = game_get_square(g, y, x);
-            if (liste[x + gameWidth * y] != carre)
+            if (liste[x + DEFAULT_SIZE * y] != carre)
             {
                 return false;
             }  
