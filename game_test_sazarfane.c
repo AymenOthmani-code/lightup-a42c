@@ -46,7 +46,7 @@ bool test_game_new(){
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK
         };
-    game g = game_new(array);
+    game game_test = game_new(array);
 
     square array_solution[7*7]= {S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACK1,S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,
     S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLACK2,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,
@@ -67,9 +67,9 @@ bool test_game_new(){
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK
     };
 
-    ASSERT(check_game(array,g));
+    ASSERT(check_game(array,game_test));
     ASSERT(check_game(array_solution,gsol));
-    ASSERT(check_game(array_error,g) == false);
+    ASSERT(check_game(array_error,game_test) == false);
     return true;
 }
 
