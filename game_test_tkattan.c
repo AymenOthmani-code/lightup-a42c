@@ -19,9 +19,37 @@
         }                                                                                   \
     } while (0)
 
-/* ********** TEST DUMMY ********** */
+/* ********** TEST GAME CHECK MOVE ********** */
 
-bool test_dummy(void)
+bool test_game_check_move(void)
+{
+    return true;
+}
+
+/* ********** TEST GAME PLAY MOVE ********** */
+
+bool test_game_play_move(void)
+{
+    return true;
+}
+
+/* ********** TEST GAME UPDATE FLAGS ********** */
+
+bool test_game_update_flags(void)
+{
+    return true;
+}
+
+/* ********** TEST GAME IS OVER ********** */
+
+bool test_game_is_over(void)
+{
+    return true;
+}
+
+/* ********** TEST GAME RESTART ********** */
+
+bool test_game_restart(void)
 {
     return true;
 }
@@ -44,8 +72,16 @@ int main(int argc, char *argv[])
     // start test
     fprintf(stderr, "=> Start test \"%s\"\n", argv[1]);
     bool ok = false;
-    if (strcmp("dummy", argv[1]) == 0)
-        ok = test_dummy();
+    if (strcmp("game_check_move", argv[1]) == 0)
+        ok = test_game_check_move();
+    else if (strcmp("game_play_move", argv[1]) == 0)
+        ok = test_game_play_move();
+    else if (strcmp("game_update_flags", argv[1]) == 0)
+        ok = test_game_update_flags();
+    else if (strcmp("game_is_over", argv[1]) == 0)
+        ok = test_game_is_over();
+    else if (strcmp("game_restart", argv[1]) == 0)
+        ok = test_game_restart();
     else
     {
         fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);

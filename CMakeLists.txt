@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
 project(lightup C)
 
@@ -17,7 +17,11 @@ target_link_libraries(game_test_tkattan game)
 target_link_libraries(game_test_aothmani game)
 target_link_libraries(game_test_sazarfane game)
 
-add_test(test_tkattan_dummy ./game_test_tkattan dummy)
+add_test(test_game_check_move ./game_test_tkattan game_check_move)
+add_test(test_game_play_move ./game_test_tkattan game_play_move)
+add_test(test_game_update_flags ./game_test_tkattan game_update_flags)
+add_test(test_game_is_over ./game_test_tkattan game_is_over)
+add_test(test_game_restart ./game_test_tkattan game_restart)
 
 add_test(test_game_print ./game_test_aothmani game_print)
 add_test(test_game_default ./game_test_aothmani game_default)
@@ -28,7 +32,6 @@ add_test(test_game_get_square ./game_test_aothmani game_get_square)
 add_test(test_game_is_lightbulb ./game_test_aothmani game_is_lightbulb)
 add_test(test_game_is_lighted ./game_test_aothmani game_is_lighted)
 
-
 add_test(test_game_new ./game_test_sazarfane game_new)
 add_test(test_game_new_empty ./game_test_sazarfane game_new_empty)
 add_test(test_game_copy ./game_test_sazarfane game_copy)
@@ -38,4 +41,3 @@ add_test(test_game_get_state ./game_test_sazarfane game_get_state)
 add_test(test_game_is_black ./game_test_sazarfane game_is_black)
 add_test(test_game_get_black_number ./game_test_sazarfane game_get_black_number)
 add_test(test_game_is_marked ./game_test_sazarfane game_is_marked)
-
