@@ -70,14 +70,15 @@ bool test_game_default_solution()
   game g = game_new(array);
   for (int i = 0; i < DEFAULT_SIZE; i++)
   {
-    for (int j = 0; j < DEFAULT_SIZE; j++){
-      if ((game_get_square(mydefaultgamesolution,i,j) == S_BLACK)||(game_get_square(mydefaultgamesolution,i,j) == S_BLACK1)||
-      (game_get_square(mydefaultgamesolution,i,j) == S_BLACK2)||(game_get_square(mydefaultgamesolution,i,j) == S_BLACK3)||
-        (game_get_square(mydefaultgamesolution,i,j) == S_BLACK4)||(game_get_square(mydefaultgamesolution,i,j) == S_BLACKU))
-          {
-            ASSERT(game_get_square(mydefaultgamesolution, i, j) == (game_get_square(g, i, j)));
-        }
+    for (int j = 0; j < DEFAULT_SIZE; j++)
+    {
+      if ((game_get_square(mydefaultgamesolution, i, j) == S_BLACK) || (game_get_square(mydefaultgamesolution, i, j) == S_BLACK1) ||
+          (game_get_square(mydefaultgamesolution, i, j) == S_BLACK2) || (game_get_square(mydefaultgamesolution, i, j) == S_BLACK3) ||
+          (game_get_square(mydefaultgamesolution, i, j) == S_BLACK4) || (game_get_square(mydefaultgamesolution, i, j) == S_BLACKU))
+      {
+        ASSERT(game_get_square(mydefaultgamesolution, i, j) == (game_get_square(g, i, j)));
       }
+    }
   }
   return true;
   ASSERT(game_is_over(mydefaultgamesolution));
@@ -156,7 +157,7 @@ bool test_game_is_lightbulb()
       S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
       S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
       S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_LIGHTBULB, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_LIGHTBULB | F_LIGHTED, S_BLANK, S_BLANK,
       S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
   square array_error[7 * 7] = {
       S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACKU,
