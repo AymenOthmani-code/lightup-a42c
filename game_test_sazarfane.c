@@ -180,9 +180,9 @@ bool test_game_set_square(){
 bool test_game_get_state(){
     //Création d'un array avec tout les squares
     square array[7*7]= {
-        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
@@ -201,9 +201,12 @@ bool test_game_get_state(){
     ASSERT(game_get_state(g,1,0) == S_BLACKU);
     ASSERT(game_get_state(g,1,1) == S_LIGHTBULB);
     ASSERT(game_get_state(g,1,2) == S_MARK);
+
+    ASSERT(game_get_state(g,1,3) == S_BLANK);
+    ASSERT(game_get_state(g,1,4) == S_LIGHTBULB);
+    ASSERT(game_get_state(g,1,5) == S_MARK);
     return true;
 }
-
 
 /* ********** TEST GAME_IS_BLACK ********** */
 
