@@ -17,11 +17,6 @@
       abort();                                                                        \
     }                                                                                 \
   } while (0)
-/* ********** TEST dummy********** */
-bool test_dummy()
-{
-  return true;
-}
 
 /* ********** TEST game_print ********** */
 
@@ -228,9 +223,7 @@ int main(int argc, char *argv[])
   fprintf(stderr, "=> Start test \"%s\"\n", argv[1]);
   bool ok = false;
 
-  if (strcmp("dummy", argv[1]) == 0)
-    ok = test_dummy();
-  else if (strcmp("game_print", argv[1]) == 0)
+  if (strcmp("game_print", argv[1]) == 0)
     ok = test_game_print();
   else if (strcmp("game_default", argv[1]) == 0)
     ok = test_game_default();
