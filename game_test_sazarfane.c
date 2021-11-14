@@ -37,7 +37,7 @@ bool check_game(square *liste, game game_test){
 /* ********** TEST game_new ********** */
 
 bool test_game_new(){
-    square array[DEFAULT_SIZE*DEFAULT_SIZE]= {
+    square array_default[DEFAULT_SIZE*DEFAULT_SIZE]= {
         S_BLANK,S_BLANK,S_BLACK1,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLACK2,
@@ -46,7 +46,7 @@ bool test_game_new(){
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK
         };
-    game game_test = game_new(array);
+    game game_test = game_new(array_default);
 
     square array_solution[DEFAULT_SIZE*DEFAULT_SIZE]= {S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACK1,S_LIGHTBULB | F_LIGHTED, S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,
     S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLACK2,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,
@@ -57,7 +57,7 @@ bool test_game_new(){
     S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED};
     game g_test_sol = game_new(array_solution);
 
-    ASSERT(check_game(array,game_test));
+    ASSERT(check_game(array_default,game_test));
     ASSERT(check_game(array_solution,g_test_sol));
     ASSERT(game_equal(game_test,game_default()));
     return true;
@@ -69,7 +69,7 @@ bool test_game_new_empty(){
     // Création d'un jeu vide
     game game_test = game_new_empty();
     // Mon array de S_BLANK correspond à ce que devrai me renvoyé game_new_empty
-    square array[DEFAULT_SIZE*DEFAULT_SIZE]= {
+    square array_blank[DEFAULT_SIZE*DEFAULT_SIZE]= {
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
@@ -87,7 +87,7 @@ bool test_game_new_empty(){
     S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
     S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK};
     
-    ASSERT(check_game(array,game_test)); // Comparaison de mon array et du game
+    ASSERT(check_game(array_blank,game_test)); // Comparaison de mon array et du game
     ASSERT(check_game(array_error,game_test) == false);
     return true;
 }
@@ -125,7 +125,7 @@ bool test_game_equal(){
 
 bool test_game_set_square(){
     //Création d'un array de S_BLACK
-    square array[DEFAULT_SIZE*DEFAULT_SIZE] = {
+    square array_black[DEFAULT_SIZE*DEFAULT_SIZE] = {
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
@@ -141,10 +141,10 @@ bool test_game_set_square(){
             game_set_square(game_test,x,y,S_BLACK); //Modification de mon jeu en utilisant game_set_square
         }
     }
-    ASSERT(check_game(array,game_test)); //test si le jeu g créer avec new_empty correspond à mon array de S_BLANK
+    ASSERT(check_game(array_black,game_test)); //test si le jeu g créer avec new_empty correspond à mon array de S_BLANK
     game_set_square(game_test,1,3,S_LIGHTBULB); //Met S_BLAK  en première pos de mon game
     //Création d'un array correspond à mon jeu modifié
-    square array_two[DEFAULT_SIZE*DEFAULT_SIZE] = {
+    square array_different[DEFAULT_SIZE*DEFAULT_SIZE] = {
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
         S_BLACK,S_BLACK,S_BLACK,S_LIGHTBULB,S_BLACK,S_BLACK,S_BLACK,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
@@ -153,7 +153,7 @@ bool test_game_set_square(){
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK
         };
-    ASSERT(check_game(array_two,game_test));//Deuxième test avec S_BLACK en (0,0)
+    ASSERT(check_game(array_different,game_test));//Deuxième test avec S_BLACK en (0,0)
 
     //Modification du jeu en full S_BLACK
     for (int x = 0; x < DEFAULT_SIZE; x++){
@@ -161,7 +161,7 @@ bool test_game_set_square(){
             game_set_square(game_test,x,y,S_BLANK);
         }
     }
-    ASSERT(check_game(array,game_test) == false); // Compare un array de S_BLANK à un array de S_BLACK pour confirmé que set_square à bien marché
+    ASSERT(check_game(array_black,game_test) == false); // Compare un array de S_BLANK à un array de S_BLACK pour confirmé que set_square à bien marché
     return true;
 }
 
@@ -169,7 +169,7 @@ bool test_game_set_square(){
 
 bool test_game_get_state(){
     //Création d'un array avec tout les squares
-    square array[DEFAULT_SIZE*DEFAULT_SIZE]= {
+    square array_with_all[DEFAULT_SIZE*DEFAULT_SIZE]= {
         S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
@@ -179,7 +179,7 @@ bool test_game_get_state(){
         S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         };
     //Création du game
-    game game_test = game_new(array);
+    game game_test = game_new(array_with_all);
     //Test si chaque square est correctement retourné
     ASSERT(game_get_state(game_test,0,0) == S_BLANK);
     ASSERT(game_get_state(game_test,0,1) == S_BLACK);
@@ -202,7 +202,7 @@ bool test_game_get_state(){
 
 bool test_game_is_black(){
     //Création de 2 array un avec tout les S_BLACK possibl et l'autre avec les squares not black
-    square array [DEFAULT_SIZE*DEFAULT_SIZE]={
+    square array_with_all_SBLACK[DEFAULT_SIZE*DEFAULT_SIZE]={
         S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,
         S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,
@@ -222,7 +222,7 @@ bool test_game_is_black(){
         S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK
         };
     
-    game game_test = game_new(array);   //Création de mon jeu de S_BLACK
+    game game_test = game_new(array_with_all_SBLACK);   //Création de mon jeu de S_BLACK
     game game_test_error = game_new(array_error);   //Création de mon jeu de error
     for (int x = 0; x < DEFAULT_SIZE; x++){
         for (int y = 0; y < DEFAULT_SIZE;y++){
@@ -237,7 +237,7 @@ bool test_game_is_black(){
 
 bool test_game_get_black_number(){
     //Création d'un array avec tout les S_BLACK
-    square array [DEFAULT_SIZE*DEFAULT_SIZE]={
+    square array_black_number[DEFAULT_SIZE*DEFAULT_SIZE]={
         S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
         S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,
         S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,
@@ -247,7 +247,7 @@ bool test_game_get_black_number(){
         S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK
         };
     // Création du jeu
-    game game_test = game_new(array);
+    game game_test = game_new(array_black_number);
     /*
         Test qui vérifie que la fonction game_get_black retourne le numéro du wall
         Je ne savais pas si je devais tester get_black_number avec des square not black 
@@ -268,7 +268,7 @@ bool test_game_get_black_number(){
 
 bool test_game_is_marked(){
     //Création d'un array avec des S_MARK placé au hasard
-    square array [DEFAULT_SIZE*DEFAULT_SIZE]={
+    square array_with_SMARK[DEFAULT_SIZE*DEFAULT_SIZE]={
         S_BLANK,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
         S_LIGHTBULB,S_BLANK,S_BLANK,S_LIGHTBULB,S_BLACK,S_MARK,S_BLANK,
         S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_LIGHTBULB,S_MARK,
@@ -288,7 +288,7 @@ bool test_game_is_marked(){
         S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK
     };
     //Création des 2 games
-    game game_test = game_new(array);
+    game game_test = game_new(array_with_SMARK);
     game game_test_error = game_new(array_error);
     for (int x = 0; x < DEFAULT_SIZE; x++){
         for (int y = 0; y < DEFAULT_SIZE;y++){
