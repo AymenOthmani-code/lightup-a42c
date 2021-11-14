@@ -134,7 +134,7 @@ bool test_game_is_blank()
 bool test_game_get_square()
 {
   // Creating an array with every square type possible
-  square array[DEFAULT_SIZE * DEFAULT_SIZE] = {
+  square all_square_array[DEFAULT_SIZE * DEFAULT_SIZE] = {
         S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
         S_BLANK,S_BLANK,S_BLANK,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
@@ -144,7 +144,7 @@ bool test_game_get_square()
         S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
         };
   // Creating a new game 
-  game new_game = game_new(array);
+  game new_game = game_new(all_square_array);
 
   // Asserting that we can get every square type in our new game 
 
@@ -152,7 +152,7 @@ bool test_game_get_square()
   {
     for (unsigned int width = 0; width < DEFAULT_SIZE; width++)
     {
-      ASSERT(game_get_square(new_game, height, width) == array[width + DEFAULT_SIZE * height]);
+      ASSERT(game_get_square(new_game, height, width) == all_square_array[width + DEFAULT_SIZE * height]);
     }
   }
   return true;
