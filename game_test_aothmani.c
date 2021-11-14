@@ -120,8 +120,8 @@ bool test_game_is_blank()
   {
     for (int j = 0; j < DEFAULT_SIZE; j++)
     {
-      bool not = game_is_blank(game_error, i, j);
-      ASSERT(not == false);
+      ASSERT (game_is_blank(game_error, i, j)==false);
+      
     }
   }
   ASSERT(game_is_blank(new_game, 0, 0));
