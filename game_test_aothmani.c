@@ -116,15 +116,16 @@ bool test_game_is_blank()
   game new_game = game_new(blank_array);
   game game_error = game_new(array_error);
 
-  for (int i = 0; i < DEFAULT_SIZE; i++)
+  for (int height = 0; height < DEFAULT_SIZE; height++)
   {
-    for (int j = 0; j < DEFAULT_SIZE; j++)
+    for (int width = 0; width < DEFAULT_SIZE; width++)
     {
-      ASSERT (game_is_blank(game_error, i, j)==false);
+      ASSERT (game_is_blank(game_error, height, width)==false);
       
     }
   }
   ASSERT(game_is_blank(new_game, 0, 0));
+  ASSERT(game_is_blank(new_game, 0, 1));
   return true;
 }
 
