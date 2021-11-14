@@ -57,15 +57,9 @@ bool test_game_new(){
     S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED};
     game g_test_sol = game_new(array_solution);
 
-    square array_default[DEFAULT_SIZE*DEFAULT_SIZE]= {S_BLANK,S_BLANK,S_BLACK1,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLACK1,S_BLACKU,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,S_BLANK};
-    game game_test_default = game_new(array_default);
-    
     ASSERT(check_game(array,game_test));
     ASSERT(check_game(array_solution,g_test_sol));
-    ASSERT(game_equal(game_test_default,game_default()));
+    ASSERT(game_equal(game_test,game_default()));
     return true;
 }
 
