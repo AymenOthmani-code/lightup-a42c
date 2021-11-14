@@ -32,7 +32,7 @@ bool test_game_print()
 bool test_game_default()
 {
   game mydefaultgame = game_default();
-  square array[7 * 7] = {S_BLANK, S_BLANK, S_BLACK1, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+  square array[DEFAULT_SIZE * DEFAULT_SIZE] = {S_BLANK, S_BLANK, S_BLACK1, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLACK2, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLACKU, S_BLACK2,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
@@ -55,7 +55,7 @@ bool test_game_default()
 bool test_game_default_solution()
 {
   game mydefaultgamesolution = game_default_solution();
-  square array[7 * 7] = {S_BLANK, S_BLANK, S_BLACK1, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+  square array[DEFAULT_SIZE * DEFAULT_SIZE] = {S_BLANK, S_BLANK, S_BLACK1, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLACK2, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLACKU, S_BLACK2,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
@@ -93,7 +93,7 @@ bool test_game_delete()
 bool test_game_is_blank()
 {
   // Creating an array with only blank quare
-  square blank_array[DEFAULT_SIZE * DEFAULT_SIZE] = {S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+  square blank_array[DEFAULT_SIZE * DEFAULT_SIZE] = {S_BLANK, S_BLANK|F_LIGHTED, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
@@ -101,13 +101,16 @@ bool test_game_is_blank()
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
                          S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
 
-  // Creating an array with square type othen then blank 
-  square array_error[DEFAULT_SIZE * DEFAULT_SIZE] = {S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_MARK, S_BLACK4, S_BLACKU, S_BLACK, S_BLACK,
-                               S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACKU, S_BLACK, S_BLACK,
-                               S_BLACK, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_LIGHTBULB, S_BLACK, S_BLACK,
-                               S_BLACK, S_BLACK0, S_BLACK1, S_LIGHTBULB, S_BLACK3, S_BLACK4, S_BLACKU, S_BLACK, S_MARK,
-                               S_BLACK, S_BLACK0, S_MARK, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACKU, S_BLACK3, S_BLACK,
-                               S_BLACK, S_BLACK0, S_BLACK1, S_BLACK, S_LIGHTBULB};
+  // // Creating an array with every square type possible other then blank
+  square array_error[DEFAULT_SIZE * DEFAULT_SIZE] = {
+        S_BLACK1 ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLACK2 | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLACK2,
+        S_BLACK2,S_BLACKU,S_BLACK2,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_LIGHTBULB,S_BLACK1,S_BLACK2,S_BLACK3,
+        S_BLACK2,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLACK1,S_BLACK2,S_BLACK2,S_BLACK3,
+        S_BLACK3,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        };
 
   // Creating 2 game with each of the array created 
   game new_game = game_new(blank_array);
