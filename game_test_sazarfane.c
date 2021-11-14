@@ -34,6 +34,27 @@ bool check_game(square *liste, game game_test){
     return true;
 }
 
+square *create_array_all_values(){
+    square* array_all_values = (square*) malloc(sizeof(square)*DEFAULT_SIZE*DEFAULT_SIZE);
+    
+    if (array_all_values == NULL){
+        fprintf(stderr,"NULL POINTER");
+        exit (EXIT_FAILURE);
+    }
+    square array[DEFAULT_SIZE*DEFAULT_SIZE]={
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
+        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        };
+    for ( int i = 0; i < DEFAULT_SIZE*DEFAULT_SIZE; i++) {
+      array_all_values[i] = array[i];
+   }
+    return array_all_values;
+}
 /* ********** TEST game_new ********** */
 
 bool test_game_new(){
@@ -55,11 +76,15 @@ bool test_game_new(){
     S_BLACK1,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,
     S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACK2,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,
     S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED,S_BLACKU,S_BLANK | F_LIGHTED,S_BLANK | F_LIGHTED};
-    game g_test_sol = game_new(array_solution);
+    game game_test_sol = game_new(array_solution);
 
+    square *array_all_values=create_array_all_values();
+    game game_all_values = game_new (array_all_values);
     ASSERT(check_game(array_default,game_test));
-    ASSERT(check_game(array_solution,g_test_sol));
+    ASSERT(check_game(array_solution,game_test_sol));
     ASSERT(game_equal(game_test,game_default()));
+    ASSERT(check_game(array_all_values,game_all_values));
+    free(array_all_values);
     return true;
 }
 
@@ -124,44 +149,20 @@ bool test_game_equal(){
 /* ********** TEST GAME_SET_SQUARE ********** */
 
 bool test_game_set_square(){
-    //Création d'un array de S_BLACK
-    square array_black[DEFAULT_SIZE*DEFAULT_SIZE] = {
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK
-        };
     //Création d'un jeu vide
     game game_test = game_new_empty();
-    for (int x = 0; x < DEFAULT_SIZE; x++){
-        for (int y = 0; y < DEFAULT_SIZE;y++){
-            game_set_square(game_test,x,y,S_BLACK); //Modification de mon jeu en utilisant game_set_square
+    //Récupération array_all_values
+    square *array_all_values=create_array_all_values();
+    //Remplir de game_test avec les valeurs de array_all_values
+    for (int y = 0; y < DEFAULT_SIZE; y++){
+        for (int x = 0; x < DEFAULT_SIZE;x++){
+            for (int z = 0; z < 20;z++){
+            game_set_square(game_test,x,y,array_all_values[z]);
+            ASSERT(game_get_square(game_test,x,y) == array_all_values[z]); 
+            }
         }
     }
-    ASSERT(check_game(array_black,game_test)); //test si le jeu g créer avec new_empty correspond à mon array de S_BLANK
-    game_set_square(game_test,1,3,S_LIGHTBULB); //Met S_BLAK  en première pos de mon game
-    //Création d'un array correspond à mon jeu modifié
-    square array_different[DEFAULT_SIZE*DEFAULT_SIZE] = {
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_LIGHTBULB,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK,S_BLACK
-        };
-    ASSERT(check_game(array_different,game_test));//Deuxième test avec S_BLACK en (0,0)
-
-    //Modification du jeu en full S_BLACK
-    for (int x = 0; x < DEFAULT_SIZE; x++){
-        for (int y = 0; y < DEFAULT_SIZE;y++){
-            game_set_square(game_test,x,y,S_BLANK);
-        }
-    }
-    ASSERT(check_game(array_black,game_test) == false); // Compare un array de S_BLANK à un array de S_BLACK pour confirmé que set_square à bien marché
+    free(array_all_values);
     return true;
 }
 
