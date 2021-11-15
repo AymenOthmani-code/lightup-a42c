@@ -85,8 +85,8 @@ bool test_game_is_blank()
   square blank_array[2] = {S_BLANK, S_BLANK|F_LIGHTED};
 
   // Creating an array with every square type possible other then blank
-  square array_error[19] = {
-        S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACKU | F_ERROR,
+  square array_error[18] = {
+        S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,
         S_BLACK,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU, S_LIGHTBULB, S_MARK|F_LIGHTED,S_MARK,S_BLACK0, S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED
         };;
 
@@ -97,7 +97,7 @@ bool test_game_is_blank()
   {
     for (int width = 0; width < DEFAULT_SIZE; width++)
     {
-      for (int i = 0; i<19;i++){
+      for (int i = 0; i<18;i++){
                 game_set_square(game_test,height,width,array_error[i]);
                 ASSERT(!game_is_blank(game_test,height,width));
             }
@@ -117,8 +117,8 @@ bool test_game_is_lightbulb()
   // Creating an array with only lightbulb square
   square lightbulb_array[2] = {S_LIGHTBULB, S_LIGHTBULB | F_LIGHTED | F_ERROR};
   // Creating an array with every square type possible other then lightebulb
-  square array_error[19] = {
-    S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACKU | F_ERROR,
+  square array_error[18] = {
+    S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,
         S_BLANK, S_BLACK, S_MARK,S_MARK|F_LIGHTED, S_BLANK | F_LIGHTED, S_BLACK1,S_MARK | F_LIGHTED ,S_BLACK2,S_BLACKU,S_BLACK0,S_BLACK3,S_BLACK4
         };
   //Creating a new_game to test
@@ -128,7 +128,7 @@ bool test_game_is_lightbulb()
   {
     for (int width = 0; width < DEFAULT_SIZE; width++)
     {
-      for (int i = 0; i<19;i++){
+      for (int i = 0; i<18;i++){
                 game_set_square(game_test,height,width,array_error[i]);
                 ASSERT(!game_is_lightbulb(game_test,height,width));
             }
@@ -149,8 +149,8 @@ bool test_game_is_lighted()
   square lighted_array[4] = {S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED,S_LIGHTBULB|F_LIGHTED};
 
   // Creating an array with every square type possible other then lighted
-  square array_error[17] = {
-      S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACKU | F_ERROR,
+  square array_error[16] = {
+      S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,
        S_BLANK, S_BLACK, S_MARK, S_BLACK1,S_BLACK2,S_BLACKU,S_BLACK0,S_BLACK3,S_BLACK4,S_LIGHTBULB};
   //Creating a new_game to test
   game game_test = game_new_empty();
@@ -159,7 +159,7 @@ bool test_game_is_lighted()
   {
     for (int width = 0; width < DEFAULT_SIZE; width++)
     {
-      for (int i = 0; i<17;i++){
+      for (int i = 0; i<16;i++){
                 game_set_square(game_test,height,width,array_error[i]);
                 ASSERT(!game_is_lighted(game_test,height,width));
             }
