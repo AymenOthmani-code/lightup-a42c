@@ -106,6 +106,7 @@ bool test_game_get_set_square(){
         }
     }
     free(array_all_values);
+    game_delete(game_test);
     return true;
 }
 
@@ -133,6 +134,7 @@ bool test_game_get_state(){
             }
         }
     }
+    game_delete(game_test);
     return true;
 }
 
@@ -163,6 +165,7 @@ bool test_game_is_black(){
             }
         }
     }
+    game_delete(game_test);
     return true;
 }
 
@@ -190,6 +193,7 @@ bool test_game_get_black_number(){
             ASSERT(game_get_black_number(game_test,x,y) == 0);
         }
     }
+    game_delete(game_test);
     return true;
 }
 
@@ -221,6 +225,7 @@ bool test_game_is_marked(){
             }
         }
     }
+    game_delete(game_test);
     return true;
 }
 
