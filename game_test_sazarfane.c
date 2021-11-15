@@ -44,15 +44,22 @@ bool test_game_new_empty(){
 /* ********** TEST GAME_COPY ********** */
 
 bool test_game_copy(){
-    // Récupère deux game
-    game game_test = game_default();
-    game game_test_sol = game_default_solution();
-    // Crée deux game avec game_copy
-    game game_test_copy = game_copy(game_default());
-    game game_test_copy_sol = game_copy(game_default_solution());
-
-    ASSERT(game_test = game_test_copy); // Compare le jeu et sa copie 
-    ASSERT(game_test_sol = game_test_copy_sol);
+    square array_with_all[20]={
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
+        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
+        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
+    };
+    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
+    for (int z = 0; z<20;z++){ 
+        for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
+           array_element[i]=array_with_all[z];
+        }
+        game game_test = game_new(array_element);
+        game game_test_copy = game_copy(game_test);
+        ASSERT(game_equal(game_test,game_test_copy));
+        game_delete(game_test);
+        game_delete(game_test_copy);
+    }
     return true;
 }
 
