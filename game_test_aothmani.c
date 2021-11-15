@@ -13,6 +13,7 @@ bool test_game_print()
 {
   game mygame = game_new_empty();
   game_print(mygame);
+  game_delete(mygame);
   return true;
 }
 
@@ -36,6 +37,7 @@ bool test_game_default()
       ASSERT(game_get_square(mydefaultgame, i, j) == array[j + DEFAULT_SIZE * i]);
     }
   }
+  game_delete(mydefaultgame);
   return true;
 }
 
@@ -66,6 +68,7 @@ bool test_game_default_solution()
   }
   ASSERT(game_is_over(mydefaultgamesolution));
   game_delete(new_game);
+  game_delete(mydefaultgamesolution);
   return true;
 }
 
