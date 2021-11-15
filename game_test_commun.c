@@ -5,6 +5,8 @@
 #include "game.h"
 #include "game_aux.h"
 
+#define SIZE_ALL_VALUES 20
+
 /* ********** ASSERT ********** */
 
 #define ASSERT(expr)                                                                        \

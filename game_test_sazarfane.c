@@ -9,13 +9,9 @@
 /* ********** TEST game_new ********** */
 
 bool test_game_new(){
-    square array_with_all[20]={
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
-        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
-    };
+    square *array_with_all=create_array_all_values();
     square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
-    for (int z = 0; z<20;z++){ 
+    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
         for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
            array_element[i]=array_with_all[z];
         }
@@ -23,6 +19,7 @@ bool test_game_new(){
         ASSERT(check_game(array_element,game_test));
         game_delete(game_test);
     }
+    free(array_with_all);
     return true;
 }
 
@@ -44,13 +41,9 @@ bool test_game_new_empty(){
 /* ********** TEST GAME_COPY ********** */
 
 bool test_game_copy(){
-    square array_with_all[20]={
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
-        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
-    };
+    square *array_with_all=create_array_all_values();
     square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
-    for (int z = 0; z<20;z++){ 
+    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
         for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
            array_element[i]=array_with_all[z];
         }
@@ -60,6 +53,7 @@ bool test_game_copy(){
         game_delete(game_test);
         game_delete(game_test_copy);
     }
+    free(array_with_all);
     return true;
 }
 
@@ -67,14 +61,10 @@ bool test_game_copy(){
 
 bool test_game_equal(){
     // Je récupère 3 game deux identique et un différent
-    square array_with_all[20]={
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
-        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
-    };
+    square *array_with_all=create_array_all_values();
     square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
     game game_sol = game_default_solution();
-    for (int z = 0; z<20;z++){ 
+    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
         for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
            array_element[i]=array_with_all[z];
         }
@@ -86,6 +76,7 @@ bool test_game_equal(){
         game_delete(game_test_copy);
     }
     game_delete(game_sol);
+    free(array_with_all);
     return true;
 }
 
@@ -95,17 +86,17 @@ bool test_game_get_set_square(){
     //Création d'un jeu vide
     game game_test = game_new_empty();
     //Récupération array_all_values
-    square *array_all_values=create_array_all_values();
+    square *array_with_all=create_array_all_values();
     //Remplir de game_test avec les valeurs de array_all_values
     for (int y = 0; y < DEFAULT_SIZE; y++){
         for (int x = 0; x < DEFAULT_SIZE;x++){
-            for (int z = 0; z < 20;z++){
-            game_set_square(game_test,x,y,array_all_values[z]);
-            ASSERT(game_get_square(game_test,x,y) == array_all_values[z]); 
+            for (int z = 0; z < SIZE_ALL_VALUES;z++){
+            game_set_square(game_test,x,y,array_with_all[z]);
+            ASSERT(game_get_square(game_test,x,y) == array_with_all[z]); 
             }
         }
     }
-    free(array_all_values);
+    free(array_with_all);
     game_delete(game_test);
     return true;
 }
@@ -115,12 +106,8 @@ bool test_game_get_set_square(){
 bool test_game_get_state(){
     //Création d'un jeu vide
     game game_test = game_new_empty();
-    square array_all_square[20]={
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
-        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
-    };
-    square array_all_state[20]={
+    square *array_with_all=create_array_all_values();
+    square array_all_state[SIZE_ALL_VALUES]={
         S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
         S_LIGHTBULB,S_MARK,S_BLANK,S_LIGHTBULB,S_LIGHTBULB,S_MARK ,
         S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACK
@@ -128,13 +115,14 @@ bool test_game_get_state(){
     //Remplir de game_test avec les valeurs de array_all_values
     for (int y = 0; y < DEFAULT_SIZE; y++){
         for (int x = 0; x < DEFAULT_SIZE;x++){
-            for (int z = 0; z < 20;z++){
-            game_set_square(game_test,x,y,array_all_square[z]);
+            for (int z = 0; z < SIZE_ALL_VALUES;z++){
+            game_set_square(game_test,x,y,array_with_all[z]);
             ASSERT(game_get_state(game_test,x,y) == array_all_state[z]); 
             }
         }
     }
     game_delete(game_test);
+    free(array_with_all);
     return true;
 }
 
