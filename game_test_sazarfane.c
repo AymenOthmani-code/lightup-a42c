@@ -67,13 +67,25 @@ bool test_game_copy(){
 
 bool test_game_equal(){
     // Je récupère 3 game deux identique et un différent
-    game game_test1 = game_default(); 
-    game game_test2 = game_default();
-    game game_test3 = game_default_solution();
-
-    ASSERT(game_equal(game_test1,game_test2)); // test si g1 = g2
-    ASSERT(game_equal(game_test1,game_test3) == false); // Vérifie que game_default est bien différent de game_default_solution
-    ASSERT(game_equal(game_test2,game_test3) == false);
+    square array_with_all[20]={
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
+        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
+        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
+    };
+    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
+    game game_sol = game_default_solution();
+    for (int z = 0; z<20;z++){ 
+        for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
+           array_element[i]=array_with_all[z];
+        }
+        game game_test = game_new(array_element);
+        game game_test_copy = game_copy(game_test);
+        ASSERT(game_equal(game_test,game_test_copy));
+        ASSERT(!game_equal(game_test,game_sol));
+        game_delete(game_test);
+        game_delete(game_test_copy);
+    }
+    game_delete(game_sol);
     return true;
 }
 
