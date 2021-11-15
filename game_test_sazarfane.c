@@ -4,8 +4,57 @@
 #include <string.h>
 #include "game.h"
 #include "game_aux.h"
-#include "game_test_commun.c"
 
+/* ********** ASSERT ********** */
+
+#define ASSERT(expr)                                                                        \
+    do                                                                                      \
+    {                                                                                       \
+        if ((expr) == 0)                                                                    \
+        {                                                                                   \
+            fprintf(stderr, "[%s:%d] Assertion '%s' failed!\n", __FILE__, __LINE__, #expr); \
+            abort();                                                                        \
+        }                                                                                   \
+    } while (0)
+
+/* ********** TEST COMMUN ********** */
+
+bool check_game(square *liste, game game_test){
+    for (uint y = 0; y < DEFAULT_SIZE; y++)
+    {
+        for (uint x = 0; x < DEFAULT_SIZE; x++)
+        {
+            square carre = game_get_square(game_test, y, x);
+            if (liste[x + DEFAULT_SIZE * y] != carre)
+            {
+                return false;
+            }  
+        }
+    }
+    return true;
+}
+
+square *create_array_all_values(){
+    square* array_all_values = (square*) malloc(sizeof(square)*DEFAULT_SIZE*DEFAULT_SIZE);
+    
+    if (array_all_values == NULL){
+        fprintf(stderr,"NULL POINTER");
+        exit (EXIT_FAILURE);
+    }
+    square array[DEFAULT_SIZE*DEFAULT_SIZE]={
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
+        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
+        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+        };
+    for ( int i = 0; i < DEFAULT_SIZE*DEFAULT_SIZE; i++) {
+      array_all_values[i] = array[i];
+   }
+    return array_all_values;
+}
 /* ********** TEST game_new ********** */
 
 bool test_game_new(){
@@ -99,7 +148,7 @@ bool test_game_equal(){
 
 /* ********** TEST GAME_SET_SQUARE ********** */
 
-bool test_game_set_square(){
+bool test_game_get_set_square(){
     //Création d'un jeu vide
     game game_test = game_new_empty();
     //Récupération array_all_values
@@ -276,8 +325,10 @@ int main(int argc, char *argv[])
     else if (strcmp("game_equal", argv[1]) == 0)
         ok = test_game_equal();
     else if (strcmp("game_set_square", argv[1]) == 0)
-        ok = test_game_set_square(); 
-        else if (strcmp("game_get_state", argv[1]) == 0)
+        ok = test_game_get_set_square(); 
+    else if (strcmp("game_get_square", argv[1]) == 0)
+        ok = test_game_get_set_square(); 
+    else if (strcmp("game_get_state", argv[1]) == 0)
         ok = test_game_get_state(); 
     else if (strcmp("game_is_black", argv[1]) == 0)
         ok = test_game_is_black(); 
