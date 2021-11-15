@@ -14,13 +14,12 @@ bool test_game_new(){
         S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
         S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
     };
-
+    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
     for (int z = 0; z<20;z++){ 
-        square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
         for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
            array_element[i]=array_with_all[z];
         }
-        game game_test= game_new(array_element);
+        game game_test = game_new(array_element);
         ASSERT(check_game(array_element,game_test));
         game_delete(game_test);
     }
