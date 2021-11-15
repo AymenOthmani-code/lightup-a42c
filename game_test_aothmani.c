@@ -200,6 +200,36 @@ bool test_game_is_lighted()
   return true;
 }
 
+/* ********** TEST game_has_error ********** */
+
+bool test_game_has_error()
+{
+  // Creating an array with only squares with errors
+  square array_of_errors[6] = {S_LIGHTBULB | F_LIGHTED | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK | F_ERROR};
+
+  // Creating an array with squares with no errors
+  square array_no_errors[13] = {
+      S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_MARK | F_LIGHTED ,S_BLANK};
+  //Creating a new_game to test
+  game game_test = game_new_empty();
+
+  for (int height = 0; height < DEFAULT_SIZE; height++)
+  {
+    for (int width = 0; width < DEFAULT_SIZE; width++)
+    {
+      for (int i = 0; i<13;i++){
+                game_set_square(game_test,height,width,array_no_errors[i]);
+                ASSERT(!game_has_error(game_test,height,width));
+            }
+            for (int j = 0; j<6;j++){
+                game_set_square(game_test,height,width,array_of_errors[j]);
+                ASSERT(game_has_error(game_test,height,width)); 
+            }
+    }
+  }
+  return true;
+}
+
 void usage(int argc, char *argv[])
 {
   fprintf(stderr, "Usage: %s <dummy> [<...>]\n", argv[0]);
@@ -231,6 +261,8 @@ int main(int argc, char *argv[])
     ok = test_game_is_lightbulb();
   else if (strcmp("game_is_lighted", argv[1]) == 0)
     ok = test_game_is_lighted();
+  else if (strcmp("game_has_error", argv[1]) == 0)
+    ok = test_game_has_error();
   else
   {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
