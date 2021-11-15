@@ -32,26 +32,12 @@ bool test_game_new_empty(){
     // Création d'un jeu vide
     game game_test = game_new_empty();
     // Mon array de S_BLANK correspond à ce que devrai me renvoyé game_new_empty
-    square array_blank[DEFAULT_SIZE*DEFAULT_SIZE]= {
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK
-        };
-    // Cette array permet de vérifié un cas d'erreur
-    square array_error[DEFAULT_SIZE*DEFAULT_SIZE]= {S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLACKU,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_LIGHTBULB,S_LIGHTBULB,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-    S_BLANK,S_BLANK,S_BLACK2,S_BLANK,S_BLANK,S_BLANK,S_BLANK};
-    
-    ASSERT(check_game(array_blank,game_test)); // Comparaison de mon array et du game
-    ASSERT(check_game(array_error,game_test) == false);
+    for (int y = 0; y < DEFAULT_SIZE; y++){
+        for (int x = 0; x < DEFAULT_SIZE;x++){
+            ASSERT(game_get_square(game_test,x,y) == S_BLANK);
+        }
+    }
+    game_delete(game_test);
     return true;
 }
 
