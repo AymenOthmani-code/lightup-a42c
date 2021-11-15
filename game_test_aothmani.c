@@ -110,34 +110,6 @@ bool test_game_is_blank()
   return true;
 }
 
-/* ********** TEST game_get_square ********** */
-
-bool test_game_get_square()
-{
-  // Creating an array with every square type possible
-  square all_square_array[DEFAULT_SIZE * DEFAULT_SIZE] = {
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,S_BLANK,
-        S_BLANK,S_BLANK,S_BLANK,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_LIGHTBULB,S_MARK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
-        S_BLANK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        };
-  // Creating a new game 
-  game new_game = game_new(all_square_array);
-
-  // Asserting that we can get every square type in our new game 
-
-  for (unsigned int height = 0; height < DEFAULT_SIZE; height++)
-  {
-    for (unsigned int width = 0; width < DEFAULT_SIZE; width++)
-    {
-      ASSERT(game_get_square(new_game, height, width) == all_square_array[width + DEFAULT_SIZE * height]);
-    }
-  }
-  return true;
-}
 /* ********** TEST game_is_lightbulb ********** */
 
 bool test_game_is_lightbulb()
@@ -230,6 +202,34 @@ bool test_game_has_error()
   return true;
 }
 
+/* ********** TEST game_get_flags ********** */
+
+bool test_game_get_flags()
+{
+  // Creating a new game 
+  game game_test = game_new_empty();
+  // Creating an array with every square
+  square array_all_square[19]={
+        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
+        S_LIGHTBULB,S_MARK,S_BLANK | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED ,
+        S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
+    };
+  // Creating an array with every flag
+  square array_all_flags[19]={S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,S_BLANK,
+  S_BLANK,S_BLANK,F_LIGHTED, F_LIGHTED | F_ERROR ,F_LIGHTED ,
+         F_ERROR, F_ERROR, F_ERROR, F_ERROR, F_ERROR, F_ERROR};
+  // Asserting that we can get every flag square type in our new game 
+  for (int height = 0; height < DEFAULT_SIZE; height++){
+        for (int width = 0; width < DEFAULT_SIZE;width++){
+            for (int z = 0; z < 19;z++){
+            game_set_square(game_test,width,height,array_all_square[z]);
+            ASSERT(game_get_flags(game_test,width,height) == array_all_flags[z]); 
+            }
+        }
+    }
+    return true;
+}
+
 void usage(int argc, char *argv[])
 {
   fprintf(stderr, "Usage: %s <dummy> [<...>]\n", argv[0]);
@@ -255,14 +255,14 @@ int main(int argc, char *argv[])
     ok = test_game_delete();
   else if (strcmp("game_is_blank", argv[1]) == 0)
     ok = test_game_is_blank();
-  else if (strcmp("game_get_square", argv[1]) == 0)
-    ok = test_game_get_square();
   else if (strcmp("game_is_lightbulb", argv[1]) == 0)
     ok = test_game_is_lightbulb();
   else if (strcmp("game_is_lighted", argv[1]) == 0)
     ok = test_game_is_lighted();
   else if (strcmp("game_has_error", argv[1]) == 0)
     ok = test_game_has_error();
+  else if (strcmp("game_get_flags", argv[1]) == 0)
+    ok = test_game_get_flags();
   else
   {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);

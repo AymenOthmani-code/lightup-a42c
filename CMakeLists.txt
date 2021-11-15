@@ -32,6 +32,7 @@ add_test(test_game_is_blank ./game_test_aothmani game_is_blank)
 add_test(test_game_is_lightbulb ./game_test_aothmani game_is_lightbulb)
 add_test(test_game_is_lighted ./game_test_aothmani game_is_lighted)
 add_test(test_game_has_error ./game_test_aothmani game_has_error)
+add_test(test_game_get_flags ./game_test_aothmani game_get_flags)
 
 add_test(test_game_new ./game_test_sazarfane game_new)
 add_test(test_game_new_empty ./game_test_sazarfane game_new_empty)
