@@ -64,8 +64,9 @@ bool test_game_default_solution()
       }
     }
   }
-  return true;
   ASSERT(game_is_over(mydefaultgamesolution));
+  game_delete(new_game);
+  return true;
 }
 
 /* ********** TEST game_delete********** */
@@ -107,6 +108,7 @@ bool test_game_is_blank()
             }
     }
   }
+  game_delete(game_test);
   return true;
 }
 
@@ -138,6 +140,7 @@ bool test_game_is_lightbulb()
             }
     }
   }
+  game_delete(game_test);
   return true;
 }
 
@@ -169,6 +172,7 @@ bool test_game_is_lighted()
             }
     }
   }
+  game_delete(game_test);
   return true;
 }
 
@@ -199,6 +203,7 @@ bool test_game_has_error()
             }
     }
   }
+  game_delete(game_test);
   return true;
 }
 
@@ -227,6 +232,7 @@ bool test_game_get_flags()
             }
         }
     }
+    game_delete(game_test);
     return true;
 }
 
