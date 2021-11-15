@@ -239,31 +239,27 @@ bool test_game_is_black(){
 /* ********** TEST GAME_GET_BLACK_NUMBER ********** */
 
 bool test_game_get_black_number(){
-    //Création d'un array avec tout les S_BLACK
-    square array_black_number[DEFAULT_SIZE*DEFAULT_SIZE]={
-        S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,
-        S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,
-        S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,S_BLACK,S_BLACK,
-        S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,S_BLACK,
-        S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_BLACK,S_BLACK,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK
-        };
-    // Création du jeu
-    game game_test = game_new(array_black_number);
-    /*
-        Test qui vérifie que la fonction game_get_black retourne le numéro du wall
-        Je ne savais pas si je devais tester get_black_number avec des square not black 
-        exemple avec S_BLANK ou S_LIGHTBULB mais je ne sais pas ce que ça doit retourné
-    */
-    
-    ASSERT(game_get_black_number(game_test,0,0) == 0);
-    ASSERT(game_get_black_number(game_test,0,1) == 0);
-    ASSERT(game_get_black_number(game_test,0,2) == 1);
-    ASSERT(game_get_black_number(game_test,0,3) == 2);
-    ASSERT(game_get_black_number(game_test,0,4) == 3);
-    ASSERT(game_get_black_number(game_test,0,5) == 4);
-    ASSERT(game_get_black_number(game_test,0,6) == -1);
+    //Création d'un jeu
+    game game_test = game_new_empty();
+    // Creation de mes array
+    square array_black[7]={S_BLACKU,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4};
+    square array_black_flags[7]={S_BLACKU | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR};
+
+    for (int x = 0; x < DEFAULT_SIZE; x++){
+        for (int y = 0; y < DEFAULT_SIZE;y++){
+            for (int z = -1; z<5;z++){
+                game_set_square(game_test,x,y,array_black[z+1]);
+                ASSERT(game_get_black_number(game_test,x,y) == z);
+                game_set_square(game_test,x,y,array_black_flags[z+1]);
+                ASSERT(game_get_black_number(game_test,x,y) == z);
+                
+            }
+            game_set_square(game_test,x,y,S_BLACK);
+            ASSERT(game_get_black_number(game_test,x,y) == 0);
+            game_set_square(game_test,x,y,S_BLACK | F_ERROR);
+            ASSERT(game_get_black_number(game_test,x,y) == 0);
+        }
+    }
     return true;
 }
 
