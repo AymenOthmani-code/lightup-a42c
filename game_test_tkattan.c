@@ -12,6 +12,51 @@
 
 bool test_game_check_move()
 {
+    // [1] Test that out of grid returns false
+    game newGame = game_new_empty();
+    ASSERT(!game_check_move(newGame, DEFAULT_SIZE + 1, -1, S_BLANK));
+    game_delete(newGame);
+
+    // [2] Test that for each square we can play everything that is playable
+    game testGame = game_new_empty();
+    square *allSquares = create_array_all_values();
+
+    // test each square
+    for (uint height = 0; height < DEFAULT_SIZE; height++)
+    {
+        for (uint width = 0; width < DEFAULT_SIZE; width++)
+        {
+            // test each possible starting value of a square
+            for (uint startingValue = 0; startingValue < SIZE_ALL_VALUES; startingValue++)
+            {
+                // set the square to the starting value
+                game_set_square(testGame, height, width, allSquares[startingValue]);
+
+                // get the current square for tests
+                square currentSquare = game_get_square(testGame, height, width);
+
+                // check each possible move on the square
+                for (uint testValue = 0; testValue < SIZE_ALL_VALUES; testValue++)
+                {
+                    // if the square is not black and we are trying to add a blank, lightbulb or a mark check move needs to be true
+                    if (!(currentSquare & S_BLACK) && ((allSquares[testValue] == S_BLANK) ||
+                                                       (allSquares[testValue] == S_LIGHTBULB) ||
+                                                       (allSquares[testValue] == S_MARK)))
+                        ASSERT(game_check_move(testGame, height, width, allSquares[testValue]));
+                    else
+                        ASSERT(!game_check_move(testGame, height, width, allSquares[testValue]));
+                }
+
+                // reset the square to blank
+                game_set_square(testGame, height, width, S_BLANK);
+            }
+        }
+    }
+
+    // clean up tests
+    game_delete(testGame);
+    free(allSquares);
+
     return true;
 }
 
@@ -70,7 +115,7 @@ bool test_game_restart()
                 square squareState = game_get_state(testGame, height, width);
 
                 game_restart(testGame);
-        
+
                 // if it is black then check that it stays black else it should be blank
                 if (squareState & S_BLACK)
                     ASSERT(game_get_square(testGame, height, width) == squareState);
@@ -83,7 +128,7 @@ bool test_game_restart()
         }
     }
 
-    // Clean-up test game restart on each square for each value
+    // clean-up test game restart on each square for each value
     free(allSquares);
     game_delete(testGame);
 
