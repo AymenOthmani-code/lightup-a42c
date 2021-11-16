@@ -22,18 +22,18 @@ bool test_game_check_move()
     square *allSquares = create_array_all_values();
 
     // test each square
-    for (uint height = 0; height < DEFAULT_SIZE; height++)
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
     {
-        for (uint width = 0; width < DEFAULT_SIZE; width++)
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
         {
             // test each possible starting value of a square
             for (uint startingValue = 0; startingValue < SIZE_ALL_VALUES; startingValue++)
             {
                 // set the square to the starting value
-                game_set_square(testGame, height, width, allSquares[startingValue]);
+                game_set_square(testGame, row, column, allSquares[startingValue]);
 
                 // get the current square for tests
-                square currentSquare = game_get_square(testGame, height, width);
+                square currentSquare = game_get_square(testGame, row, column);
 
                 // check each possible move on the square
                 for (uint testValue = 0; testValue < SIZE_ALL_VALUES; testValue++)
@@ -42,13 +42,13 @@ bool test_game_check_move()
                     if (!(currentSquare & S_BLACK) && ((allSquares[testValue] == S_BLANK) ||
                                                        (allSquares[testValue] == S_LIGHTBULB) ||
                                                        (allSquares[testValue] == S_MARK)))
-                        ASSERT(game_check_move(testGame, height, width, allSquares[testValue]));
+                        ASSERT(game_check_move(testGame, row, column, allSquares[testValue]));
                     else
-                        ASSERT(!game_check_move(testGame, height, width, allSquares[testValue]));
+                        ASSERT(!game_check_move(testGame, row, column, allSquares[testValue]));
                 }
 
                 // reset the square to blank
-                game_set_square(testGame, height, width, S_BLANK);
+                game_set_square(testGame, row, column, S_BLANK);
             }
         }
     }
@@ -78,6 +78,51 @@ bool test_game_update_flags()
 
 bool test_game_is_over()
 {
+    // [1] Test game default and default solution are correct
+    game dafaultGame = game_default();
+    game defaultSolutionGame = game_default_solution();
+    ASSERT(!game_is_over(dafaultGame));
+    ASSERT(game_is_over(defaultSolutionGame));
+    game_delete(dafaultGame);
+    game_delete(defaultSolutionGame);
+
+    // [2] Test that for each square we can get correct value for game over for each possible value
+    game testGame = game_new_empty();
+    square *allSquares = create_array_all_values();
+
+    // set new game to S_BLANK | F_LIGHTED to prevent other squares from interfering with tests
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+            game_set_square(testGame, row, column, S_BLANK | F_LIGHTED);
+
+    // test each square
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+    {
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+        {
+            // test each possible value of a square
+            for (uint i = 0; i < SIZE_ALL_VALUES; i++)
+            {
+                // set the square to the starting value
+                game_set_square(testGame, row, column, allSquares[i]);
+
+                // check that if the square is valid the function returns true
+                if (!(game_get_flags(testGame, row, column) & F_ERROR) && // no error and it is black or it is lighted
+                    ((game_get_state(testGame, row, column) & S_BLACK) || (game_get_flags(testGame, row, column) & F_LIGHTED)))
+                    ASSERT(game_is_over(testGame));
+                else
+                    ASSERT(!game_is_over(testGame));
+            }
+
+            // reset the square to blank lighted so other tests won't fail
+            game_set_square(testGame, row, column, S_BLANK | F_LIGHTED);
+        }
+    }
+
+    // clean up tests
+    game_delete(testGame);
+    free(allSquares);
+
     return true;
 }
 
@@ -102,29 +147,29 @@ bool test_game_restart()
     game testGame = game_new_empty();
 
     // test each square
-    for (uint height = 0; height < DEFAULT_SIZE; height++)
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
     {
-        for (uint width = 0; width < DEFAULT_SIZE; width++)
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
         {
             // for each possible value of a square
             for (uint i = 0; i < SIZE_ALL_VALUES; i++)
             {
                 // set the square to the value and restart it
-                game_set_square(testGame, height, width, allSquares[i]);
+                game_set_square(testGame, row, column, allSquares[i]);
                 // use state to test as in all situations the flags need to be removed
-                square squareState = game_get_state(testGame, height, width);
+                square squareState = game_get_state(testGame, row, column);
 
                 game_restart(testGame);
 
                 // if it is black then check that it stays black else it should be blank
                 if (squareState & S_BLACK)
-                    ASSERT(game_get_square(testGame, height, width) == squareState);
+                    ASSERT(game_get_square(testGame, row, column) == squareState);
                 else
-                    ASSERT(game_get_square(testGame, height, width) == S_BLANK);
+                    ASSERT(game_get_square(testGame, row, column) == S_BLANK);
             }
 
             // reset square to empty
-            game_set_square(testGame, height, width, S_BLANK);
+            game_set_square(testGame, row, column, S_BLANK);
         }
     }
 
