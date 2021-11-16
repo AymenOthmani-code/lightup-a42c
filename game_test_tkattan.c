@@ -153,6 +153,100 @@ bool test_game_play_move()
 
 bool test_game_update_flags()
 {
+    // [1] Test if adding lightbulbs works
+    game testGame = game_new_empty();
+    uint size_allPlayableValues = 7;
+    square allPlayableValues[7] = {S_BLANK, S_MARK, S_LIGHTBULB, S_BLANK, S_LIGHTBULB, S_MARK, S_BLANK};
+
+    // [a] Test if the rest of the map is blank
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+    {
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+        {
+
+            for (uint i = 0; i < size_allPlayableValues; i++)
+            {
+                // play the square
+                game_play_move(testGame, row, column, allPlayableValues[i]);
+                // get the state and flags
+                square squareState = game_get_state(testGame, row, column);
+                square squareFlag = game_get_flags(testGame, row, column);
+
+                // check the flags
+                if (squareState == S_LIGHTBULB)
+                    ASSERT(squareFlag == F_LIGHTED);
+                else
+                    ASSERT(squareFlag == S_BLANK);
+
+                // check the flags of all the other
+                for (uint i = 0; i < DEFAULT_SIZE; i++)
+                {
+                    ASSERT(game_get_flags(testGame, row, i) == squareFlag);
+                    ASSERT(game_get_flags(testGame, i, column) == squareFlag);
+                }
+            }
+        }
+    }
+
+    // [b] Test if the ajacent square is a lightbulb
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+    {
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+        {
+            // calculate value of ajacent row and column for current square
+            int ajacent_row = row;
+            int ajacent_column = column + 1;
+            if (ajacent_column == DEFAULT_SIZE)
+                ajacent_column = column - 1;
+
+            // set the ajacent square to a lightbulb
+            game_play_move(testGame, ajacent_row, ajacent_column, S_LIGHTBULB);
+
+            for (uint i = 0; i < size_allPlayableValues; i++)
+            {
+                // play the square
+                game_play_move(testGame, row, column, allPlayableValues[i]);
+                // get the state and flags
+                square squareState = game_get_state(testGame, row, column);
+                square squareFlag = game_get_flags(testGame, row, column);
+
+                // check the flags
+                if (squareState == S_LIGHTBULB)
+                    ASSERT(squareFlag == (F_LIGHTED | F_ERROR));
+                else
+                    ASSERT(squareFlag == F_LIGHTED);
+
+                // check the flags of all the other
+                for (uint i = 0; i < DEFAULT_SIZE; i++)
+                {
+                    if (squareState == S_LIGHTBULB)
+                    {
+                        if (i == ajacent_column || i == column)
+                            ASSERT(game_get_flags(testGame, row, i) == squareFlag);
+                        else
+                            ASSERT(game_get_flags(testGame, row, i) == F_LIGHTED);
+                        if (i == ajacent_row || i == row)
+                            ASSERT(game_get_flags(testGame, i, column) == squareFlag);
+                        else
+                            ASSERT(game_get_flags(testGame, i, column) == F_LIGHTED);
+                    }
+                    else
+                    {
+                        if (i == row)
+                            ASSERT(game_get_flags(testGame, i, column) == F_LIGHTED);
+                        else
+                            ASSERT(game_get_flags(testGame, i, column) == S_BLANK);
+                        ASSERT(game_get_flags(testGame, row, i) == F_LIGHTED);
+                    }
+                }
+            }
+
+            // remove the lightbulb from the ajacent square
+            game_play_move(testGame, ajacent_row, ajacent_column, S_BLANK);
+        }
+    }
+
+    game_delete(testGame);
     return true;
 }
 
