@@ -13,11 +13,11 @@ Number of tests: 24
 
 ### game_aux.h
 
-|Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
-|---|---|---|---|---|
-|void game_print(cgame g) |Prints game |Easy |Aymen |DONE |
-|game game_default(void) |Creates a default game |Medium |Aymen |DONE |
-|game game_default_solution(void) |Creates a default game with solution |Medium |Aymen |DONE |
+|Function|Description|Difficulty|Responsible|
+|---|---|---|---|
+|void game_print(cgame g) |Prints game |Easy |Aymen |
+|game game_default(void) |Creates a default game |Medium |Aymen |
+|game game_default_solution(void) |Creates a default game with solution |Medium |Aymen |
 
 #### Description of functions - game_aux.h
 
@@ -44,29 +44,29 @@ Check that every square in the returned game have the correct value for state an
 
 ### game.h
 
-|Function|Description|Difficulty|Responsible|State [TODO/DOING/DONE]|
-|---|---|---|---|---|
-|game game_new(square *squares) |Creates a new game with default size and initializes it |Medium/Hard |Shams |DONE|
-|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |DONE|
-|game game_copy(cgame g) |Duplicates a game |Easy |Shams |DONE|
-|bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |DONE|
-|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |DONE|
-|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |DONE|
-|square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |DONE|
-|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Shams |DONE|
-|square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |Medium |Aymen |DONE|
-|bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |Easy |Aymen |DONE|
-|bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |Easy |Aymen |DONE|
-|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |Easy |Shams |DONE|
-|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |Easy |Shams |DONE|
-|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |Easy |Shams |DONE|
-|bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |Easy |Aymen |DONE|
-|bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |Easy |Aymen |DONE|
-|bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |Hard |Taleiven |DONE|
-|void game_play_move(game g, uint i, uint j, square s) |Plays a move in a given square |Hard |Taleiven |DONE|
-|void game_update_flags(game g) |Update all grid flags |Hard |Taleiven |DONE|
-|bool game_is_over(cgame g) |Checks if the game is won |Hard |Taleiven |DONE|
-|void game_restart(game g) |RestartPs a game |Hard |Taleiven |DONE|
+|Function|Description|Difficulty|Responsible|
+|---|---|---|---|
+|game game_new(square *squares) |Creates a new game with default size and initializes it |Medium/Hard |Shams |
+|game game_new_empty(void) |Creates a new empty game with defaut size |Easy |Shams |
+|game game_copy(cgame g) |Duplicates a game |Easy |Shams |
+|bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |Easy |Shams |
+|void game_delete(game g) |Deletes the game and frees the allocated memory |Easy |Aymen |
+|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |Medium |Shams |
+|square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |Medium |Aymen |
+|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |Medium |Shams |
+|square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |Medium |Aymen |
+|bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |Easy |Aymen |
+|bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |Easy |Aymen |
+|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |Easy |Shams |
+|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |Easy |Shams |
+|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |Easy |Shams |
+|bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |Easy |Aymen |
+|bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |Easy |Aymen |
+|bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |Hard |Taleiven |
+|void game_play_move(game g, uint i, uint j, square s) |Plays a move in a given square |Hard |Taleiven |
+|void game_update_flags(game g) |Update all grid flags |Hard |Taleiven |
+|bool game_is_over(cgame g) |Checks if the game is won |Hard |Taleiven |
+|void game_restart(game g) |RestartPs a game |Hard |Taleiven |
 
 #### Description of functions - game.h
 
