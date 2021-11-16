@@ -246,41 +246,6 @@ bool test_game_update_flags()
         }
     }
 
-    // [2] Test if adding lightbulbs next to walls works
-    for (uint row = 0; row < DEFAULT_SIZE; row++)
-    {
-        for (uint column = 0; column < DEFAULT_SIZE; column++)
-        {
-            // calculate value of ajacent row and column for current square
-            int ajacent_row = row;
-            int ajacent_column = column + 1;
-            if (ajacent_column == DEFAULT_SIZE)
-                ajacent_column = column - 1;
-
-            // set square to wall without limit
-            game_set_square(testGame, row, column, S_BLACKU);
-            // set the ajacent square to a lightbulb
-            game_play_move(testGame, ajacent_row, ajacent_column, S_LIGHTBULB);
-
-            ASSERT(game_get_flags(testGame, row, column) == S_BLANK);
-
-            // set the ajacent square to a blank
-            game_play_move(testGame, ajacent_row, ajacent_column, S_BLANK);
-
-            // set square to wall with limit
-            game_set_square(testGame, row, column, S_BLACK0);
-            // set the ajacent square to a lightbulb
-            game_play_move(testGame, ajacent_row, ajacent_column, S_LIGHTBULB);
-
-            ASSERT(game_get_flags(testGame, row, column) == F_ERROR);
-
-            // remove the lightbulb from the ajacent square
-            game_play_move(testGame, ajacent_row, ajacent_column, S_BLANK);
-            // remove wall from square
-            game_set_square(testGame, row, column, S_BLANK);
-        }
-    }
-
     game_delete(testGame);
     return true;
 }
