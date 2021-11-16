@@ -6,18 +6,7 @@
 
 #include "game.h"
 #include "game_aux.h"
-
-/* ********** ASSERT ********** */
-
-#define ASSERT(expr)                                                                        \
-    do                                                                                      \
-    {                                                                                       \
-        if ((expr) == 0)                                                                    \
-        {                                                                                   \
-            fprintf(stderr, "[%s:%d] Assertion '%s' failed!\n", __FILE__, __LINE__, #expr); \
-            abort();                                                                        \
-        }                                                                                   \
-    } while (0)
+#include "game_test_commun.c"
 
 /* ********** TEST GAME CHECK MOVE ********** */
 
