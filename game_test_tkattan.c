@@ -338,6 +338,15 @@ bool test_game_update_flags()
     ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3 | F_ERROR));
     ASSERT(game_get_square(testGame, 2, 3) == (S_LIGHTBULB | F_LIGHTED));
 
+    // [5] Test that lightbulb can cause error on far walls
+    game_delete(testGame);
+    testGame = game_new_empty();
+
+    game_set_square(testGame, 3, 2, S_BLACK3);
+    game_set_square(testGame, 3, 3, S_BLACKU);
+    game_play_move(testGame, 3, 0, S_LIGHTBULB);
+    ASSERT(game_get_square(testGame, 3, 2) == (S_BLACK3|F_ERROR));
+
     game_delete(testGame);
     return true;
 }
