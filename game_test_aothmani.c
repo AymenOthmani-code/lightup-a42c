@@ -58,12 +58,8 @@ bool test_game_default_solution()
   {
     for (int width = 0; width < DEFAULT_SIZE; width++)
     {
-      if ((game_get_square(mydefaultgamesolution, height, width) == S_BLACK) || (game_get_square(mydefaultgamesolution, height, width) == S_BLACK1) ||
-          (game_get_square(mydefaultgamesolution, height, width) == S_BLACK2) || (game_get_square(mydefaultgamesolution, height, width) == S_BLACK3) ||
-          (game_get_square(mydefaultgamesolution, height, width) == S_BLACK4) || (game_get_square(mydefaultgamesolution, height, width) == S_BLACKU))
-      {
+      if (game_get_square(mydefaultgamesolution, height, width) & S_BLACK)
         ASSERT(game_get_square(mydefaultgamesolution, height, width) == (game_get_square(new_game, height, width)));
-      }
     }
   }
   ASSERT(game_is_over(mydefaultgamesolution));
