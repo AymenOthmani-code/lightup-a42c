@@ -281,63 +281,6 @@ bool test_game_update_flags()
         }
     }
 
-    // [3] Test that walls block light
-    game_set_square(testGame, 0, 3, S_BLACK1);
-    game_play_move(testGame, 0, 2, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 0, 2) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 3) == (S_BLACK1));
-    ASSERT(game_get_square(testGame, 0, 0) == (F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 4) == (S_BLANK));
-    ASSERT(game_get_square(testGame, 0, 5) == (S_BLANK));
-    game_play_move(testGame, 0, 4, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 0, 3) == (S_BLACK1 | F_ERROR));
-    ASSERT(game_get_square(testGame, 0, 4) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 5) == (F_LIGHTED));
-
-    // [4] Test that all the walls can be errored
-    game_delete(testGame);
-    testGame = game_new_empty();
-
-    // test wall 2
-    game_set_square(testGame, 0, 3, S_BLACK2);
-    game_play_move(testGame, 0, 2, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 0, 2) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 3) == (S_BLACK2));
-    ASSERT(game_get_square(testGame, 0, 0) == (F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 4) == (S_BLANK));
-    ASSERT(game_get_square(testGame, 0, 5) == (S_BLANK));
-    game_play_move(testGame, 0, 4, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 0, 3) == (S_BLACK2));
-    ASSERT(game_get_square(testGame, 0, 4) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 0, 5) == (F_LIGHTED));
-    game_play_move(testGame, 1, 3, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 0, 3) == (S_BLACK2 | F_ERROR));
-    ASSERT(game_get_square(testGame, 1, 3) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 2, 3) == (F_LIGHTED));
-
-    game_delete(testGame);
-    testGame = game_new_empty();
-
-    // test wall 3
-    game_set_square(testGame, 1, 3, S_BLACK3);
-    game_play_move(testGame, 1, 2, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 1, 2) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3));
-    ASSERT(game_get_square(testGame, 1, 0) == (F_LIGHTED));
-    ASSERT(game_get_square(testGame, 1, 4) == (S_BLANK));
-    ASSERT(game_get_square(testGame, 1, 5) == (S_BLANK));
-    game_play_move(testGame, 1, 4, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3));
-    ASSERT(game_get_square(testGame, 1, 4) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 1, 5) == (F_LIGHTED));
-    game_play_move(testGame, 2, 3, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3));
-    ASSERT(game_get_square(testGame, 2, 3) == (S_LIGHTBULB | F_LIGHTED));
-    ASSERT(game_get_square(testGame, 3, 3) == (F_LIGHTED));
-    game_play_move(testGame, 0, 3, S_LIGHTBULB);
-    ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3 | F_ERROR));
-    ASSERT(game_get_square(testGame, 2, 3) == (S_LIGHTBULB | F_LIGHTED));
-
     game_delete(testGame);
     return true;
 }
