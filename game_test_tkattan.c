@@ -64,6 +64,88 @@ bool test_game_check_move()
 
 bool test_game_play_move()
 {
+    // Test if square is set correctly for each possible value for every square
+    game testGame = game_new_empty();
+    uint size_allPlayableValues = 3;
+    square allPlayableValues[3] = {S_BLANK, S_MARK, S_LIGHTBULB};
+    uint size_allAjacentSquares = 2;
+    square allAjacentSquares[2] = {S_BLANK, S_LIGHTBULB};
+    uint size_allModifiableSquares = 7;
+    square allModifiableSquares[7] = {
+        S_BLANK, S_LIGHTBULB, S_MARK, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_LIGHTBULB | F_LIGHTED | F_ERROR, S_MARK | F_LIGHTED};
+
+    // test each square
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+    {
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+        {
+            // calculate value of ajacent row and column for current square
+            int ajacent_row = row;
+            int ajacent_column = column + 1;
+            if (ajacent_column == DEFAULT_SIZE)
+                ajacent_column = column - 1;
+
+            // test each possible value of a square (lightbulb, mark, blank)
+            for (uint iPlayableValue = 0; iPlayableValue < size_allPlayableValues; iPlayableValue++)
+            {
+                // test each possible value of the square being played on
+                for (uint iSquare = 0; iSquare < size_allModifiableSquares; iSquare++)
+                {
+                    // test each posssible value of the ajacent square
+                    // this is to modify the flags of the current square after the play move
+                    for (uint iAjacentSquare = 0; iAjacentSquare < size_allAjacentSquares; iAjacentSquare++)
+                    {
+                        // set ajacent square
+                        game_play_move(testGame, ajacent_row, ajacent_column, allAjacentSquares[iAjacentSquare]);
+                        square ajacentSquareState = game_get_state(testGame, ajacent_row, ajacent_column);
+                        // set current square
+                        game_set_square(testGame, row, column, allModifiableSquares[iSquare]);
+
+                        game_play_move(testGame, row, column, allPlayableValues[iPlayableValue]);
+
+                        // check that the square has been modified
+                        ASSERT(game_get_state(testGame, row, column) == allPlayableValues[iPlayableValue]);
+
+                        // get the state and flag for the tests
+                        square squareState = game_get_state(testGame, row, column);
+                        square squareFlag = game_get_flags(testGame, row, column);
+
+                        // check that flags for the square are correct
+                        if (squareState == S_BLANK || squareState == S_MARK)
+                        {
+                            if (ajacentSquareState == S_BLANK)
+                                ASSERT(squareFlag == S_BLANK);
+                            else
+                                ASSERT(squareFlag == F_LIGHTED);
+                        }
+                        else if (squareState == S_LIGHTBULB)
+                        {
+                            if (ajacentSquareState == S_BLANK)
+                                ASSERT(squareFlag == F_LIGHTED);
+                            else
+                                ASSERT(squareFlag == (F_LIGHTED | F_ERROR));
+                        }
+                        else
+                        {
+                            fprintf(stderr, "[%s:%d] Error case: '%s'!\n", __FILE__, __LINE__, "Play move gave set square to incorrect value");
+                            abort();
+                        }
+                    }
+
+                    // reset the game to empty so next tests won't fail
+                    game_delete(testGame);
+                    testGame = game_new_empty();
+                }
+            }
+
+            // reset the game to empty so next tests won't fail
+            game_delete(testGame);
+            testGame = game_new_empty();
+        }
+    }
+
+    // clean up tests
+    game_delete(testGame);
     return true;
 }
 
