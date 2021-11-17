@@ -108,6 +108,29 @@ bool test_game_equal()
         }
     }
 
+    game new_default = game_default_solution();
+    game new_def = game_default();
+    game new_new_def = game_default();
+
+    ASSERT(game_equal(game_sol, new_default));
+    ASSERT(game_equal(new_def, new_new_def));
+
+    game_delete(new_default);
+    game_delete(new_def);
+    game_delete(new_new_def);
+
+    game_delete(testGame);
+    game_delete(testGameTwo);
+
+    // Check if it is not checking flags
+    testGame = game_new_empty();
+    testGameTwo = game_new_empty();
+
+    game_set_square(testGame, 0, 0, S_BLANK);
+    game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
+
+    ASSERT(!game_equal(testGame, testGameTwo));
+
     game_delete(testGame);
     game_delete(testGameTwo);
 
