@@ -89,6 +89,28 @@ bool test_game_equal()
         game_delete(game_test);
         game_delete(game_test_copy);
     }
+
+    game testGame = game_new_empty();
+    game testGameTwo = game_new_empty();
+    for (uint row = 0; row < DEFAULT_SIZE; row++)
+    {
+        for (uint column = 0; column < DEFAULT_SIZE; column++)
+        {
+            for (uint i = 0; i < SIZE_ALL_VALUES; i++)
+            {
+                game_set_square(testGame, row, column, array_with_all[i]);
+                game_set_square(testGameTwo, row, column, array_with_all[i]);
+                ASSERT(game_equal(testGame, testGameTwo));
+            }
+            game_set_square(testGame, row, column, S_BLANK);
+            game_set_square(testGameTwo, row, column, S_BLANK);
+            ASSERT(game_equal(testGame, testGameTwo));
+        }
+    }
+
+    game_delete(testGame);
+    game_delete(testGameTwo);
+
     game_delete(game_sol);
     free(array_with_all);
     return true;
