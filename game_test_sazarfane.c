@@ -8,15 +8,18 @@
 
 /* ********** TEST game_new ********** */
 
-bool test_game_new(){
-    square *array_with_all=create_array_all_values();
-    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
-    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
-        for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
-           array_element[i]=array_with_all[z];
+bool test_game_new()
+{
+    square *array_with_all = create_array_all_values();
+    square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+    for (int z = 0; z < SIZE_ALL_VALUES; z++)
+    {
+        for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++)
+        {
+            array_element[i] = array_with_all[z];
         }
         game game_test = game_new(array_element);
-        ASSERT(check_game(array_element,game_test));
+        ASSERT(check_game(array_element, game_test));
         game_delete(game_test);
     }
     free(array_with_all);
@@ -25,13 +28,16 @@ bool test_game_new(){
 
 /* ********** TEST GAME_NEW_EMPTY ********** */
 
-bool test_game_new_empty(){
+bool test_game_new_empty()
+{
     // Création d'un jeu vide
     game game_test = game_new_empty();
     // Mon array de S_BLANK correspond à ce que devrai me renvoyé game_new_empty
-    for (int y = 0; y < DEFAULT_SIZE; y++){
-        for (int x = 0; x < DEFAULT_SIZE;x++){
-            ASSERT(game_get_square(game_test,x,y) == S_BLANK);
+    for (int y = 0; y < DEFAULT_SIZE; y++)
+    {
+        for (int x = 0; x < DEFAULT_SIZE; x++)
+        {
+            ASSERT(game_get_square(game_test, x, y) == S_BLANK);
         }
     }
     game_delete(game_test);
@@ -40,16 +46,19 @@ bool test_game_new_empty(){
 
 /* ********** TEST GAME_COPY ********** */
 
-bool test_game_copy(){
-    square *array_with_all=create_array_all_values();
-    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
-    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
-        for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
-           array_element[i]=array_with_all[z];
+bool test_game_copy()
+{
+    square *array_with_all = create_array_all_values();
+    square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+    for (int z = 0; z < SIZE_ALL_VALUES; z++)
+    {
+        for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++)
+        {
+            array_element[i] = array_with_all[z];
         }
         game game_test = game_new(array_element);
         game game_test_copy = game_copy(game_test);
-        ASSERT(game_equal(game_test,game_test_copy));
+        ASSERT(game_equal(game_test, game_test_copy));
         game_delete(game_test);
         game_delete(game_test_copy);
     }
@@ -59,19 +68,24 @@ bool test_game_copy(){
 
 /* ********** TEST GAME_EQUAL ********** */
 
-bool test_game_equal(){
+bool test_game_equal()
+{
     // Je récupère 3 game deux identique et un différent
-    square *array_with_all=create_array_all_values();
-    square array_element[DEFAULT_SIZE*DEFAULT_SIZE];
+    square *array_with_all = create_array_all_values();
+    square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
     game game_sol = game_default_solution();
-    for (int z = 0; z<SIZE_ALL_VALUES;z++){ 
-        for(int i = 0; i<DEFAULT_SIZE*DEFAULT_SIZE;i++){
-           array_element[i]=array_with_all[z];
+    for (int z = 0; z < SIZE_ALL_VALUES; z++)
+    {
+        for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++)
+        {
+            array_element[i] = array_with_all[z];
         }
         game game_test = game_new(array_element);
         game game_test_copy = game_copy(game_test);
-        ASSERT(game_equal(game_test,game_test_copy));
-        ASSERT(!game_equal(game_test,game_sol));
+        ASSERT(check_game(array_element, game_test));
+        ASSERT(check_game(array_element, game_test_copy));
+        ASSERT(game_equal(game_test, game_test_copy));
+        ASSERT(!game_equal(game_test, game_sol));
         game_delete(game_test);
         game_delete(game_test_copy);
     }
@@ -82,17 +96,21 @@ bool test_game_equal(){
 
 /* ********** TEST GAME_SET_SQUARE ********** */
 
-bool test_game_get_set_square(){
+bool test_game_get_set_square()
+{
     //Création d'un jeu vide
     game game_test = game_new_empty();
     //Récupération array_all_values
-    square *array_with_all=create_array_all_values();
+    square *array_with_all = create_array_all_values();
     //Remplir de game_test avec les valeurs de array_all_values
-    for (int y = 0; y < DEFAULT_SIZE; y++){
-        for (int x = 0; x < DEFAULT_SIZE;x++){
-            for (int z = 0; z < SIZE_ALL_VALUES;z++){
-            game_set_square(game_test,x,y,array_with_all[z]);
-            ASSERT(game_get_square(game_test,x,y) == array_with_all[z]); 
+    for (int y = 0; y < DEFAULT_SIZE; y++)
+    {
+        for (int x = 0; x < DEFAULT_SIZE; x++)
+        {
+            for (int z = 0; z < SIZE_ALL_VALUES; z++)
+            {
+                game_set_square(game_test, x, y, array_with_all[z]);
+                ASSERT(game_get_square(game_test, x, y) == array_with_all[z]);
             }
         }
     }
@@ -103,21 +121,24 @@ bool test_game_get_set_square(){
 
 /* ********** TEST GAME_GET_STATE ********** */
 
-bool test_game_get_state(){
+bool test_game_get_state()
+{
     //Création d'un jeu vide
     game game_test = game_new_empty();
-    square *array_with_all=create_array_all_values();
-    square array_all_state[SIZE_ALL_VALUES]={
-        S_BLANK ,S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        S_LIGHTBULB,S_MARK,S_BLANK,S_LIGHTBULB,S_LIGHTBULB,S_MARK ,
-        S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACK
-    };
+    square *array_with_all = create_array_all_values();
+    square array_all_state[SIZE_ALL_VALUES] = {
+        S_BLANK, S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACKU,
+        S_LIGHTBULB, S_MARK, S_BLANK, S_LIGHTBULB, S_LIGHTBULB, S_MARK,
+        S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACK};
     //Remplir de game_test avec les valeurs de array_all_values
-    for (int y = 0; y < DEFAULT_SIZE; y++){
-        for (int x = 0; x < DEFAULT_SIZE;x++){
-            for (int z = 0; z < SIZE_ALL_VALUES;z++){
-            game_set_square(game_test,x,y,array_with_all[z]);
-            ASSERT(game_get_state(game_test,x,y) == array_all_state[z]); 
+    for (int y = 0; y < DEFAULT_SIZE; y++)
+    {
+        for (int x = 0; x < DEFAULT_SIZE; x++)
+        {
+            for (int z = 0; z < SIZE_ALL_VALUES; z++)
+            {
+                game_set_square(game_test, x, y, array_with_all[z]);
+                ASSERT(game_get_state(game_test, x, y) == array_all_state[z]);
             }
         }
     }
@@ -128,30 +149,46 @@ bool test_game_get_state(){
 
 /* ********** TEST GAME_IS_BLACK ********** */
 
-bool test_game_is_black(){
+bool test_game_is_black()
+{
     //Création de 2 array un avec tout les S_BLACK possibl et l'autre avec les squares not black
     int size_array_valid = 14;
-    square array_valid[14]={
-        S_BLACK | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACKU | F_ERROR, 
-        S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,S_BLACKU,
-        };
+    square array_valid[14] = {
+        S_BLACK | F_ERROR,
+        S_BLACK0 | F_ERROR,
+        S_BLACK1 | F_ERROR,
+        S_BLACK2 | F_ERROR,
+        S_BLACK3 | F_ERROR,
+        S_BLACK4 | F_ERROR,
+        S_BLACKU | F_ERROR,
+        S_BLACK,
+        S_BLACK0,
+        S_BLACK1,
+        S_BLACK2,
+        S_BLACK3,
+        S_BLACK4,
+        S_BLACKU,
+    };
 
     int size_array_invalid = 7;
-    square array_invalid[7]={
-        S_BLANK, S_LIGHTBULB, S_MARK, S_BLANK | F_LIGHTED,  S_LIGHTBULB | F_LIGHTED,S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_MARK | F_LIGHTED
-        };
+    square array_invalid[7] = {
+        S_BLANK, S_LIGHTBULB, S_MARK, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_LIGHTBULB | F_LIGHTED | F_ERROR, S_MARK | F_LIGHTED};
 
     game game_test = game_new_empty();
-    
-    for (int x = 0; x < DEFAULT_SIZE; x++){
-        for (int y = 0; y < DEFAULT_SIZE;y++){
-            for (int i = 0; i<size_array_invalid;i++){
-                game_set_square(game_test,x,y,array_invalid[i]);
-                ASSERT(!game_is_black(game_test,x,y));
+
+    for (int x = 0; x < DEFAULT_SIZE; x++)
+    {
+        for (int y = 0; y < DEFAULT_SIZE; y++)
+        {
+            for (int i = 0; i < size_array_invalid; i++)
+            {
+                game_set_square(game_test, x, y, array_invalid[i]);
+                ASSERT(!game_is_black(game_test, x, y));
             }
-            for (int j = 0; j<size_array_valid;j++){
-                game_set_square(game_test,x,y,array_valid[j]);
-                ASSERT(game_is_black(game_test,x,y)); 
+            for (int j = 0; j < size_array_valid; j++)
+            {
+                game_set_square(game_test, x, y, array_valid[j]);
+                ASSERT(game_is_black(game_test, x, y));
             }
         }
     }
@@ -161,27 +198,30 @@ bool test_game_is_black(){
 
 /* ********** TEST GAME_GET_BLACK_NUMBER ********** */
 
-bool test_game_get_black_number(){
+bool test_game_get_black_number()
+{
     //Création d'un jeu
     game game_test = game_new_empty();
     // Creation de mes array
     int size_array = 5;
-    square array_black[7]={S_BLACKU,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4};
-    square array_black_flags[7]={S_BLACKU | F_ERROR,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR};
+    square array_black[7] = {S_BLACKU, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4};
+    square array_black_flags[7] = {S_BLACKU | F_ERROR, S_BLACK0 | F_ERROR, S_BLACK1 | F_ERROR, S_BLACK2 | F_ERROR, S_BLACK3 | F_ERROR, S_BLACK4 | F_ERROR};
 
-    for (int x = 0; x < DEFAULT_SIZE; x++){
-        for (int y = 0; y < DEFAULT_SIZE;y++){
-            for (int z = -1; z<size_array;z++){
-                game_set_square(game_test,x,y,array_black[z+1]);
-                ASSERT(game_get_black_number(game_test,x,y) == z);
-                game_set_square(game_test,x,y,array_black_flags[z+1]);
-                ASSERT(game_get_black_number(game_test,x,y) == z);
-                
+    for (int x = 0; x < DEFAULT_SIZE; x++)
+    {
+        for (int y = 0; y < DEFAULT_SIZE; y++)
+        {
+            for (int z = -1; z < size_array; z++)
+            {
+                game_set_square(game_test, x, y, array_black[z + 1]);
+                ASSERT(game_get_black_number(game_test, x, y) == z);
+                game_set_square(game_test, x, y, array_black_flags[z + 1]);
+                ASSERT(game_get_black_number(game_test, x, y) == z);
             }
-            game_set_square(game_test,x,y,S_BLACK);
-            ASSERT(game_get_black_number(game_test,x,y) == 0);
-            game_set_square(game_test,x,y,S_BLACK | F_ERROR);
-            ASSERT(game_get_black_number(game_test,x,y) == 0);
+            game_set_square(game_test, x, y, S_BLACK);
+            ASSERT(game_get_black_number(game_test, x, y) == 0);
+            game_set_square(game_test, x, y, S_BLACK | F_ERROR);
+            ASSERT(game_get_black_number(game_test, x, y) == 0);
         }
     }
     game_delete(game_test);
@@ -190,31 +230,34 @@ bool test_game_get_black_number(){
 
 /* ********** TEST GAME_IS_MARKED********** */
 
-bool test_game_is_marked(){
+bool test_game_is_marked()
+{
     //Création d'un array avec des S_MARK placé au hasard
     int size_array_valid = 2;
-    square array_valid[2]={
-        S_MARK, S_MARK | F_LIGHTED
-    };
+    square array_valid[2] = {
+        S_MARK, S_MARK | F_LIGHTED};
     //Création d'un array sans S_MARK mais avec tout les autres squares
     int size_array_invalid = 18;
-    square array_invalid[18]={
-        S_BLACK,S_BLACK0,S_BLACK1,S_BLACK2,S_BLACK3,S_BLACK4,
-        S_BLACKU,S_LIGHTBULB,S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED,
-        S_LIGHTBULB | F_LIGHTED | F_ERROR ,S_BLANK,S_BLACK0 | F_ERROR,S_BLACK1 | F_ERROR,S_BLACK2 | F_ERROR,S_BLACK3 | F_ERROR,S_BLACK4 | F_ERROR,S_BLACK | F_ERROR
-    };
+    square array_invalid[18] = {
+        S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4,
+        S_BLACKU, S_LIGHTBULB, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED,
+        S_LIGHTBULB | F_LIGHTED | F_ERROR, S_BLANK, S_BLACK0 | F_ERROR, S_BLACK1 | F_ERROR, S_BLACK2 | F_ERROR, S_BLACK3 | F_ERROR, S_BLACK4 | F_ERROR, S_BLACK | F_ERROR};
     //Création des 2 games
     game game_test = game_new_empty();
-    
-    for (int x = 0; x < DEFAULT_SIZE; x++){
-        for (int y = 0; y < DEFAULT_SIZE;y++){
-            for (int i = 0; i<size_array_invalid;i++){
-                game_set_square(game_test,x,y,array_invalid[i]);
-                ASSERT(!game_is_marked(game_test,x,y));
+
+    for (int x = 0; x < DEFAULT_SIZE; x++)
+    {
+        for (int y = 0; y < DEFAULT_SIZE; y++)
+        {
+            for (int i = 0; i < size_array_invalid; i++)
+            {
+                game_set_square(game_test, x, y, array_invalid[i]);
+                ASSERT(!game_is_marked(game_test, x, y));
             }
-            for (int j = 0; j<size_array_valid ;j++){
-                game_set_square(game_test,x,y,array_valid[j]);
-                ASSERT(game_is_marked(game_test,x,y)); 
+            for (int j = 0; j < size_array_valid; j++)
+            {
+                game_set_square(game_test, x, y, array_valid[j]);
+                ASSERT(game_is_marked(game_test, x, y));
             }
         }
     }
@@ -222,13 +265,12 @@ bool test_game_is_marked(){
     return true;
 }
 
-
 /* ********** USAGE ********** */
 
 void usage(int argc, char *argv[])
 {
-  fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
-  exit(EXIT_FAILURE);
+    fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
+    exit(EXIT_FAILURE);
 }
 
 /* ********** MAIN ROUTINE ********** */
@@ -249,17 +291,17 @@ int main(int argc, char *argv[])
     else if (strcmp("game_equal", argv[1]) == 0)
         ok = test_game_equal();
     else if (strcmp("game_set_square", argv[1]) == 0)
-        ok = test_game_get_set_square(); 
+        ok = test_game_get_set_square();
     else if (strcmp("game_get_square", argv[1]) == 0)
-        ok = test_game_get_set_square(); 
+        ok = test_game_get_set_square();
     else if (strcmp("game_get_state", argv[1]) == 0)
-        ok = test_game_get_state(); 
+        ok = test_game_get_state();
     else if (strcmp("game_is_black", argv[1]) == 0)
-        ok = test_game_is_black(); 
+        ok = test_game_is_black();
     else if (strcmp("game_get_black_number", argv[1]) == 0)
-        ok = test_game_get_black_number(); 
+        ok = test_game_get_black_number();
     else if (strcmp("game_is_marked", argv[1]) == 0)
-        ok = test_game_is_marked(); 
+        ok = test_game_is_marked();
 
     else
     {
