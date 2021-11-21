@@ -7,6 +7,44 @@ Membres du projet :
 * Shams Azarfane shams-dyn.azarfane@etu.u-bordeaux.fr
 * Aymen Othmani aymen.othmani@etu.u-bordeaux.fr
 
+## Functions
+
+Aymen:\
+dev_alloc_game:\
+*game new*\
+*game new empty*\
+*game delete*
+
+dev_game_restart:\
+game restart
+
+dev_game_check_move:\
+check move
+
+Shams:\
+dev_game_get_set:\
+*set square*\
+get square\
+get state\
+get flags\
+get black number
+
+dev_game_is_has:\
+is *\
+has error
+
+Taleiven:\
+dev_game_copy_equal:\
+game copy\
+game equal
+
+dev_play_update_flags:\
+play move\
+update flags
+
+dev_game_is_over:\
+game is over
+
 ## Tests
 
 Number of tests: 24
