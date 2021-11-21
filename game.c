@@ -4,6 +4,8 @@
 
 struct game_s
 {
+    uint height;
+    uint width;
     square **cell;
 };
 
