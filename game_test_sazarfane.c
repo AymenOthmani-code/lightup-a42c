@@ -10,18 +10,22 @@
 
 bool test_game_new()
 {
+    //Création des arrays
     square *array_with_all = create_array_all_values();
     square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
     for (int z = 0; z < SIZE_ALL_VALUES; z++)
     {
         for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++)
         {
+            //Remplis array_element avec tout les square possible
             array_element[i] = array_with_all[z];
         }
         game game_test = game_new(array_element);
+        //test si chaque jeu crée correspond a l'array
         ASSERT(check_game(array_element, game_test));
         game_delete(game_test);
     }
+    // clean-up test array
     free(array_with_all);
     return true;
 }
@@ -40,6 +44,7 @@ bool test_game_new_empty()
             ASSERT(game_get_square(game_test, x, y) == S_BLANK);
         }
     }
+    //Clean up
     game_delete(game_test);
     return true;
 }
@@ -48,20 +53,24 @@ bool test_game_new_empty()
 
 bool test_game_copy()
 {
+    //Création des arrays
     square *array_with_all = create_array_all_values();
     square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
     for (int z = 0; z < SIZE_ALL_VALUES; z++)
     {
         for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++)
         {
+            //Remplir array element
             array_element[i] = array_with_all[z];
         }
         game game_test = game_new(array_element);
         game game_test_copy = game_copy(game_test);
+        //Test game
         ASSERT(game_equal(game_test, game_test_copy));
         game_delete(game_test);
         game_delete(game_test_copy);
     }
+    //Clean up
     free(array_with_all);
     return true;
 }
@@ -70,9 +79,10 @@ bool test_game_copy()
 
 bool test_game_equal()
 {
-    // Je récupère 3 game deux identique et un différent
+    // Create array
     square *array_with_all = create_array_all_values();
     square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+    //Create game_sol with game_default_solution
     game game_sol = game_default_solution();
     for (int z = 0; z < SIZE_ALL_VALUES; z++)
     {
@@ -82,10 +92,12 @@ bool test_game_equal()
         }
         game game_test = game_new(array_element);
         game game_test_copy = game_copy(game_test);
+        //Effectue tout les tests
         ASSERT(check_game(array_element, game_test));
         ASSERT(check_game(array_element, game_test_copy));
         ASSERT(game_equal(game_test, game_test_copy));
         ASSERT(!game_equal(game_test, game_sol));
+        //Clean up
         game_delete(game_test);
         game_delete(game_test_copy);
     }
@@ -196,7 +208,7 @@ bool test_game_get_state()
 
 bool test_game_is_black()
 {
-    //Création de 2 array un avec tout les S_BLACK possibl et l'autre avec les squares not black
+    //Création d'array with all black
     int size_array_valid = 14;
     square array_valid[14] = {
         S_BLACK | F_ERROR,
@@ -216,6 +228,7 @@ bool test_game_is_black()
     };
 
     int size_array_invalid = 7;
+    //Create array with error
     square array_invalid[7] = {
         S_BLANK, S_LIGHTBULB, S_MARK, S_BLANK | F_LIGHTED, S_LIGHTBULB | F_LIGHTED, S_LIGHTBULB | F_LIGHTED | F_ERROR, S_MARK | F_LIGHTED};
 
@@ -227,16 +240,18 @@ bool test_game_is_black()
         {
             for (int i = 0; i < size_array_invalid; i++)
             {
+                //Set square un square invalid et le test
                 game_set_square(game_test, x, y, array_invalid[i]);
                 ASSERT(!game_is_black(game_test, x, y));
             }
             for (int j = 0; j < size_array_valid; j++)
             {
+                //Set square un square valide et le test 
                 game_set_square(game_test, x, y, array_valid[j]);
                 ASSERT(game_is_black(game_test, x, y));
             }
         }
-    }
+    //Clean up
     game_delete(game_test);
     return true;
 }
@@ -263,12 +278,15 @@ bool test_game_get_black_number()
                 game_set_square(game_test, x, y, array_black_flags[z + 1]);
                 ASSERT(game_get_black_number(game_test, x, y) == z);
             }
+            //Met S_BLACK et test
             game_set_square(game_test, x, y, S_BLACK);
             ASSERT(game_get_black_number(game_test, x, y) == 0);
+            //Met S_BLACK | F_ERROR et test
             game_set_square(game_test, x, y, S_BLACK | F_ERROR);
             ASSERT(game_get_black_number(game_test, x, y) == 0);
         }
     }
+    //Clean up
     game_delete(game_test);
     return true;
 }
@@ -296,11 +314,13 @@ bool test_game_is_marked()
         {
             for (int i = 0; i < size_array_invalid; i++)
             {
+                // Met l'état invalide et test
                 game_set_square(game_test, x, y, array_invalid[i]);
                 ASSERT(!game_is_marked(game_test, x, y));
             }
             for (int j = 0; j < size_array_valid; j++)
             {
+                // Met l'état invalide et test
                 game_set_square(game_test, x, y, array_valid[j]);
                 ASSERT(game_is_marked(game_test, x, y));
             }
