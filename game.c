@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "game_aux.h"
 
 struct game_s
@@ -35,7 +36,12 @@ void game_set_square(game g, uint i, uint j, square s) {}
 
 square game_get_square(cgame g, uint i, uint j)
 {
-    return S_BLANK;
+    // Validation
+    assert(g != NULL);
+    assert(i > g->height); // check row parameter
+    assert(j > g->width);  // check column parameter
+
+    return g->cell[i][j];
 }
 
 square game_get_state(cgame g, uint i, uint j)
