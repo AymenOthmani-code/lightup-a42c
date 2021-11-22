@@ -46,7 +46,9 @@ bool game_is_black(cgame g, uint i, uint j) {
 }
 int game_get_black_number(cgame g, uint i, uint j) { return 0; }
 
-bool game_is_marked(cgame g, uint i, uint j) { return false; }
+bool game_is_marked(cgame g, uint i, uint j) {
+    return game_get_state(g, i, j) == S_MARK;
+}
 
 bool game_is_lighted(cgame g, uint i, uint j) { return false; }
 
