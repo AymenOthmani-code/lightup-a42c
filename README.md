@@ -9,41 +9,29 @@ Membres du projet :
 
 ## Functions
 
-Aymen:\
-dev_alloc_game:\
-*game new*\
-*game new empty*\
-*game delete*
-
-dev_game_restart:\
-game restart
-
-dev_game_check_move:\
-check move
-
-Shams:\
-dev_game_get_set:\
-*set square*\
-get square\
-get state\
-get flags\
-get black number
-
-dev_game_is_has:\
-is *\
-has error
-
-Taleiven:\
-dev_game_copy_equal:\
-game copy\
-game equal
-
-dev_play_update_flags:\
-play move\
-update flags
-
-dev_game_is_over:\
-game is over
+|Function|Description|Branch|Responsible|
+|---|---|---|---|
+|game game_new(square *squares) |Creates a new game with default size and initializes it |dev_alloc_game |Aymen |
+|game game_new_empty(void) |Creates a new empty game with defaut size |dev_alloc_game |Aymen |
+|void game_delete(game g) |Deletes the game and frees the allocated memory |dev_alloc_game |Aymen |
+|void game_restart(game g) |Restarts a game |dev_game_restart |Aymen |
+|bool game_check_move(cgame g, uint i, uint j, square s) |Checks if a given move is legal |dev_game_check_move |Aymen |
+|void game_set_square(game g, uint i, uint j, square s) |Sets the value of a given square |dev_game_get_set |Shams |
+|square game_get_square(cgame g, uint i, uint j) |Gets the raw value of a given square |dev_game_get_set |Shams |
+|square game_get_state(cgame g, uint i, uint j) |Gets the state of a given square |dev_game_get_set |Shams |
+|square game_get_flags(cgame g, uint i, uint j) |Gets the flags of a given square |dev_game_get_set |Shams |
+|int game_get_black_number(cgame g, uint i, uint j) |Get the number of lightbulbs expected against a black wall |dev_game_get_set |Shams |
+|bool game_is_blank(cgame g, uint i, uint j) |Test if a given square is blank |dev_game_is_has |Shams |
+|bool game_is_lightbulb(cgame g, uint i, uint j) |Test if a given square is a lightbulb |dev_game_is_has |Shams |
+|bool game_is_black(cgame g, uint i, uint j) |Test if a given square is black (whether or not it is numbered) |dev_game_is_has |Shams |
+|bool game_is_marked(cgame g, uint i, uint j) |Test if a given square is marked (as not-a-light) |dev_game_is_has |Shams |
+|bool game_is_lighted(cgame g, uint i, uint j) |Test if a given square is lighted |dev_game_is_has |Shams |
+|bool game_has_error(cgame g, uint i, uint j) |Test if a given square has an error flag |dev_game_is_has |Shams |
+|game game_copy(cgame g) |Duplicates a game |dev_game_copy_equal |Taleiven |
+|bool game_equal(cgame g1, cgame g2) |Tests if two games are equal (same states and same flags) |dev_game_copy_equal |Taleiven |
+|bool game_is_over(cgame g) |Checks if the game is won |dev_game_is_over |Taleiven |
+|void game_play_move(game g, uint i, uint j, square s) |Plays a move in a given square |dev_play_update_flags |Taleiven |
+|void game_update_flags(game g) |Update all grid flags |dev_play_update_flags |Taleiven |
 
 ## Tests
 
