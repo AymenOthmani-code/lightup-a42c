@@ -41,18 +41,38 @@ square game_get_state(cgame g, uint i, uint j) { return S_BLANK; }
 square game_get_flags(cgame g, uint i, uint j) { return S_BLANK; }
 
 bool game_is_blank(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     return game_get_state(g, i, j) == S_BLANK;
 }
 
 bool game_is_lightbulb(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     return game_get_state(g, i, j) == S_LIGHTBULB;
 }
 
 bool game_is_black(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     return game_get_state(g, i, j) & S_BLACK;
 }
 
 int game_get_black_number(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     if (game_get_state(g, i, j) == S_BLACKU) {
         return -1;
     } else if (game_get_state(g, i, j) == S_BLACK0) {
@@ -71,14 +91,29 @@ int game_get_black_number(cgame g, uint i, uint j) {
 }
 
 bool game_is_marked(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     return game_get_state(g, i, j) == S_MARK;
 }
 
 bool game_is_lighted(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
     return game_get_flags(g, i, j) == F_LIGHTED;
 }
 
 bool game_has_error(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+    
     return game_get_flags(g, i, j) == F_ERROR;
 }
 
