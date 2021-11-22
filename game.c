@@ -24,8 +24,8 @@ void game_set_square(game g, uint i, uint j, square s) {}
 square game_get_square(cgame g, uint i, uint j) {
     // Validation
     assert(g != NULL);
-    assert(i > g->height); // check row parameter
-    assert(j > g->width);  // check column parameter
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
 
     return g->cell[i][j];
 }
