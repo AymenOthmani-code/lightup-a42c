@@ -13,7 +13,21 @@ game game_new(square *squares) { return NULL; }
 
 game game_new_empty(void) { return NULL; }
 
-game game_copy(cgame g) { return NULL; }
+game game_copy(cgame g) {
+    // Validation
+    assert(g != NULL);
+
+    // Create a new game
+    game newGame = game_new_empty();
+
+    // Add values to new game
+    for (uint row = 0; row < g->height; row++)
+        for (uint column = 0; column < g->width; column++)
+            game_set_square(newGame, row, column,
+                            game_get_square(g, row, column));
+
+    return newGame;
+}
 
 bool game_equal(cgame g1, cgame g2) { return false; }
 
