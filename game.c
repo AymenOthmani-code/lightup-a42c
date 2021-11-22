@@ -55,7 +55,7 @@ void game_play_move(game g, uint i, uint j, square s) {}
 void game_update_flags(game g) {}
 
 bool game_is_over(cgame g) {
-    // Validation
+    // Validate parameters
     assert(g != NULL);
 
     // Check each square is valid
@@ -73,11 +73,15 @@ bool game_is_over(cgame g) {
                     return false;
                 break;
             case S_LIGHTBULB:
+                if (flags & F_ERROR || !(flags & F_LIGHTED))
+                    return false;
+                break;
             case S_BLACK0:
             case S_BLACK1:
             case S_BLACK2:
             case S_BLACK3:
             case S_BLACK4:
+            case S_BLACKU:
                 if (flags & F_ERROR)
                     return false;
                 break;
