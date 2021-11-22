@@ -14,7 +14,7 @@ game game_new(square *squares) { return NULL; }
 game game_new_empty(void) { return NULL; }
 
 game game_copy(cgame g) {
-    // Validation
+    // Validate parameters
     assert(g != NULL);
 
     // Create a new game
@@ -30,7 +30,7 @@ game game_copy(cgame g) {
 }
 
 bool game_equal(cgame g1, cgame g2) {
-    // Validation
+    // Validate parameters
     assert(g1 != NULL);
     assert(g2 != NULL);
 
