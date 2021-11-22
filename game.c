@@ -19,7 +19,13 @@ bool game_equal(cgame g1, cgame g2) { return false; }
 
 void game_delete(game g) {}
 
-void game_set_square(game g, uint i, uint j, square s) {}
+void game_set_square(game g, uint i, uint j, square s) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+    g->cell[i][j] = s;
+}
 
 square game_get_square(cgame g, uint i, uint j) {
     // Validation
@@ -40,7 +46,28 @@ bool game_is_lightbulb(cgame g, uint i, uint j) { return false; }
 
 bool game_is_black(cgame g, uint i, uint j) { return false; }
 
-int game_get_black_number(cgame g, uint i, uint j) { return false; }
+int game_get_black_number(cgame g, uint i, uint j) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+
+    if (game_get_state(g, i, j) == S_BLACKU) {
+        return -1;
+    } else if (game_get_state(g, i, j) == S_BLACK0) {
+        return 0;
+    } else if (game_get_state(g, i, j) == S_BLACK1) {
+        return 1;
+    } else if (game_get_state(g, i, j) == S_BLACK2) {
+        return 2;
+    } else if (game_get_state(g, i, j) == S_BLACK3) {
+        return 3;
+    } else if (game_get_state(g, i, j) == S_BLACK4) {
+        return 4;
+    } else {
+        return 0;
+    }
+}
 
 bool game_is_marked(cgame g, uint i, uint j) { return false; }
 
