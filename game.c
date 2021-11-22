@@ -50,8 +50,9 @@ bool game_is_marked(cgame g, uint i, uint j) {
     return game_get_state(g, i, j) == S_MARK;
 }
 
-bool game_is_lighted(cgame g, uint i, uint j) { return false; }
-
+bool game_is_lighted(cgame g, uint i, uint j) {
+    return game_get_flags(g, i, j) == F_LIGHTED;
+}
 bool game_has_error(cgame g, uint i, uint j) { return false; }
 
 bool game_check_move(cgame g, uint i, uint j, square s) { return false; }
