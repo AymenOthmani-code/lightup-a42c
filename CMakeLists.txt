@@ -11,7 +11,7 @@ add_executable(game_test_tkattan game_test_tkattan.c)
 add_executable(game_test_aothmani game_test_aothmani.c)
 add_executable(game_test_sazarfane game_test_sazarfane.c)
 
-add_library(game game.o game_aux.c)
+add_library(game game.c game_aux.c)
 add_library(game_test game_test_commun.c)
 target_link_libraries(game_text game)
 target_link_libraries(game_test_tkattan game game_test)

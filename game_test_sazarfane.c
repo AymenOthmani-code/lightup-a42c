@@ -1,10 +1,10 @@
+#include "game.h"
+#include "game_aux.h"
+#include "game_test_commun.c"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "game.h"
-#include "game_aux.h"
-#include "game_test_commun.c"
 
 /* ********** TEST game_new ********** */
 
@@ -117,91 +117,88 @@ bool test_game_equal()
             game_set_square(testGame, row, column, S_BLANK);
             game_set_square(testGameTwo, row, column, S_BLANK);
             ASSERT(game_equal(testGame, testGameTwo));
-        }
-    }
+         }
+         game_set_square(testGame, row, column, S_BLANK);
+         game_set_square(testGameTwo, row, column, S_BLANK);
+         ASSERT(game_equal(testGame, testGameTwo));
+      }
+   }
 
-    game new_default = game_default_solution();
-    game new_def = game_default();
-    game new_new_def = game_default();
+   game new_default = game_default_solution();
+   game new_def = game_default();
+   game new_new_def = game_default();
 
-    ASSERT(game_equal(game_sol, new_default));
-    ASSERT(game_equal(new_def, new_new_def));
+   ASSERT(game_equal(game_sol, new_default));
+   ASSERT(game_equal(new_def, new_new_def));
 
-    game_delete(new_default);
-    game_delete(new_def);
-    game_delete(new_new_def);
+   game_delete(new_default);
+   game_delete(new_def);
+   game_delete(new_new_def);
 
-    game_delete(testGame);
-    game_delete(testGameTwo);
+   game_delete(testGame);
+   game_delete(testGameTwo);
 
-    // Check if it is not checking flags
-    testGame = game_new_empty();
-    testGameTwo = game_new_empty();
+   // Check if it is not checking flags
+   testGame = game_new_empty();
+   testGameTwo = game_new_empty();
 
-    game_set_square(testGame, 0, 0, S_BLANK);
-    game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
+   game_set_square(testGame, 0, 0, S_BLANK);
+   game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
 
-    ASSERT(!game_equal(testGame, testGameTwo));
+   ASSERT(!game_equal(testGame, testGameTwo));
 
-    game_delete(testGame);
-    game_delete(testGameTwo);
+   game_delete(testGame);
+   game_delete(testGameTwo);
 
-    game_delete(game_sol);
-    free(array_with_all);
-    return true;
+   game_delete(game_sol);
+   free(array_with_all);
+   return true;
 }
 
 /* ********** TEST GAME_SET_SQUARE ********** */
 
-bool test_game_get_set_square()
-{
-    //Création d'un jeu vide
-    game game_test = game_new_empty();
-    //Récupération array_all_values
-    square *array_with_all = create_array_all_values();
-    //Remplir de game_test avec les valeurs de array_all_values
-    for (int y = 0; y < DEFAULT_SIZE; y++)
-    {
-        for (int x = 0; x < DEFAULT_SIZE; x++)
-        {
-            for (int z = 0; z < SIZE_ALL_VALUES; z++)
-            {
-                game_set_square(game_test, x, y, array_with_all[z]);
-                ASSERT(game_get_square(game_test, x, y) == array_with_all[z]);
-            }
-        }
-    }
-    free(array_with_all);
-    game_delete(game_test);
-    return true;
+bool test_game_get_set_square() {
+   // Création d'un jeu vide
+   game game_test = game_new_empty();
+   // Récupération array_all_values
+   square *array_with_all = create_array_all_values();
+   // Remplir de game_test avec les valeurs de array_all_values
+   for (int y = 0; y < DEFAULT_SIZE; y++) {
+      for (int x = 0; x < DEFAULT_SIZE; x++) {
+         for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+            game_set_square(game_test, x, y, array_with_all[z]);
+            ASSERT(game_get_square(game_test, x, y) == array_with_all[z]);
+         }
+      }
+   }
+   free(array_with_all);
+   game_delete(game_test);
+   return true;
 }
 
 /* ********** TEST GAME_GET_STATE ********** */
 
-bool test_game_get_state()
-{
-    //Création d'un jeu vide
-    game game_test = game_new_empty();
-    square *array_with_all = create_array_all_values();
-    square array_all_state[SIZE_ALL_VALUES] = {
-        S_BLANK, S_BLACK, S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACKU,
-        S_LIGHTBULB, S_MARK, S_BLANK, S_LIGHTBULB, S_LIGHTBULB, S_MARK,
-        S_BLACK0, S_BLACK1, S_BLACK2, S_BLACK3, S_BLACK4, S_BLACK};
-    //Remplir de game_test avec les valeurs de array_all_values
-    for (int y = 0; y < DEFAULT_SIZE; y++)
-    {
-        for (int x = 0; x < DEFAULT_SIZE; x++)
-        {
-            for (int z = 0; z < SIZE_ALL_VALUES; z++)
-            {
-                game_set_square(game_test, x, y, array_with_all[z]);
-                ASSERT(game_get_state(game_test, x, y) == array_all_state[z]);
-            }
-        }
-    }
-    game_delete(game_test);
-    free(array_with_all);
-    return true;
+bool test_game_get_state() {
+   // Création d'un jeu vide
+   game game_test = game_new_empty();
+   square *array_with_all = create_array_all_values();
+   square array_all_state[SIZE_ALL_VALUES] = {
+       S_BLANK,  S_BLACK,     S_BLACK0,    S_BLACK1,    S_BLACK2,
+       S_BLACK3, S_BLACK4,    S_BLACKU,    S_LIGHTBULB, S_MARK,
+       S_BLANK,  S_LIGHTBULB, S_LIGHTBULB, S_MARK,      S_BLACK0,
+       S_BLACK1, S_BLACK2,    S_BLACK3,    S_BLACK4,    S_BLACK};
+   // Remplir de game_test avec les valeurs de array_all_values
+   for (int y = 0; y < DEFAULT_SIZE; y++) {
+      for (int x = 0; x < DEFAULT_SIZE; x++) {
+         for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+            game_set_square(game_test, x, y, array_with_all[z]);
+            ASSERT(game_get_state(game_test, x, y) == array_all_state[z]);
+         }
+      }
+   }
+   game_delete(game_test);
+   free(array_with_all);
+   return true;
 }
 
 /* ********** TEST GAME_IS_BLACK ********** */
@@ -332,55 +329,49 @@ bool test_game_is_marked()
 
 /* ********** USAGE ********** */
 
-void usage(int argc, char *argv[])
-{
-    fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
-    exit(EXIT_FAILURE);
+void usage(int argc, char *argv[]) {
+   fprintf(stderr, "Usage: %s <testname> [<...>]\n", argv[0]);
+   exit(EXIT_FAILURE);
 }
 
 /* ********** MAIN ROUTINE ********** */
 
-int main(int argc, char *argv[])
-{
-    if (argc == 1)
-        usage(argc, argv);
-    fprintf(stderr, "=> Start test \"%s\"\n", argv[1]);
-    bool ok = false;
+int main(int argc, char *argv[]) {
+   if (argc == 1)
+      usage(argc, argv);
+   fprintf(stderr, "=> Start test \"%s\"\n", argv[1]);
+   bool ok = false;
 
-    if (strcmp("game_new", argv[1]) == 0)
-        ok = test_game_new();
-    else if (strcmp("game_new_empty", argv[1]) == 0)
-        ok = test_game_new_empty();
-    else if (strcmp("game_copy", argv[1]) == 0)
-        ok = test_game_copy();
-    else if (strcmp("game_equal", argv[1]) == 0)
-        ok = test_game_equal();
-    else if (strcmp("game_set_square", argv[1]) == 0)
-        ok = test_game_get_set_square();
-    else if (strcmp("game_get_square", argv[1]) == 0)
-        ok = test_game_get_set_square();
-    else if (strcmp("game_get_state", argv[1]) == 0)
-        ok = test_game_get_state();
-    else if (strcmp("game_is_black", argv[1]) == 0)
-        ok = test_game_is_black();
-    else if (strcmp("game_get_black_number", argv[1]) == 0)
-        ok = test_game_get_black_number();
-    else if (strcmp("game_is_marked", argv[1]) == 0)
-        ok = test_game_is_marked();
+   if (strcmp("game_new", argv[1]) == 0)
+      ok = test_game_new();
+   else if (strcmp("game_new_empty", argv[1]) == 0)
+      ok = test_game_new_empty();
+   else if (strcmp("game_copy", argv[1]) == 0)
+      ok = test_game_copy();
+   else if (strcmp("game_equal", argv[1]) == 0)
+      ok = test_game_equal();
+   else if (strcmp("game_set_square", argv[1]) == 0)
+      ok = test_game_get_set_square();
+   else if (strcmp("game_get_square", argv[1]) == 0)
+      ok = test_game_get_set_square();
+   else if (strcmp("game_get_state", argv[1]) == 0)
+      ok = test_game_get_state();
+   else if (strcmp("game_is_black", argv[1]) == 0)
+      ok = test_game_is_black();
+   else if (strcmp("game_get_black_number", argv[1]) == 0)
+      ok = test_game_get_black_number();
+   else if (strcmp("game_is_marked", argv[1]) == 0)
+      ok = test_game_is_marked();
 
-    else
-    {
-        fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
-        exit(EXIT_FAILURE);
-    }
-    if (ok)
-    {
-        fprintf(stderr, "Test \"%s\" finished: SUCCESS\n", argv[1]);
-        return EXIT_SUCCESS;
-    }
-    else
-    {
-        fprintf(stderr, "Test \"%s\" finished: FAILURE\n", argv[1]);
-        return EXIT_FAILURE;
-    }
+   else {
+      fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
+      exit(EXIT_FAILURE);
+   }
+   if (ok) {
+      fprintf(stderr, "Test \"%s\" finished: SUCCESS\n", argv[1]);
+      return EXIT_SUCCESS;
+   } else {
+      fprintf(stderr, "Test \"%s\" finished: FAILURE\n", argv[1]);
+      return EXIT_FAILURE;
+   }
 }
