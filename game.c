@@ -19,7 +19,13 @@ bool game_equal(cgame g1, cgame g2) { return false; }
 
 void game_delete(game g) {}
 
-void game_set_square(game g, uint i, uint j, square s) {}
+void game_set_square(game g, uint i, uint j, square s) {
+    // Validation
+    assert(g != NULL);
+    assert(i < g->height); // check row parameter
+    assert(j < g->width);  // check column parameter
+    g->cell[i][j] = s;
+}
 
 square game_get_square(cgame g, uint i, uint j) {
     // Validation
