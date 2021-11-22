@@ -46,7 +46,23 @@ bool game_is_black(cgame g, uint i, uint j) {
     return game_get_state(g, i, j) & S_BLACK;
 }
 
-int game_get_black_number(cgame g, uint i, uint j) { return 0; }
+int game_get_black_number(cgame g, uint i, uint j) {
+    if (game_get_state(g, i, j) == S_BLACKU) {
+        return -1;
+    } else if (game_get_state(g, i, j) == S_BLACK0) {
+        return 0;
+    } else if (game_get_state(g, i, j) == S_BLACK1) {
+        return 1;
+    } else if (game_get_state(g, i, j) == S_BLACK2) {
+        return 2;
+    } else if (game_get_state(g, i, j) == S_BLACK3) {
+        return 3;
+    } else if (game_get_state(g, i, j) == S_BLACK4) {
+        return 4;
+    } else {
+        return 0;
+    }
+}
 
 bool game_is_marked(cgame g, uint i, uint j) {
     return game_get_state(g, i, j) == S_MARK;
@@ -56,9 +72,9 @@ bool game_is_lighted(cgame g, uint i, uint j) {
     return game_get_flags(g, i, j) == F_LIGHTED;
 }
 
-bool game_has_error(cgame g, uint i, uint j) { 
-    return game_get_flags(g,i,j) == F_ERROR;
- }
+bool game_has_error(cgame g, uint i, uint j) {
+    return game_get_flags(g, i, j) == F_ERROR;
+}
 
 bool game_check_move(cgame g, uint i, uint j, square s) { return false; }
 
