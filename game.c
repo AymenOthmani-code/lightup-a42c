@@ -50,7 +50,16 @@ bool game_has_error(cgame g, uint i, uint j) { return false; }
 
 bool game_check_move(cgame g, uint i, uint j, square s) { return false; }
 
-void game_play_move(game g, uint i, uint j, square s) {}
+void game_play_move(game g, uint i, uint j, square s) {
+    //Validate parameters
+    assert(g != NULL);
+    assert(i < g->height);
+    assert(j < g->width);
+    assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
+
+    game_set_square(g, i, j, s);
+    game_update_flags(g);
+}
 
 void game_update_flags(game g) {}
 
