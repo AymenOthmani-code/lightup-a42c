@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 struct game_s {
-   uint height;
-   uint width;
-   square **cell;
+    uint height;
+    uint width;
+    square **cell;
 };
 
 game game_new(square *squares) { return NULL; }
@@ -22,12 +22,12 @@ void game_delete(game g) {}
 void game_set_square(game g, uint i, uint j, square s) {}
 
 square game_get_square(cgame g, uint i, uint j) {
-   // Validation
-   assert(g != NULL);
-   assert(i > g->height); // check row parameter
-   assert(j > g->width);  // check column parameter
+    // Validation
+    assert(g != NULL);
+    assert(i > g->height); // check row parameter
+    assert(j > g->width);  // check column parameter
 
-   return g->cell[i][j];
+    return g->cell[i][j];
 }
 
 square game_get_state(cgame g, uint i, uint j) { return S_BLANK; }
