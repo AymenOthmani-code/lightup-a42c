@@ -29,7 +29,24 @@ game game_copy(cgame g) {
     return newGame;
 }
 
-bool game_equal(cgame g1, cgame g2) { return false; }
+bool game_equal(cgame g1, cgame g2) {
+    // Validation
+    assert(g1 != NULL);
+    assert(g2 != NULL);
+
+    // Check if dimensions are equal
+    if (g1->height != g2->height || g1->width != g2->width)
+        return false;
+
+    // Check if values are equal
+    for (uint row = 0; row < g1->height; row++)
+        for (uint column = 0; column < g2->width; column++)
+            if (game_get_square(g1, row, column) !=
+                game_get_square(g2, row, column))
+                return false;
+
+    return true;
+}
 
 void game_delete(game g) {}
 
