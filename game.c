@@ -41,8 +41,9 @@ bool game_is_lightbulb(cgame g, uint i, uint j) {
     return game_get_state(g, i, j) == S_LIGHTBULB;
 }
 
-bool game_is_black(cgame g, uint i, uint j) { return false; }
-
+bool game_is_black(cgame g, uint i, uint j) {
+    return game_get_state(g, i, j) & S_BLACK;
+}
 int game_get_black_number(cgame g, uint i, uint j) { return 0; }
 
 bool game_is_marked(cgame g, uint i, uint j) { return false; }
