@@ -46,13 +46,10 @@ bool game_is_blank(cgame g, uint i, uint j) {
 bool game_is_lightbulb(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
-    assert(i >= 0);
-    assert(j >= 0);
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
-    return (game_get_square(g, i, j) == S_LIGHTBULB )||
-           (game_get_square(g, i, j) == S_LIGHTBULB | F_LIGHTED | F_ERROR);
+    return game_get_square(g, i, j) == S_LIGHTBULB;
 }
 
 bool game_is_black(cgame g, uint i, uint j) {
@@ -71,10 +68,8 @@ int game_get_black_number(cgame g, uint i, uint j) { return 0; }
 bool game_is_marked(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
-    assert(i >= 0);
-    assert(j >= 0);
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
     return game_get_state(g, i, j) == S_MARK;
 }
@@ -82,23 +77,19 @@ bool game_is_marked(cgame g, uint i, uint j) {
 bool game_is_lighted(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
-    assert(i >= 0);
-    assert(j >= 0);
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
-    return game_get_flags(g, i, j) == F_LIGHTED;
+    return game_get_flags(g, i, j) & F_LIGHTED;
 }
 
 bool game_has_error(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
-    assert(i >= 0);
-    assert(j >= 0);
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
-    return game_get_flags(g, i, j) == F_ERROR;
+    return game_get_flags(g, i, j) & F_ERROR;
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) { return false; }
