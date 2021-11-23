@@ -67,19 +67,23 @@ int game_get_black_number(cgame g, uint i, uint j) {
     assert(i < g->height && i >= 0); // check row parameter
     assert(j < g->width && j >= 0);  // check column parameter
 
-    if (game_get_state(g, i, j) == S_BLACKU) {
+    square state = game_get_state(g, i, j);
+
+    switch (state) {
+    case S_BLACKU:
         return -1;
-    } else if (game_get_state(g, i, j) == S_BLACK0) {
+    case S_BLACK:
         return 0;
-    } else if (game_get_state(g, i, j) == S_BLACK1) {
+    case S_BLACK1:
         return 1;
-    } else if (game_get_state(g, i, j) == S_BLACK2) {
+    case S_BLACK2:
         return 2;
-    } else if (game_get_state(g, i, j) == S_BLACK3) {
+    case S_BLACK3:
         return 3;
-    } else if (game_get_state(g, i, j) == S_BLACK4) {
+    case S_BLACK4:
         return 4;
-    } else {
+    
+    default:
         return 0;
     }
 }
