@@ -24,8 +24,8 @@ void game_set_square(game g, uint i, uint j, square s) {}
 square game_get_square(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
     return g->cell[i][j];
 }
@@ -37,8 +37,8 @@ square game_get_flags(cgame g, uint i, uint j) { return S_BLANK; }
 bool game_is_blank(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
     return game_get_state(g, i, j) == S_BLANK;
 }
@@ -55,10 +55,8 @@ bool game_is_lightbulb(cgame g, uint i, uint j) {
 bool game_is_black(cgame g, uint i, uint j) {
     // Validate parameters
     assert(g != NULL);
-    assert(i < g->height); // check row parameter
-    assert(j < g->width);  // check column parameter
-    assert(i >= 0);
-    assert(j >= 0);
+    assert(i < g->height && i >= 0); // check row parameter
+    assert(j < g->width && j >= 0);  // check column parameter
 
     return game_get_state(g, i, j) & S_BLACK;
 }
