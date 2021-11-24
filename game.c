@@ -49,7 +49,7 @@ bool game_is_lightbulb(cgame g, uint i, uint j) {
     assert(i < g->height && i >= 0); // check row parameter
     assert(j < g->width && j >= 0);  // check column parameter
 
-    return game_get_square(g, i, j) == S_LIGHTBULB;
+    return game_get_state(g, i, j) == S_LIGHTBULB;
 }
 
 bool game_is_black(cgame g, uint i, uint j) {
