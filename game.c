@@ -54,6 +54,44 @@ void game_play_move(game g, uint i, uint j, square s) {}
 
 void game_update_flags(game g) {}
 
-bool game_is_over(cgame g) { return false; }
+bool game_is_over(cgame g) {
+    // Validate parameters
+    assert(g != NULL);
+
+    // Check each square is valid
+    for (uint row = 0; row < g->height; row++) {
+        for (uint column = 0; column < g->width; column++) {
+            // Get the state and the flags
+            square state = game_get_state(g, row, column);
+            square flags = game_get_flags(g, row, column);
+
+            // Check the flags depending on the state
+            switch (state) {
+            case S_BLANK:
+            case S_MARK:
+                if (flags != F_LIGHTED)
+                    return false;
+                break;
+            case S_LIGHTBULB:
+                if (flags & F_ERROR || !(flags & F_LIGHTED))
+                    return false;
+                break;
+            case S_BLACK0:
+            case S_BLACK1:
+            case S_BLACK2:
+            case S_BLACK3:
+            case S_BLACK4:
+            case S_BLACKU:
+                if (flags & F_ERROR)
+                    return false;
+                break;
+            default:
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
 
 void game_restart(game g) {}
