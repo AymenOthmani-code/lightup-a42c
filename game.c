@@ -72,7 +72,7 @@ int game_get_black_number(cgame g, uint i, uint j) {
     switch (state) {
     case S_BLACKU:
         return -1;
-    case S_BLACK:
+    case S_BLACK0:
         return 0;
     case S_BLACK1:
         return 1;
@@ -82,7 +82,6 @@ int game_get_black_number(cgame g, uint i, uint j) {
         return 3;
     case S_BLACK4:
         return 4;
-    
     default:
         return 0;
     }
