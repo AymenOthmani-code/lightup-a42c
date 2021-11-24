@@ -62,7 +62,7 @@ bool game_is_lightbulb(cgame g, uint i, uint j) { return false; }
 bool game_is_black(cgame g, uint i, uint j) { return false; }
 
 int game_get_black_number(cgame g, uint i, uint j) {
-    // Parameters Validations
+    // Validate parameters
     assert(g != NULL);
     assert(i < g->height && i >= 0); // check row parameter
     assert(j < g->width && j >= 0);  // check column parameter
