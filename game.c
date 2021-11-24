@@ -9,7 +9,41 @@ struct game_s {
     square **cell;
 };
 
-game game_new(square *squares) { return NULL; }
+game game_new(square *squares) {
+    // Validate parameters
+    assert(squares != NULL);
+
+    // Allocate memory the new game
+    game newgame = (game)malloc(sizeof(game));
+    if (newgame == NULL) {
+        /*...*/
+    }
+
+    // initialize variables of newgame
+    newgame->height = DEFAULT_SIZE;
+    newgame->width = DEFAULT_SIZE;
+    newgame->cell = (square **)malloc(newgame->height * sizeof(square *));
+    if (newgame->cell == NULL) {
+        /*...*/
+    }
+
+    // Allocte memory to the cells of newgame
+    for (int i = 0; i < newgame->width; i++) {
+        newgame->cell[i] = (square *)calloc(newgame->width, sizeof(square));
+        if (newgame->cell[i] == NULL) {
+            /*...*/
+        }
+    }
+    // Add values to the matrice of newgame
+    for (uint row = 0; row < newgame->height; row++) {
+        for (uint column = 0; column < newgame->width; column++) {
+            int icase = 0;
+            newgame->cell[row][column] = squares[icase];
+            icase = icase + 1;
+        }
+    }
+    return newgame;
+}
 
 game game_new_empty(void) { return NULL; }
 
