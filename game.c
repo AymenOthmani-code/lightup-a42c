@@ -43,7 +43,7 @@ square game_get_state(cgame g, uint i, uint j) {
     assert(i < g->height && i >= 0); // check row parameter
     assert(j < g->width && j >= 0);  // check column parameter
 
-    return g->cell[i][j];
+    return g->cell[i][j] & S_MASK;
 }
 
 square game_get_flags(cgame g, uint i, uint j) {
@@ -52,7 +52,7 @@ square game_get_flags(cgame g, uint i, uint j) {
     assert(i < g->height && i >= 0); // check row parameter
     assert(j < g->width && j >= 0);  // check column parameter
 
-    return g->cell[i][j];
+    return g->cell[i][j] & F_MASK;
 }
 
 bool game_is_blank(cgame g, uint i, uint j) { return false; }
