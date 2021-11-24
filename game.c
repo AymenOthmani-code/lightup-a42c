@@ -61,7 +61,16 @@ game game_copy(cgame g) { return NULL; }
 
 bool game_equal(cgame g1, cgame g2) { return false; }
 
-void game_delete(game g) {}
+void game_delete(game g) {
+    // Validate parameters
+    assert(g != NULL);
+    assert(g->cell != NULL);
+    // Free game and game cells memory
+    free(g->cell);
+    g->cell = NULL;
+    free(g);
+    g = NULL;
+}
 
 void game_set_square(game g, uint i, uint j, square s) {
     // Validate parameters
