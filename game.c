@@ -181,4 +181,20 @@ bool game_is_over(cgame g) {
     return true;
 }
 
-void game_restart(game g) {}
+void game_restart(game g) {
+    // Validate parameters
+    assert(g != NULL);
+
+    for (uint row = 0; row < g->height; row++) {
+        for (uint column = 0; column < g->width; column++) {
+            if (game_is_black(g, row, column)) {
+                if (game_has_error(g, row, column)) {
+                    game_set_square(g, row, column,
+                                    game_get_state(g, row, column));
+                }
+            } else {
+                game_set_square(g, row, column, S_BLANK);
+            }
+        }
+    }
+}
