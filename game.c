@@ -10,50 +10,50 @@ struct game_s {
 };
 
 game game_new(square *squares) {
+
     // Validate parameters
     assert(squares != NULL);
 
     // Allocate memory the new game
-    game newgame = (game)malloc(sizeof(game));
-    if (newgame == NULL) {
-        /*...*/
-    }
+    game newGame = (game)malloc(sizeof(game));
+    assert(newGame != NULL);
 
-    // initialize variables of newgame
-    newgame->height = DEFAULT_SIZE;
-    newgame->width = DEFAULT_SIZE;
-    newgame->cell = (square **)malloc(newgame->height * sizeof(square *));
-    if (newgame->cell == NULL) {
-        /*...*/
-    }
+    // Initialize variables of newgame
+    newGame->height = DEFAULT_SIZE;
+    newGame->width = DEFAULT_SIZE;
+    newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
+    assert(newGame->cell != NULL);
 
     // Allocte memory to the cells of newgame
-    for (int i = 0; i < newgame->width; i++) {
-        newgame->cell[i] = (square *)calloc(newgame->width, sizeof(square));
-        if (newgame->cell[i] == NULL) {
-            /*...*/
-        }
+    for (int i = 0; i < newGame->width; i++) {
+        newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
+        assert(newGame->cell[i] != NULL);
     }
+
     // Add values to the matrice of newgame
-    for (uint row = 0; row < newgame->height; row++) {
-        for (uint column = 0; column < newgame->width; column++) {
-            int icase = 0;
-            newgame->cell[row][column] = squares[icase];
-            icase = icase + 1;
+    int j = 0;
+    for (uint row = 0; row < newGame->height; row++) {
+        for (uint column = 0; column < newGame->width; column++) {
+            newGame->cell[row][column] = squares[j];
+            j = j + 1;
         }
     }
-    return newgame;
+    return newGame;
 }
 
 game game_new_empty(void) {
+
+    // Creates an array of empty squares
     square array_game_empty[DEFAULT_SIZE * DEFAULT_SIZE] = {
-        S_BLANK,  S_BLANK,  S_BLACK1, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
-        S_BLANK,  S_BLANK,  S_BLACK2, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
-        S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLANK,  S_BLACKU, S_BLACK2,
-        S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
-        S_BLACK1, S_BLACKU, S_BLANK,  S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
-        S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLACK2, S_BLANK,  S_BLANK,
-        S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLACKU, S_BLANK,  S_BLANK};
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
+
+    // Create a new game with empty squares
     return game_new(array_game_empty);
 }
 
@@ -62,14 +62,20 @@ game game_copy(cgame g) { return NULL; }
 bool game_equal(cgame g1, cgame g2) { return false; }
 
 void game_delete(game g) {
+
     // Validate parameters
-    assert(g != NULL);
-    assert(g->cell != NULL);
-    // Free game and game cells memory
-    free(g->cell);
-    g->cell = NULL;
-    free(g);
-    g = NULL;
+    if (g == NULL) {
+        return;
+    }
+
+    // free game squares and game memory
+    for (int i = 0; i < g->height; i++) {
+        if (g->cell[i] != NULL) {
+            free(g->cell[i]);
+            g->cell[i] = NULL;
+        }
+        free(g);
+    }
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
