@@ -10,7 +10,6 @@ struct game_s {
 };
 
 game game_new(square *squares) {
-
     // Validate parameters
     assert(squares != NULL);
 
@@ -38,13 +37,13 @@ game game_new(square *squares) {
             j = j + 1;
         }
     }
+
     return newGame;
 }
 
 game game_new_empty(void) {
-
     // Creates an array of empty squares
-    square array_game_empty[DEFAULT_SIZE * DEFAULT_SIZE] = {
+    square arrayGameEmpty[DEFAULT_SIZE * DEFAULT_SIZE] = {
         S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
         S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
         S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
@@ -54,7 +53,7 @@ game game_new_empty(void) {
         S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
 
     // Create a new game with empty squares
-    return game_new(array_game_empty);
+    return game_new(arrayGameEmpty);
 }
 
 game game_copy(cgame g) { return NULL; }
@@ -62,7 +61,6 @@ game game_copy(cgame g) { return NULL; }
 bool game_equal(cgame g1, cgame g2) { return false; }
 
 void game_delete(game g) {
-
     // Validate parameters
     if (g == NULL) {
         return;
@@ -73,9 +71,11 @@ void game_delete(game g) {
         if (g->cell[i] != NULL) {
             free(g->cell[i]);
             g->cell[i] = NULL;
-        }
-        free(g);
+        }    
     }
+    
+    free(g);
+    g=NULL;
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
