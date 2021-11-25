@@ -9,12 +9,14 @@ struct game_s {
     square **cell;
 };
 
+typedef struct game_s gameStruct;
+
 game game_new(square *squares) {
     // Validate parameters
     assert(squares != NULL);
 
     // Allocate memory the new game
-    game newGame = (game)malloc(sizeof(game));
+    game newGame = (game)malloc(sizeof(gameStruct));
     assert(newGame != NULL);
 
     // Initialize variables of newgame
