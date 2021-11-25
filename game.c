@@ -9,15 +9,78 @@ struct game_s {
     square **cell;
 };
 
-game game_new(square *squares) { return NULL; }
+game game_new(square *squares) {
+    // Validate parameters
+    assert(squares != NULL);
 
-game game_new_empty(void) { return NULL; }
+    // Allocate memory the new game
+    game newGame = (game)malloc(sizeof(game));
+    assert(newGame != NULL);
+
+    // Initialize variables of newgame
+    newGame->height = DEFAULT_SIZE;
+    newGame->width = DEFAULT_SIZE;
+    newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
+    assert(newGame->cell != NULL);
+
+    // Allocte memory to the cells of newgame
+    for (int i = 0; i < newGame->width; i++) {
+        newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
+        assert(newGame->cell[i] != NULL);
+    }
+
+    // Add values to the matrice of newgame
+    int j = 0;
+    for (uint row = 0; row < newGame->height; row++) {
+        for (uint column = 0; column < newGame->width; column++) {
+            newGame->cell[row][column] = squares[j];
+            j = j + 1;
+        }
+    }
+
+    return newGame;
+}
+
+game game_new_empty(void) {
+    // Creates an array of empty squares
+    square arrayGameEmpty[DEFAULT_SIZE * DEFAULT_SIZE] = {
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
+
+    // Create a new game with empty squares
+    return game_new(arrayGameEmpty);
+}
 
 game game_copy(cgame g) { return NULL; }
 
 bool game_equal(cgame g1, cgame g2) { return false; }
 
-void game_delete(game g) {}
+void game_delete(game g) {
+    // Validate parameters
+    if (g == NULL) {
+        return;
+    }
+
+    // free game squares and game memory
+    if (g->cell != NULL) {
+        for (int i = 0; i < g->height; i++) {
+            if (g->cell[i] != NULL) {
+                free(g->cell[i]);
+                g->cell[i] = NULL;
+            }
+        }
+        free(g->cell);
+        g->cell = NULL;
+    }
+
+    free(g);
+    g = NULL;
+}
 
 void game_set_square(game g, uint i, uint j, square s) {
     // Validate parameters
