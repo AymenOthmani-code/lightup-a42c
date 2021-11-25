@@ -67,15 +67,19 @@ void game_delete(game g) {
     }
 
     // free game squares and game memory
-    for (int i = 0; i < g->height; i++) {
-        if (g->cell[i] != NULL) {
-            free(g->cell[i]);
-            g->cell[i] = NULL;
-        }    
+    if (g->cell != NULL) {
+        for (int i = 0; i < g->height; i++) {
+            if (g->cell[i] != NULL) {
+                free(g->cell[i]);
+                g->cell[i] = NULL;
+            }
+        }
+        free(g->cell);
+        g->cell = NULL;
     }
-    
+
     free(g);
-    g=NULL;
+    g = NULL;
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
