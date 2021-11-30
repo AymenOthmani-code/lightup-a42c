@@ -235,22 +235,19 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
     // Validate parameters
     assert(g != NULL);
 
-    if (!(i < g->height && i >= 0)) { // check row parameter
+    if (i >= g->height || i < 0) // check row parameter
         return false;
-    }
-    if (!(j < g->width && j >= 0)) { // check column parameter
+    if (j >= g->width || j < 0) // check column parameter
         return false;
-    }
 
-    // Check that the square is a lightbulb ,blank or mark
-    if (!(s == S_LIGHTBULB || s == S_BLANK || s == S_MARK)) {
+    // Check that the square is not black (is a lightbulb ,blank or mark) and it
+    // doesn't have a flag
+    if (s & S_BLACK || s & F_MASK)
         return false;
-    }
 
     // Check the square is not black
-    if (game_is_black(g, i, j)) {
+    if (game_is_black(g, i, j))
         return false;
-    }
 
     return true;
 }
