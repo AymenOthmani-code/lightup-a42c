@@ -9,12 +9,14 @@ struct game_s {
     square **cell;
 };
 
+typedef struct game_s gameStruct;
+
 game game_new(square *squares) {
     // Validate parameters
     assert(squares != NULL);
 
     // Allocate memory the new game
-    game newGame = (game)malloc(sizeof(game));
+    game newGame = (game)malloc(sizeof(gameStruct));
     assert(newGame != NULL);
 
     // Initialize variables of newgame
@@ -229,7 +231,26 @@ bool game_has_error(cgame g, uint i, uint j) {
     return game_get_flags(g, i, j) & F_ERROR;
 }
 
-bool game_check_move(cgame g, uint i, uint j, square s) { return false; }
+bool game_check_move(cgame g, uint i, uint j, square s) {
+    // Validate parameters
+    assert(g != NULL);
+
+    if (i >= g->height || i < 0) // check row parameter
+        return false;
+    if (j >= g->width || j < 0) // check column parameter
+        return false;
+
+    // Check that the square is not black (is a lightbulb ,blank or mark) and it
+    // doesn't have a flag
+    if (s & S_BLACK || s & F_MASK)
+        return false;
+
+    // Check the square is not black
+    if (game_is_black(g, i, j))
+        return false;
+
+    return true;
+}
 
 void game_play_move(game g, uint i, uint j, square s) {
     // Validate parameters
@@ -248,8 +269,8 @@ void update_lightbulb_flags(game g, uint i, uint j) {
     assert(i < g->height && i >= 0);
     assert(j < g->width && i >= 0);
 
-    // Update the flags to the right of the lightbulb until we reach either a
-    // wall or another lightbulb
+    // Update the flags to the right of the lightbulb until we reach either
+    // a wall or another lightbulb
     for (int right = j + 1; right < g->width; right++) {
         // light up blank or marked flags
         if (game_is_blank(g, i, right) || game_is_marked(g, i, right)) {
@@ -271,7 +292,8 @@ void update_lightbulb_flags(game g, uint i, uint j) {
         if (game_is_blank(g, i, left) || game_is_marked(g, i, left)) {
             game_set_square(g, i, left,
                             (game_get_state(g, i, left) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, i, left)) { // lightbulbs cause an error
+        } else if (game_is_lightbulb(g, i,
+                                     left)) { // lightbulbs cause an error
             game_set_square(g, i, j,
                             (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
             break;
@@ -285,7 +307,8 @@ void update_lightbulb_flags(game g, uint i, uint j) {
         // light up blank or marked flags
         if (game_is_blank(g, up, j) || game_is_marked(g, up, j)) {
             game_set_square(g, up, j, (game_get_state(g, up, j) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, up, j)) { // lightbulbs cause an error
+        } else if (game_is_lightbulb(g, up,
+                                     j)) { // lightbulbs cause an error
             game_set_square(g, i, j,
                             (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
             break;
@@ -300,7 +323,8 @@ void update_lightbulb_flags(game g, uint i, uint j) {
         if (game_is_blank(g, down, j) || game_is_marked(g, down, j)) {
             game_set_square(g, down, j,
                             (game_get_state(g, down, j) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, down, j)) { // lightbulbs cause an error
+        } else if (game_is_lightbulb(g, down,
+                                     j)) { // lightbulbs cause an error
             game_set_square(g, i, j,
                             (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
             break;
@@ -391,8 +415,8 @@ void update_wall_flags(game g, uint i, uint j) {
                     }
                 }
 
-            // If the number of lightbulbs that can be placed will be less the
-            // required amount the wall is flagged as in error
+            // If the number of lightbulbs that can be placed will be less
+            // the required amount the wall is flagged as in error
             if (noAjacentLightbulbs + noAvailableValidLightbulbSpots <
                 wallLimit)
                 game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
