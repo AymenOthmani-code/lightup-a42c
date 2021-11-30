@@ -1,516 +1,498 @@
 #include "game.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 struct game_s {
-    uint height;
-    uint width;
-    square **cell;
+  uint height;
+  uint width;
+  square **cell;
 };
 
 typedef struct game_s gameStruct;
 
 game game_new(square *squares) {
-    // Validate parameters
-    assert(squares != NULL);
+  // Validate parameters
+  assert(squares != NULL);
 
-    // Allocate memory the new game
-    game newGame = (game)malloc(sizeof(gameStruct));
-    assert(newGame != NULL);
+  // Allocate memory the new game
+  game newGame = (game)malloc(sizeof(gameStruct));
+  assert(newGame != NULL);
 
-    // Initialize variables of newgame
-    newGame->height = DEFAULT_SIZE;
-    newGame->width = DEFAULT_SIZE;
-    newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
-    assert(newGame->cell != NULL);
+  // Initialize variables of newgame
+  newGame->height = DEFAULT_SIZE;
+  newGame->width = DEFAULT_SIZE;
+  newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
+  assert(newGame->cell != NULL);
 
-    // Allocte memory to the cells of newgame
-    for (int i = 0; i < newGame->width; i++) {
-        newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
-        assert(newGame->cell[i] != NULL);
+  // Allocte memory to the cells of newgame
+  for (int i = 0; i < newGame->width; i++) {
+    newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
+    assert(newGame->cell[i] != NULL);
+  }
+
+  // Add values to the matrice of newgame
+  int j = 0;
+  for (uint row = 0; row < newGame->height; row++) {
+    for (uint column = 0; column < newGame->width; column++) {
+      newGame->cell[row][column] = squares[j];
+      j = j + 1;
     }
+  }
 
-    // Add values to the matrice of newgame
-    int j = 0;
-    for (uint row = 0; row < newGame->height; row++) {
-        for (uint column = 0; column < newGame->width; column++) {
-            newGame->cell[row][column] = squares[j];
-            j = j + 1;
-        }
-    }
-
-    return newGame;
+  return newGame;
 }
 
 game game_new_empty(void) {
-    // Creates an array of empty squares
-    square arrayGameEmpty[DEFAULT_SIZE * DEFAULT_SIZE] = {
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
-        S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
+  // Creates an array of empty squares
+  square arrayGameEmpty[DEFAULT_SIZE * DEFAULT_SIZE] = {
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK,
+      S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK, S_BLANK};
 
-    // Create a new game with empty squares
-    return game_new(arrayGameEmpty);
+  // Create a new game with empty squares
+  return game_new(arrayGameEmpty);
 }
 
 game game_copy(cgame g) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    // Create a new game
-    game newGame = game_new_empty();
+  // Create a new game
+  game newGame = game_new_empty();
 
-    // Add values to new game
-    for (uint row = 0; row < g->height; row++)
-        for (uint column = 0; column < g->width; column++)
-            game_set_square(newGame, row, column,
-                            game_get_square(g, row, column));
+  // Add values to new game
+  for (uint row = 0; row < g->height; row++)
+    for (uint column = 0; column < g->width; column++)
+      game_set_square(newGame, row, column, game_get_square(g, row, column));
 
-    return newGame;
+  return newGame;
 }
 
 bool game_equal(cgame g1, cgame g2) {
-    // Validate parameters
-    assert(g1 != NULL);
-    assert(g2 != NULL);
+  // Validate parameters
+  assert(g1 != NULL);
+  assert(g2 != NULL);
 
-    // Check if dimensions are equal
-    if (g1->height != g2->height || g1->width != g2->width)
+  // Check if dimensions are equal
+  if (g1->height != g2->height || g1->width != g2->width) return false;
+
+  // Check if values are equal
+  for (uint row = 0; row < g1->height; row++)
+    for (uint column = 0; column < g2->width; column++)
+      if (game_get_square(g1, row, column) != game_get_square(g2, row, column))
         return false;
 
-    // Check if values are equal
-    for (uint row = 0; row < g1->height; row++)
-        for (uint column = 0; column < g2->width; column++)
-            if (game_get_square(g1, row, column) !=
-                game_get_square(g2, row, column))
-                return false;
-
-    return true;
+  return true;
 }
 
 void game_delete(game g) {
-    // Validate parameters
-    if (g == NULL) {
-        return;
-    }
+  // Validate parameters
+  if (g == NULL) {
+    return;
+  }
 
-    // free game squares and game memory
-    if (g->cell != NULL) {
-        for (int i = 0; i < g->height; i++) {
-            if (g->cell[i] != NULL) {
-                free(g->cell[i]);
-                g->cell[i] = NULL;
-            }
-        }
-        free(g->cell);
-        g->cell = NULL;
+  // free game squares and game memory
+  if (g->cell != NULL) {
+    for (int i = 0; i < g->height; i++) {
+      if (g->cell[i] != NULL) {
+        free(g->cell[i]);
+        g->cell[i] = NULL;
+      }
     }
+    free(g->cell);
+    g->cell = NULL;
+  }
 
-    free(g);
-    g = NULL;
+  free(g);
+  g = NULL;
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    g->cell[i][j] = s;
+  g->cell[i][j] = s;
 }
 
 square game_get_square(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return g->cell[i][j];
+  return g->cell[i][j];
 }
 
 square game_get_state(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return g->cell[i][j] & S_MASK;
+  return g->cell[i][j] & S_MASK;
 }
 
 square game_get_flags(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return g->cell[i][j] & F_MASK;
+  return g->cell[i][j] & F_MASK;
 }
 
 bool game_is_blank(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_state(g, i, j) == S_BLANK;
+  return game_get_state(g, i, j) == S_BLANK;
 }
 
 bool game_is_lightbulb(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_state(g, i, j) == S_LIGHTBULB;
+  return game_get_state(g, i, j) == S_LIGHTBULB;
 }
 
 int game_get_black_number(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    square state = game_get_state(g, i, j);
+  square state = game_get_state(g, i, j);
 
-    switch (state) {
+  switch (state) {
     case S_BLACKU:
-        return -1;
+      return -1;
     case S_BLACK0:
-        return 0;
+      return 0;
     case S_BLACK1:
-        return 1;
+      return 1;
     case S_BLACK2:
-        return 2;
+      return 2;
     case S_BLACK3:
-        return 3;
+      return 3;
     case S_BLACK4:
-        return 4;
+      return 4;
     default:
-        return 0;
-    }
+      return 0;
+  }
 }
 
 bool game_is_black(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_state(g, i, j) & S_BLACK;
+  return game_get_state(g, i, j) & S_BLACK;
 }
 
 bool game_is_marked(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_state(g, i, j) == S_MARK;
+  return game_get_state(g, i, j) == S_MARK;
 }
 
 bool game_is_lighted(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_flags(g, i, j) & F_LIGHTED;
+  return game_get_flags(g, i, j) & F_LIGHTED;
 }
 
 bool game_has_error(cgame g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0); // check row parameter
-    assert(j < g->width && j >= 0);  // check column parameter
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);  // check row parameter
+  assert(j < g->width && j >= 0);   // check column parameter
 
-    return game_get_flags(g, i, j) & F_ERROR;
+  return game_get_flags(g, i, j) & F_ERROR;
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    if (i >= g->height || i < 0) // check row parameter
-        return false;
-    if (j >= g->width || j < 0) // check column parameter
-        return false;
+  if (i >= g->height || i < 0)  // check row parameter
+    return false;
+  if (j >= g->width || j < 0)  // check column parameter
+    return false;
 
-    // Check that the square is not black (is a lightbulb ,blank or mark) and it
-    // doesn't have a flag
-    if (s & S_BLACK || s & F_MASK)
-        return false;
+  // Check that the square is not black (is a lightbulb ,blank or mark) and it
+  // doesn't have a flag
+  if (s & S_BLACK || s & F_MASK) return false;
 
-    // Check the square is not black
-    if (game_is_black(g, i, j))
-        return false;
+  // Check the square is not black
+  if (game_is_black(g, i, j)) return false;
 
-    return true;
+  return true;
 }
 
 void game_play_move(game g, uint i, uint j, square s) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0);
-    assert(j < g->width && i >= 0);
-    assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);
+  assert(j < g->width && i >= 0);
+  assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
 
-    game_set_square(g, i, j, s);
-    game_update_flags(g);
+  game_set_square(g, i, j, s);
+  game_update_flags(g);
 }
 
 void update_lightbulb_flags(game g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0);
-    assert(j < g->width && i >= 0);
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);
+  assert(j < g->width && i >= 0);
 
-    // Update the flags to the right of the lightbulb until we reach either
-    // a wall or another lightbulb
-    for (int right = j + 1; right < g->width; right++) {
-        // light up blank or marked flags
-        if (game_is_blank(g, i, right) || game_is_marked(g, i, right)) {
-            game_set_square(g, i, right,
-                            (game_get_state(g, i, right) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, i,
-                                     right)) { // lightbulbs cause an error
-            game_set_square(g, i, j,
-                            (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-            break;
-        } else // walls stop the light
-            break;
-    }
+  // Update the flags to the right of the lightbulb until we reach either
+  // a wall or another lightbulb
+  for (int right = j + 1; right < g->width; right++) {
+    // light up blank or marked flags
+    if (game_is_blank(g, i, right) || game_is_marked(g, i, right)) {
+      game_set_square(g, i, right, (game_get_state(g, i, right) | F_LIGHTED));
+    } else if (game_is_lightbulb(g, i,
+                                 right)) {  // lightbulbs cause an error
+      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+      break;
+    } else  // walls stop the light
+      break;
+  }
 
-    // Update the flags to the left of the lightbulb until we reach either a
-    // wall or another lightbulb
-    for (int left = j - 1; left >= 0; left--) {
-        // light up blank or marked flags
-        if (game_is_blank(g, i, left) || game_is_marked(g, i, left)) {
-            game_set_square(g, i, left,
-                            (game_get_state(g, i, left) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, i,
-                                     left)) { // lightbulbs cause an error
-            game_set_square(g, i, j,
-                            (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-            break;
-        } else // walls stop the light
-            break;
-    }
+  // Update the flags to the left of the lightbulb until we reach either a
+  // wall or another lightbulb
+  for (int left = j - 1; left >= 0; left--) {
+    // light up blank or marked flags
+    if (game_is_blank(g, i, left) || game_is_marked(g, i, left)) {
+      game_set_square(g, i, left, (game_get_state(g, i, left) | F_LIGHTED));
+    } else if (game_is_lightbulb(g, i,
+                                 left)) {  // lightbulbs cause an error
+      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+      break;
+    } else  // walls stop the light
+      break;
+  }
 
-    // Update the flags above the lightbulb until we reach either a
-    // wall or another lightbulb
-    for (int up = i - 1; up >= 0; up--) {
-        // light up blank or marked flags
-        if (game_is_blank(g, up, j) || game_is_marked(g, up, j)) {
-            game_set_square(g, up, j, (game_get_state(g, up, j) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, up,
-                                     j)) { // lightbulbs cause an error
-            game_set_square(g, i, j,
-                            (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-            break;
-        } else // walls stop the light
-            break;
-    }
+  // Update the flags above the lightbulb until we reach either a
+  // wall or another lightbulb
+  for (int up = i - 1; up >= 0; up--) {
+    // light up blank or marked flags
+    if (game_is_blank(g, up, j) || game_is_marked(g, up, j)) {
+      game_set_square(g, up, j, (game_get_state(g, up, j) | F_LIGHTED));
+    } else if (game_is_lightbulb(g, up,
+                                 j)) {  // lightbulbs cause an error
+      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+      break;
+    } else  // walls stop the light
+      break;
+  }
 
-    // Update the flags below the lightbulb until we reach either a
-    // wall or another lightbulb
-    for (int down = i + 1; down < g->height; down++) {
-        // light up blank or marked flags
-        if (game_is_blank(g, down, j) || game_is_marked(g, down, j)) {
-            game_set_square(g, down, j,
-                            (game_get_state(g, down, j) | F_LIGHTED));
-        } else if (game_is_lightbulb(g, down,
-                                     j)) { // lightbulbs cause an error
-            game_set_square(g, i, j,
-                            (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-            break;
-        } else // walls stop the light
-            break;
-    }
+  // Update the flags below the lightbulb until we reach either a
+  // wall or another lightbulb
+  for (int down = i + 1; down < g->height; down++) {
+    // light up blank or marked flags
+    if (game_is_blank(g, down, j) || game_is_marked(g, down, j)) {
+      game_set_square(g, down, j, (game_get_state(g, down, j) | F_LIGHTED));
+    } else if (game_is_lightbulb(g, down,
+                                 j)) {  // lightbulbs cause an error
+      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+      break;
+    } else  // walls stop the light
+      break;
+  }
 }
 
 void update_wall_flags(game g, uint i, uint j) {
-    // Validate parameters
-    assert(g != NULL);
-    assert(i < g->height && i >= 0);
-    assert(j < g->width && i >= 0);
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);
+  assert(j < g->width && i >= 0);
 
-    // Get the maximum number of lightbulbs the wall can accept
-    int wallLimit = game_get_black_number(g, i, j);
-    // If there is a limit verify it
-    if (wallLimit != -1) {
-        // Find the number of ajacent lightbulbs
-        int noAjacentLightbulbs = 0;
-        if (i + 1 < g->height && game_is_lightbulb(g, i + 1, j))
-            noAjacentLightbulbs++;
-        if (j + 1 < g->width && game_is_lightbulb(g, i, j + 1))
-            noAjacentLightbulbs++;
-        if (j != 0 && game_is_lightbulb(g, i, j - 1))
-            noAjacentLightbulbs++;
-        if (i != 0 && game_is_lightbulb(g, i - 1, j))
-            noAjacentLightbulbs++;
+  // Get the maximum number of lightbulbs the wall can accept
+  int wallLimit = game_get_black_number(g, i, j);
+  // If there is a limit verify it
+  if (wallLimit != -1) {
+    // Find the number of ajacent lightbulbs
+    int noAjacentLightbulbs = 0;
+    if (i + 1 < g->height && game_is_lightbulb(g, i + 1, j))
+      noAjacentLightbulbs++;
+    if (j + 1 < g->width && game_is_lightbulb(g, i, j + 1))
+      noAjacentLightbulbs++;
+    if (j != 0 && game_is_lightbulb(g, i, j - 1)) noAjacentLightbulbs++;
+    if (i != 0 && game_is_lightbulb(g, i - 1, j)) noAjacentLightbulbs++;
 
-        if (noAjacentLightbulbs > wallLimit)
-            game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
-        else {
-            // If the ajacent lightbulbs havent caused an error
-            // check if other (non-ajacent) lightbulbs cause an error
-            int noAvailableValidLightbulbSpots = 4;
+    if (noAjacentLightbulbs > wallLimit)
+      game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
+    else {
+      // If the ajacent lightbulbs havent caused an error
+      // check if other (non-ajacent) lightbulbs cause an error
+      int noAvailableValidLightbulbSpots = 4;
 
-            // Check if the square to the right of the wall can accept a
-            // lightbulb, it cant if it is on an edge or black
-            if (j + 1 >= g->width || game_is_black(g, i, j + 1))
-                noAvailableValidLightbulbSpots--;
-            else // check if a lightbulb is on the row to the right
-                for (uint right = j + 1; right < g->width; right++) {
-                    if (game_is_black(g, i, right)) {
-                        break;
-                    } else if (game_is_lightbulb(g, i, right)) {
-                        noAvailableValidLightbulbSpots--;
-                        break;
-                    }
-                }
-
-            // Check if the square to the left of the wall can accept a
-            // lightbulb,
-            if (j == 0 || game_is_black(g, i, j - 1))
-                noAvailableValidLightbulbSpots--;
-            else // check if a lightbulb is on the row to the left
-                for (int left = j - 1; left >= 0; left--) {
-                    if (game_is_black(g, i, left)) {
-                        break;
-                    } else if (game_is_lightbulb(g, i, left)) {
-                        noAvailableValidLightbulbSpots--;
-                        break;
-                    }
-                }
-
-            // Check if the square above the wall can accept a lightbulb,
-            if (i == 0 || game_is_black(g, i - 1, j))
-                noAvailableValidLightbulbSpots--;
-            else // check if a lightbulb is on the column above
-                for (int up = i - 1; up >= 0; up--) {
-                    if (game_is_black(g, up, j)) {
-                        break;
-                    } else if (game_is_lightbulb(g, up, j)) {
-                        noAvailableValidLightbulbSpots--;
-                        break;
-                    }
-                }
-
-            // Check if the square below the wall can accept a lightbulb,
-            if (i + 1 >= g->height || game_is_black(g, i + 1, j))
-                noAvailableValidLightbulbSpots--;
-            else // check if a lightbulb is on the column below
-                for (uint down = i + 1; down < g->height; down++) {
-                    if (game_is_black(g, down, j)) {
-                        break;
-                    } else if (game_is_lightbulb(g, down, j)) {
-                        noAvailableValidLightbulbSpots--;
-                        break;
-                    }
-                }
-
-            // If the number of lightbulbs that can be placed will be less
-            // the required amount the wall is flagged as in error
-            if (noAjacentLightbulbs + noAvailableValidLightbulbSpots <
-                wallLimit)
-                game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
+      // Check if the square to the right of the wall can accept a
+      // lightbulb, it cant if it is on an edge or black
+      if (j + 1 >= g->width || game_is_black(g, i, j + 1))
+        noAvailableValidLightbulbSpots--;
+      else  // check if a lightbulb is on the row to the right
+        for (uint right = j + 1; right < g->width; right++) {
+          if (game_is_black(g, i, right)) {
+            break;
+          } else if (game_is_lightbulb(g, i, right)) {
+            noAvailableValidLightbulbSpots--;
+            break;
+          }
         }
+
+      // Check if the square to the left of the wall can accept a
+      // lightbulb,
+      if (j == 0 || game_is_black(g, i, j - 1))
+        noAvailableValidLightbulbSpots--;
+      else  // check if a lightbulb is on the row to the left
+        for (int left = j - 1; left >= 0; left--) {
+          if (game_is_black(g, i, left)) {
+            break;
+          } else if (game_is_lightbulb(g, i, left)) {
+            noAvailableValidLightbulbSpots--;
+            break;
+          }
+        }
+
+      // Check if the square above the wall can accept a lightbulb,
+      if (i == 0 || game_is_black(g, i - 1, j))
+        noAvailableValidLightbulbSpots--;
+      else  // check if a lightbulb is on the column above
+        for (int up = i - 1; up >= 0; up--) {
+          if (game_is_black(g, up, j)) {
+            break;
+          } else if (game_is_lightbulb(g, up, j)) {
+            noAvailableValidLightbulbSpots--;
+            break;
+          }
+        }
+
+      // Check if the square below the wall can accept a lightbulb,
+      if (i + 1 >= g->height || game_is_black(g, i + 1, j))
+        noAvailableValidLightbulbSpots--;
+      else  // check if a lightbulb is on the column below
+        for (uint down = i + 1; down < g->height; down++) {
+          if (game_is_black(g, down, j)) {
+            break;
+          } else if (game_is_lightbulb(g, down, j)) {
+            noAvailableValidLightbulbSpots--;
+            break;
+          }
+        }
+
+      // If the number of lightbulbs that can be placed will be less
+      // the required amount the wall is flagged as in error
+      if (noAjacentLightbulbs + noAvailableValidLightbulbSpots < wallLimit)
+        game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
     }
+  }
 }
 
 void remove_all_flags(game g) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    // Set square value of each square to state value
-    for (uint row = 0; row < g->height; row++) {
-        for (uint column = 0; column < g->width; column++) {
-            game_set_square(g, row, column, game_get_state(g, row, column));
-        }
+  // Set square value of each square to state value
+  for (uint row = 0; row < g->height; row++) {
+    for (uint column = 0; column < g->width; column++) {
+      game_set_square(g, row, column, game_get_state(g, row, column));
     }
+  }
 }
 
 void game_update_flags(game g) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    remove_all_flags(g);
+  remove_all_flags(g);
 
-    // Check each square is valid
-    for (uint row = 0; row < g->height; row++) {
-        for (uint column = 0; column < g->width; column++) {
-            if (game_is_lightbulb(g, row, column)) {
-                // Add light to lightbulb
-                game_set_square(g, row, column,
-                                (game_get_state(g, row, column) | F_LIGHTED));
-                update_lightbulb_flags(g, row, column);
-            } else if (game_is_black(g, row, column)) {
-                update_wall_flags(g, row, column);
-            }
-        }
+  // Check each square is valid
+  for (uint row = 0; row < g->height; row++) {
+    for (uint column = 0; column < g->width; column++) {
+      if (game_is_lightbulb(g, row, column)) {
+        // Add light to lightbulb
+        game_set_square(g, row, column,
+                        (game_get_state(g, row, column) | F_LIGHTED));
+        update_lightbulb_flags(g, row, column);
+      } else if (game_is_black(g, row, column)) {
+        update_wall_flags(g, row, column);
+      }
     }
+  }
 }
 
 bool game_is_over(cgame g) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    // Check each square is valid
-    for (uint row = 0; row < g->height; row++) {
-        for (uint column = 0; column < g->width; column++) {
-            // Get the state and the flags
-            square state = game_get_state(g, row, column);
-            square flags = game_get_flags(g, row, column);
+  // Check each square is valid
+  for (uint row = 0; row < g->height; row++) {
+    for (uint column = 0; column < g->width; column++) {
+      // Get the state and the flags
+      square state = game_get_state(g, row, column);
+      square flags = game_get_flags(g, row, column);
 
-            // Check the flags depending on the state
-            switch (state) {
-            case S_BLANK:
-            case S_MARK:
-                if (flags != F_LIGHTED)
-                    return false;
-                break;
-            case S_LIGHTBULB:
-                if (flags & F_ERROR || !(flags & F_LIGHTED))
-                    return false;
-                break;
-            case S_BLACK0:
-            case S_BLACK1:
-            case S_BLACK2:
-            case S_BLACK3:
-            case S_BLACK4:
-            case S_BLACKU:
-                if (flags & F_ERROR)
-                    return false;
-                break;
-            default:
-                return false;
-            }
-        }
+      // Check the flags depending on the state
+      switch (state) {
+        case S_BLANK:
+        case S_MARK:
+          if (flags != F_LIGHTED) return false;
+          break;
+        case S_LIGHTBULB:
+          if (flags & F_ERROR || !(flags & F_LIGHTED)) return false;
+          break;
+        case S_BLACK0:
+        case S_BLACK1:
+        case S_BLACK2:
+        case S_BLACK3:
+        case S_BLACK4:
+        case S_BLACKU:
+          if (flags & F_ERROR) return false;
+          break;
+        default:
+          return false;
+      }
     }
+  }
 
-    return true;
+  return true;
 }
 
 void game_restart(game g) {
-    // Validate parameters
-    assert(g != NULL);
+  // Validate parameters
+  assert(g != NULL);
 
-    for (uint row = 0; row < g->height; row++) {
-        for (uint column = 0; column < g->width; column++) {
-            if (game_is_black(g, row, column)) {
-                if (game_has_error(g, row, column)) {
-                    game_set_square(g, row, column,
-                                    game_get_state(g, row, column));
-                }
-            } else {
-                game_set_square(g, row, column, S_BLANK);
-            }
+  for (uint row = 0; row < g->height; row++) {
+    for (uint column = 0; column < g->width; column++) {
+      if (game_is_black(g, row, column)) {
+        if (game_has_error(g, row, column)) {
+          game_set_square(g, row, column, game_get_state(g, row, column));
         }
+      } else {
+        game_set_square(g, row, column, S_BLANK);
+      }
     }
+  }
 }
