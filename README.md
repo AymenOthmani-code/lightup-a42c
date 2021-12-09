@@ -37,6 +37,19 @@ Membres du projet :
 
 Number of tests: 24
 
+### game_ext.h
+
+|Function|Description|Branch|Responsible|
+|---|---|---|---|
+|game game_new_ext(uint nb_rows, uint nb_cols, square* squares, bool wrapping) |Creates a new game with extended options and initializes it | dev_alloc_game |  |
+|game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) |Creates a new empty game with extended options | dev_alloc_game |  |
+|uint game_nb_rows(cgame g) |Gets the number of rows (or height) | dev_row_cols |  |
+|uint game_nb_cols(cgame g) |Gets the number of columns (or width) | dev_row_cols |  |
+|bool game_is_wrapping(cgame g) |Checks if the game has the wrapping option | dev_is_wrapping |  |
+|void game_undo(game g) |Undoes the last move | dev_undo_redo |  |
+|void game_redo(game g) |Redoes the last move | dev_undo_redo |  |
+
+
 ### game_aux.h
 
 |Function|Description|Difficulty|Responsible|
