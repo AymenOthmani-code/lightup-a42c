@@ -19,6 +19,64 @@
     }                                                                         \
   } while (0)
 
+/* ************************************************************************** */
+
+// default game with some moves that cause an error
+game game_default_other() {
+  square squares[] = {
+      (S_LIGHTBULB | F_LIGHTED | F_ERROR),
+      F_LIGHTED,
+      S_BLACK1,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK, /* row 0 */
+      F_LIGHTED,
+      S_BLANK,
+      S_BLACK2,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK, /* row 1 */
+      F_LIGHTED,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLACKU,
+      (S_BLACK2 | F_ERROR), /* row 2 */
+      (S_LIGHTBULB | F_LIGHTED | F_ERROR),
+      F_LIGHTED,
+      F_LIGHTED,
+      F_LIGHTED,
+      F_LIGHTED,
+      F_LIGHTED,
+      F_LIGHTED, /* row 3 */
+      S_BLACK1,
+      S_BLACKU,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK, /* row 4 */
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLACK2,
+      S_BLANK,
+      S_BLANK, /* row 5 */
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLANK,
+      S_BLACKU,
+      S_BLANK,
+      S_MARK, /* row 6 */
+  };
+  return game_new(squares);
+}
+
 /* ********** TEST COMMUN ********** */
 
 bool check_game(square *liste, game game_test) {

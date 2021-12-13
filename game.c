@@ -259,6 +259,21 @@ void game_play_move(game g, uint i, uint j, square s) {
   game_update_flags(g);
 }
 
+// Applies the effect of the lightbulb on the current square
+// Return if light should stop or not
+bool apply_effect_of_lightbulb_on_square(game g, uint i, uint j) {
+  // light up blank or marked flags
+  if (game_is_blank(g, i, j) || game_is_marked(g, i, j)) {
+    game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED));
+    return false;
+  } else if (game_is_lightbulb(g, i,
+                               j)) {  // lightbulbs cause an error
+    game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+    return true;
+  } else  // walls stop the light
+    return true;
+}
+
 void update_lightbulb_flags(game g, uint i, uint j) {
   // Validate parameters
   assert(g != NULL);
@@ -268,57 +283,22 @@ void update_lightbulb_flags(game g, uint i, uint j) {
   // Update the flags to the right of the lightbulb until we reach either
   // a wall or another lightbulb
   for (int right = j + 1; right < g->width; right++) {
-    // light up blank or marked flags
-    if (game_is_blank(g, i, right) || game_is_marked(g, i, right)) {
-      game_set_square(g, i, right, (game_get_state(g, i, right) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, i,
-                                 right)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, i, right)) break;
   }
 
-  // Update the flags to the left of the lightbulb until we reach either a
-  // wall or another lightbulb
+  // Update the flags to the left of the lightbulb
   for (int left = j - 1; left >= 0; left--) {
-    // light up blank or marked flags
-    if (game_is_blank(g, i, left) || game_is_marked(g, i, left)) {
-      game_set_square(g, i, left, (game_get_state(g, i, left) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, i,
-                                 left)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, i, left)) break;
   }
 
-  // Update the flags above the lightbulb until we reach either a
-  // wall or another lightbulb
+  // Update the flags above the lightbulb
   for (int up = i - 1; up >= 0; up--) {
-    // light up blank or marked flags
-    if (game_is_blank(g, up, j) || game_is_marked(g, up, j)) {
-      game_set_square(g, up, j, (game_get_state(g, up, j) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, up,
-                                 j)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, up, j)) break;
   }
 
-  // Update the flags below the lightbulb until we reach either a
-  // wall or another lightbulb
+  // Update the flags below the lightbulb
   for (int down = i + 1; down < g->height; down++) {
-    // light up blank or marked flags
-    if (game_is_blank(g, down, j) || game_is_marked(g, down, j)) {
-      game_set_square(g, down, j, (game_get_state(g, down, j) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, down,
-                                 j)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, down, j)) break;
   }
 }
 
@@ -434,7 +414,7 @@ void game_update_flags(game g) {
       if (game_is_lightbulb(g, row, column)) {
         // Add light to lightbulb
         game_set_square(g, row, column,
-                        (game_get_state(g, row, column) | F_LIGHTED));
+                        (game_get_square(g, row, column) | F_LIGHTED));
         update_lightbulb_flags(g, row, column);
       } else if (game_is_black(g, row, column)) {
         update_wall_flags(g, row, column);
