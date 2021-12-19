@@ -294,6 +294,21 @@ void game_play_move(game g, uint i, uint j, square s) {
   game_update_flags(g);
 }
 
+// Applies the effect of the lightbulb on the current square
+// Return if light should stop or not
+bool apply_effect_of_lightbulb_on_square(game g, uint i, uint j) {
+  // light up blank or marked flags
+  if (game_is_blank(g, i, j) || game_is_marked(g, i, j)) {
+    game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED));
+    return false;
+  } else if (game_is_lightbulb(g, i,
+                               j)) {  // lightbulbs cause an error
+    game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+    return true;
+  } else  // walls stop the light
+    return true;
+}
+
 void update_lightbulb_flags(game g, uint i, uint j) {
   // Validate parameters
   assert(g != NULL);
@@ -303,58 +318,65 @@ void update_lightbulb_flags(game g, uint i, uint j) {
   // Update the flags to the right of the lightbulb until we reach either
   // a wall or another lightbulb
   for (int right = j + 1; right < g->width; right++) {
-    // light up blank or marked flags
-    if (game_is_blank(g, i, right) || game_is_marked(g, i, right)) {
-      game_set_square(g, i, right, (game_get_state(g, i, right) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, i,
-                                 right)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, i, right)) break;
   }
 
-  // Update the flags to the left of the lightbulb until we reach either a
-  // wall or another lightbulb
+  // Update the flags to the left of the lightbulb
   for (int left = j - 1; left >= 0; left--) {
-    // light up blank or marked flags
-    if (game_is_blank(g, i, left) || game_is_marked(g, i, left)) {
-      game_set_square(g, i, left, (game_get_state(g, i, left) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, i,
-                                 left)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
-      break;
+    if (apply_effect_of_lightbulb_on_square(g, i, left)) break;
   }
 
-  // Update the flags above the lightbulb until we reach either a
-  // wall or another lightbulb
+  // Update the flags above the lightbulb
   for (int up = i - 1; up >= 0; up--) {
-    // light up blank or marked flags
-    if (game_is_blank(g, up, j) || game_is_marked(g, up, j)) {
-      game_set_square(g, up, j, (game_get_state(g, up, j) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, up,
-                                 j)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
+    if (apply_effect_of_lightbulb_on_square(g, up, j)) break;
+  }
+
+  // Update the flags below the lightbulb
+  for (int down = i + 1; down < g->height; down++) {
+    if (apply_effect_of_lightbulb_on_square(g, down, j)) break;
+  }
+}
+
+bool has_intersecting_lightbulb(game g, uint i, uint j) {
+  // Validate parameters
+  assert(g != NULL);
+  assert(i < g->height && i >= 0);
+  assert(j < g->width && i >= 0);
+
+  // Iterate the squares to the right of the lightbulb until we reach either
+  // a wall or another lightbulb
+  for (int right = j + 1; right < g->width; right++) {
+    if (game_is_lightbulb(g, i, right))
+      return true;
+    else if (game_is_black(g, i, right))
       break;
   }
 
-  // Update the flags below the lightbulb until we reach either a
-  // wall or another lightbulb
-  for (int down = i + 1; down < g->height; down++) {
-    // light up blank or marked flags
-    if (game_is_blank(g, down, j) || game_is_marked(g, down, j)) {
-      game_set_square(g, down, j, (game_get_state(g, down, j) | F_LIGHTED));
-    } else if (game_is_lightbulb(g, down,
-                                 j)) {  // lightbulbs cause an error
-      game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
-      break;
-    } else  // walls stop the light
+  // Iterate the squares to the left of the lightbulb
+  for (int left = j - 1; left >= 0; left--) {
+    if (game_is_lightbulb(g, i, left))
+      return true;
+    else if (game_is_black(g, i, left))
       break;
   }
+
+  // Iterate the squares above the lightbulb
+  for (int up = i - 1; up >= 0; up--) {
+    if (game_is_lightbulb(g, up, j))
+      return true;
+    else if (game_is_black(g, up, j))
+      break;
+  }
+
+  // Iterate the squares below the lightbulb
+  for (int down = i + 1; down < g->height; down++) {
+    if (game_is_lightbulb(g, down, j))
+      return true;
+    else if (game_is_black(g, down, j))
+      break;
+  }
+
+  return false;
 }
 
 void update_wall_flags(game g, uint i, uint j) {
@@ -387,55 +409,31 @@ void update_wall_flags(game g, uint i, uint j) {
       // lightbulb, it cant if it is on an edge or black
       if (j + 1 >= g->width || game_is_black(g, i, j + 1))
         noAvailableValidLightbulbSpots--;
-      else  // check if a lightbulb is on the row to the right
-        for (uint right = j + 1; right < g->width; right++) {
-          if (game_is_black(g, i, right)) {
-            break;
-          } else if (game_is_lightbulb(g, i, right)) {
-            noAvailableValidLightbulbSpots--;
-            break;
-          }
-        }
+      else  // check if a lightbulb intersects
+          if (has_intersecting_lightbulb(g, i, j + 1))
+        noAvailableValidLightbulbSpots--;
 
       // Check if the square to the left of the wall can accept a
       // lightbulb,
       if (j == 0 || game_is_black(g, i, j - 1))
         noAvailableValidLightbulbSpots--;
       else  // check if a lightbulb is on the row to the left
-        for (int left = j - 1; left >= 0; left--) {
-          if (game_is_black(g, i, left)) {
-            break;
-          } else if (game_is_lightbulb(g, i, left)) {
-            noAvailableValidLightbulbSpots--;
-            break;
-          }
-        }
+          if (has_intersecting_lightbulb(g, i, j - 1))
+        noAvailableValidLightbulbSpots--;
 
       // Check if the square above the wall can accept a lightbulb,
       if (i == 0 || game_is_black(g, i - 1, j))
         noAvailableValidLightbulbSpots--;
       else  // check if a lightbulb is on the column above
-        for (int up = i - 1; up >= 0; up--) {
-          if (game_is_black(g, up, j)) {
-            break;
-          } else if (game_is_lightbulb(g, up, j)) {
-            noAvailableValidLightbulbSpots--;
-            break;
-          }
-        }
+          if (has_intersecting_lightbulb(g, i - 1, j))
+        noAvailableValidLightbulbSpots--;
 
       // Check if the square below the wall can accept a lightbulb,
       if (i + 1 >= g->height || game_is_black(g, i + 1, j))
         noAvailableValidLightbulbSpots--;
       else  // check if a lightbulb is on the column below
-        for (uint down = i + 1; down < g->height; down++) {
-          if (game_is_black(g, down, j)) {
-            break;
-          } else if (game_is_lightbulb(g, down, j)) {
-            noAvailableValidLightbulbSpots--;
-            break;
-          }
-        }
+          if (has_intersecting_lightbulb(g, i + 1, j))
+        noAvailableValidLightbulbSpots--;
 
       // If the number of lightbulbs that can be placed will be less
       // the required amount the wall is flagged as in error
@@ -469,7 +467,7 @@ void game_update_flags(game g) {
       if (game_is_lightbulb(g, row, column)) {
         // Add light to lightbulb
         game_set_square(g, row, column,
-                        (game_get_state(g, row, column) | F_LIGHTED));
+                        (game_get_square(g, row, column) | F_LIGHTED));
         update_lightbulb_flags(g, row, column);
       } else if (game_is_black(g, row, column)) {
         update_wall_flags(g, row, column);

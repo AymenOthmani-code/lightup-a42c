@@ -154,6 +154,39 @@ bool test_game_play_move() {
 /* ********** TEST GAME UPDATE FLAGS ********** */
 
 bool test_game_update_flags() {
+  // [0] Test provided
+  // test lighted flags (default solution)
+  game g0 = game_default();
+  game_set_square(g0, 0, 0, S_LIGHTBULB);
+  game_set_square(g0, 1, 1, S_LIGHTBULB);
+  game_set_square(g0, 2, 2, S_LIGHTBULB);
+  game_set_square(g0, 0, 3, S_LIGHTBULB);
+  game_set_square(g0, 1, 6, S_LIGHTBULB);
+  game_set_square(g0, 3, 6, S_LIGHTBULB);
+  game_set_square(g0, 4, 4, S_LIGHTBULB);
+  game_set_square(g0, 5, 0, S_LIGHTBULB);
+  game_set_square(g0, 5, 5, S_LIGHTBULB);
+  game_set_square(g0, 6, 1, S_LIGHTBULB);
+  game_update_flags(g0);
+  game g1 = game_default_solution();
+  ASSERT(game_equal(g0, g1));
+  game_delete(g0);
+  game_delete(g1);
+
+  // test error flags both on lightbulb and black wall
+  game g2 = game_default();
+  game_set_square(g2, 0, 0, S_LIGHTBULB);
+  game_set_square(g2, 3, 0, S_LIGHTBULB);  // error flags on ligthbulbs (0,0)
+                                           // and (3,0) and black wall (2,6)
+  game_set_square(g2, 6, 6, S_MARK);
+  game_set_square(g2, 0, 6, S_LIGHTBULB);
+  game_set_square(g2, 0, 6, S_BLANK);
+  game_update_flags(g2);
+  game g3 = game_default_other();
+  ASSERT(game_equal(g2, g3));
+  game_delete(g2);
+  game_delete(g3);
+
   // [1] Test if adding lightbulbs works
   game testGame = game_new_empty();
   uint size_allPlayableValues = 7;
