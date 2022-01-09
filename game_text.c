@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "game_aux.h"
+#include "game_ext.h"
 
 #define TEXT_INPUT_PROMPT "> ? [h for help]\n"
 #define TEXT_ACTION_COMMAND "> action: %s\n"
@@ -10,6 +11,8 @@
 #define TEXT_QUIT "quit"
 #define TEXT_ACTION_MOVE "> action: play move '%c' into square (%u,%u)\n"
 #define TEXT_ERROR "Error at light bulb (%u,%u)\n"
+#define TEXT_UNDO "undo"
+#define TEXT_REDO "redo"
 
 void reset_game(game g);
 void end_game(game g);
@@ -18,6 +21,8 @@ void print_invalid_move();
 void print_invalid_input();
 void print_invalid_command();
 void print_help();
+void undo_game(game g);
+void redo_game(game g);
 
 int main(void) {
   // Variables
@@ -80,6 +85,12 @@ int main(void) {
       } else if (c == 'r') {
         printf(TEXT_ACTION_COMMAND, TEXT_RESET);
         reset_game(gameBeingPlayed);
+      } else if (c == 'z') {
+        printf(TEXT_ACTION_COMMAND, TEXT_UNDO);
+        game_undo(gameBeingPlayed);
+      } else if (c == 'y') {
+        printf(TEXT_ACTION_COMMAND, TEXT_REDO);
+        game_redo(gameBeingPlayed);
       } else if (c == 'q') {
         printf(TEXT_ACTION_COMMAND, TEXT_QUIT);
         printf("shame\n");
@@ -105,6 +116,10 @@ int main(void) {
 void reset_game(game g) { game_restart(g); }
 
 void end_game(game g) { game_delete(g); }
+
+void undo_game(game g) { game_undo(g); }
+
+void redo_game(game g) { game_redo(g); }
 
 void print_errors(cgame g) {
   for (uint i = 0; i < DEFAULT_SIZE; i++)
