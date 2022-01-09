@@ -32,7 +32,7 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
 
   // Allocate memory the new game
   game newGame = (game)malloc(sizeof(gameStruct));
-  assert(newGame != NULL);
+  assert(newGame);
 
   // Initialize variables of newgame
   newGame->height = nb_rows;
@@ -94,7 +94,7 @@ game game_new_empty(void) {
 
 game game_copy(cgame g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   // Create a new game
   game newGame =
@@ -110,8 +110,8 @@ game game_copy(cgame g) {
 
 bool game_equal(cgame g1, cgame g2) {
   // Validate parameters
-  assert(g1 != NULL);
-  assert(g2 != NULL);
+  assert(g1);
+  assert(g2);
 
   // Check if dimensions are equal
   if (g1->height != g2->height || g1->width != g2->width) return false;
@@ -129,7 +129,7 @@ bool game_equal(cgame g1, cgame g2) {
 }
 
 void game_delete(game g) {
-  if (g != NULL) {
+  if (g) {
     // free game squares and game memory
     if (g->cell != NULL) {
       for (int i = 0; i < g->height; i++) {
@@ -157,28 +157,28 @@ void game_delete(game g) {
 
 uint game_nb_rows(cgame g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   return g->height;
 }
 
 uint game_nb_cols(cgame g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   return g->width;
 }
 
 bool game_is_wrapping(cgame g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   return g->wrapping;
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -187,7 +187,7 @@ void game_set_square(game g, uint i, uint j, square s) {
 
 square game_get_square(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -196,7 +196,7 @@ square game_get_square(cgame g, uint i, uint j) {
 
 square game_get_state(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -205,7 +205,7 @@ square game_get_state(cgame g, uint i, uint j) {
 
 square game_get_flags(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -214,7 +214,7 @@ square game_get_flags(cgame g, uint i, uint j) {
 
 bool game_is_blank(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -223,7 +223,7 @@ bool game_is_blank(cgame g, uint i, uint j) {
 
 bool game_is_lightbulb(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -232,7 +232,7 @@ bool game_is_lightbulb(cgame g, uint i, uint j) {
 
 int game_get_black_number(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -258,7 +258,7 @@ int game_get_black_number(cgame g, uint i, uint j) {
 
 bool game_is_black(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -267,7 +267,7 @@ bool game_is_black(cgame g, uint i, uint j) {
 
 bool game_is_marked(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -276,7 +276,7 @@ bool game_is_marked(cgame g, uint i, uint j) {
 
 bool game_is_lighted(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -285,7 +285,7 @@ bool game_is_lighted(cgame g, uint i, uint j) {
 
 bool game_has_error(cgame g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);  // check row parameter
   assert(j < g->width && j >= 0);   // check column parameter
 
@@ -294,7 +294,7 @@ bool game_has_error(cgame g, uint i, uint j) {
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   if (i >= g->height || i < 0)  // check row parameter
     return false;
@@ -313,7 +313,7 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 
 void game_undo(game g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   if (!queue_is_empty(g->undo_queue)) {
     game_move *data = (game_move *)queue_pop_head(g->undo_queue);
@@ -329,7 +329,7 @@ void game_undo(game g) {
 
 void game_redo(game g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   if (!queue_is_empty(g->redo_queue)) {
     game_move *data = (game_move *)queue_pop_head(g->redo_queue);
@@ -345,7 +345,7 @@ void game_redo(game g) {
 
 void game_play_move(game g, uint i, uint j, square s) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);
   assert(j < g->width && i >= 0);
   assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
@@ -384,7 +384,7 @@ bool apply_effect_of_lightbulb_on_square(game g, uint i, uint j) {
 
 void update_lightbulb_flags(game g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);
   assert(j < g->width && i >= 0);
 
@@ -412,7 +412,7 @@ void update_lightbulb_flags(game g, uint i, uint j) {
 
 bool has_intersecting_lightbulb(game g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);
   assert(j < g->width && i >= 0);
 
@@ -454,7 +454,7 @@ bool has_intersecting_lightbulb(game g, uint i, uint j) {
 
 void update_wall_flags(game g, uint i, uint j) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
   assert(i < g->height && i >= 0);
   assert(j < g->width && i >= 0);
 
@@ -518,7 +518,7 @@ void update_wall_flags(game g, uint i, uint j) {
 
 void remove_all_flags(game g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   // Set square value of each square to state value
   for (uint row = 0; row < g->height; row++) {
@@ -530,7 +530,7 @@ void remove_all_flags(game g) {
 
 void game_update_flags(game g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   remove_all_flags(g);
 
@@ -551,7 +551,7 @@ void game_update_flags(game g) {
 
 bool game_is_over(cgame g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   // Check each square is valid
   for (uint row = 0; row < g->height; row++) {
@@ -588,7 +588,7 @@ bool game_is_over(cgame g) {
 
 void game_restart(game g) {
   // Validate parameters
-  assert(g != NULL);
+  assert(g);
 
   for (uint row = 0; row < g->height; row++) {
     for (uint column = 0; column < g->width; column++) {
