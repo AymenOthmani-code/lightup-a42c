@@ -319,18 +319,31 @@ bool test_game_get_flags() {
   return true;
 }
 
-/* ********** TEST game_nb_rows ********** */
+/* ********** TEST game_size_wrapping ********** */
 
-bool test_game_nb_rows() { return true; }
+bool test_game_size_wrapping() {
+  for (int height = 1; height <= 10; height++) {
+    for (int width = 1; width <= 10; width++) {
+      game game_test = game_new_empty_ext(height, width, false);
+      game game_test_wrapping = game_new_empty_ext(height, width, true);
 
-/* ********** TEST game_nb_cols ********** */
+      // test height, width and wrapping (game_test)
+      ASSERT(game_nb_cols(game_test) == width);
+      ASSERT(game_nb_rows(game_test) == height);
+      ASSERT(game_is_wrapping(game_test) == false);
 
-bool test_game_nb_cols() { return true; }
+      // test height, width and wrapping (game_test_wrapping)
+      ASSERT(game_nb_cols(game_test_wrapping) == width);
+      ASSERT(game_nb_rows(game_test_wrapping) == height);
+      ASSERT(game_is_wrapping(game_test_wrapping) == true);
 
-/* ********** TEST game_is_wrapping ********** */
-
-bool test_game_is_wrapping() { return true; }
-
+      // delete games
+      game_delete(game_test);
+      game_delete(game_test_wrapping);
+    }
+  }
+  return true;
+}
 /* ********** Usage********** */
 
 void usage(int argc, char *argv[]) {
@@ -363,12 +376,8 @@ int main(int argc, char *argv[]) {
     ok = test_game_has_error();
   else if (strcmp("game_get_flags", argv[1]) == 0)
     ok = test_game_get_flags();
-  else if (strcmp("game_nb_rows", argv[1]) == 0)
-    ok = test_game_nb_rows();
-  else if (strcmp("game_nb_cols", argv[1]) == 0)
-    ok = test_game_nb_cols();
-  else if (strcmp("game_is_wrapping", argv[1]) == 0)
-    ok = test_game_is_wrapping();
+  else if (strcmp("game_size_wrapping", argv[1]) == 0)
+    ok = test_game_size_wrapping();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);
