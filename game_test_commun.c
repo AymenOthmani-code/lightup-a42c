@@ -84,8 +84,10 @@ bool check_game(square *liste, game game_test) {
   for (uint i = 0; i < game_nb_rows(game_test); i++) {
     for (uint j = 0; j < game_nb_cols(game_test); j++) {
       square carre = game_get_square(game_test, i, j);
-      if (liste[j + game_nb_rows(game_test) * i] != carre) {
-        return false;
+      if (game_nb_rows(game_test) > game_nb_cols(game_test)) {
+        if (liste[i + game_nb_rows(game_test) * j] != carre) return false;
+      } else {
+        if (liste[j + game_nb_rows(game_test) * i] != carre) return false;
       }
     }
   }

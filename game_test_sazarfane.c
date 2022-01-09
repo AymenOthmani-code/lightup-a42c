@@ -321,8 +321,8 @@ bool test_game_new_ext() {
   square *array_with_all = create_array_all_values();
 
   for (int z = 0; z < SIZE_ALL_VALUES; z++) {
-    for (int height = 1; height <= 20; height++) {
-      for (int width = 1; width <= 20; width++) {
+    for (int height = 1; height <= 10; height++) {
+      for (int width = 1; width <= 10; width++) {
         square array_element[height * width];
         for (int i = 0; i < height * width; i++) {
           // Remplis array_element avec tout les squares possible
@@ -343,7 +343,7 @@ bool test_game_new_ext() {
 
         // test height, width and wrapping (game_test_wrapping)
         ASSERT(game_nb_cols(game_test_wrapping) == width);
-        ASSERT(game_nb_rows(game_test_wrapping) == width);
+        ASSERT(game_nb_rows(game_test_wrapping) == height);
         ASSERT(game_is_wrapping(game_test_wrapping) == true);
 
         // delete games
@@ -361,13 +361,13 @@ bool test_game_new_ext() {
 /* ********** TEST GAME_NEW_EMPTY_EXT********** */
 
 bool test_game_new_empty_ext() {
-  for (int height = 1; height <= 20; height++) {
-    for (int width = 1; width <= 20; width++) {
+  for (int height = 1; height <= 10; height++) {
+    for (int width = 1; width <= 10; width++) {
       game game_test = game_new_empty_ext(height, width, false);
       game game_test_wrapping = game_new_empty_ext(height, width, true);
 
-      for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+      for (int y = 0; y < width; y++) {
+        for (int x = 0; x < height; x++) {
           ASSERT(game_get_square(game_test, x, y) == S_BLANK);
           ASSERT(game_get_square(game_test_wrapping, x, y) == S_BLANK);
         }
@@ -380,7 +380,7 @@ bool test_game_new_empty_ext() {
 
       // test height, width and wrapping (game_test_wrapping)
       ASSERT(game_nb_cols(game_test_wrapping) == width);
-      ASSERT(game_nb_rows(game_test_wrapping) == width);
+      ASSERT(game_nb_rows(game_test_wrapping) == height);
       ASSERT(game_is_wrapping(game_test_wrapping) == true);
 
       // delete games

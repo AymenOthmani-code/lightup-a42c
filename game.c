@@ -46,7 +46,7 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   assert(newGame->cell != NULL);
 
   // Allocte memory to the cells of newgame
-  for (int i = 0; i < newGame->width; i++) {
+  for (int i = 0; i < newGame->height; i++) {
     newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
     assert(newGame->cell[i] != NULL);
   }
@@ -159,14 +159,14 @@ uint game_nb_rows(cgame g) {
   // Validate parameters
   assert(g != NULL);
 
-  return g->width;
+  return g->height;
 }
 
 uint game_nb_cols(cgame g) {
   // Validate parameters
   assert(g != NULL);
 
-  return g->height;
+  return g->width;
 }
 
 bool game_is_wrapping(cgame g) {
