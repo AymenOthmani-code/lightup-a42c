@@ -5,11 +5,21 @@
 #include <stdlib.h>
 
 #include "game_ext.h"
+#include "queue.h"
+
+typedef struct game_move {
+  uint col;
+  uint row;
+  square previous;
+  square current;
+} game_move;
 
 struct game_s {
   uint height;
   uint width;
   bool wrapping;
+  queue *undo_queue;
+  queue *redo_queue;
   square **cell;
 };
 
@@ -28,6 +38,10 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   newGame->height = nb_rows;
   newGame->width = nb_cols;
   newGame->wrapping = wrapping;
+
+  newGame->undo_queue = queue_new();
+  newGame->redo_queue = queue_new();
+
   newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
   assert(newGame->cell != NULL);
 
@@ -83,11 +97,12 @@ game game_copy(cgame g) {
   assert(g != NULL);
 
   // Create a new game
-  game newGame = game_new_empty();
+  game newGame =
+      game_new_empty_ext(game_nb_rows(g), game_nb_cols(g), game_is_wrapping(g));
 
   // Add values to new game
-  for (uint row = 0; row < g->height; row++)
-    for (uint column = 0; column < g->width; column++)
+  for (uint row = 0; row < game_nb_rows(g); row++)
+    for (uint column = 0; column < game_nb_cols(g); column++)
       game_set_square(newGame, row, column, game_get_square(g, row, column));
 
   return newGame;
@@ -101,6 +116,9 @@ bool game_equal(cgame g1, cgame g2) {
   // Check if dimensions are equal
   if (g1->height != g2->height || g1->width != g2->width) return false;
 
+  // Check if wrapping is equal
+  if (game_is_wrapping(g1) != game_is_wrapping(g2)) return false;
+
   // Check if values are equal
   for (uint row = 0; row < g1->height; row++)
     for (uint column = 0; column < g2->width; column++)
@@ -111,20 +129,30 @@ bool game_equal(cgame g1, cgame g2) {
 }
 
 void game_delete(game g) {
-  // free game squares and game memory
-  if (g->cell != NULL) {
-    for (int i = 0; i < g->height; i++) {
-      if (g->cell[i] != NULL) {
-        free(g->cell[i]);
-        g->cell[i] = NULL;
+  if (g != NULL) {
+    // free game squares and game memory
+    if (g->cell != NULL) {
+      for (int i = 0; i < g->height; i++) {
+        if (g->cell[i] != NULL) {
+          free(g->cell[i]);
+          g->cell[i] = NULL;
+        }
       }
+      free(g->cell);
+      g->cell = NULL;
     }
-    free(g->cell);
-    g->cell = NULL;
-  }
 
-  free(g);
-  g = NULL;
+    if (g->undo_queue != NULL) {
+      queue_free_full(g->undo_queue, free);
+    }
+
+    if (g->redo_queue != NULL) {
+      queue_free_full(g->redo_queue, free);
+    }
+
+    free(g);
+    g = NULL;
+  }
 }
 
 uint game_nb_rows(cgame g) {
@@ -283,9 +311,37 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
   return true;
 }
 
-void game_undo(game g) {}
+void game_undo(game g) {
+  // Validate parameters
+  assert(g != NULL);
 
-void game_redo(game g) {}
+  if (!queue_is_empty(g->undo_queue)) {
+    game_move *data = (game_move *)queue_pop_head(g->undo_queue);
+
+    assert(data->current == game_get_state(g, data->row, data->col));
+
+    game_set_square(g, data->row, data->col, data->previous);
+    game_update_flags(g);
+
+    queue_push_head(g->redo_queue, data);
+  }
+}
+
+void game_redo(game g) {
+  // Validate parameters
+  assert(g != NULL);
+
+  if (!queue_is_empty(g->redo_queue)) {
+    game_move *data = (game_move *)queue_pop_head(g->redo_queue);
+    printf("%d, %d\n", data->previous, game_get_state(g, data->row, data->col));
+    assert(data->previous == game_get_state(g, data->row, data->col));
+
+    game_set_square(g, data->row, data->col, data->current);
+    game_update_flags(g);
+
+    queue_push_head(g->undo_queue, data);
+  }
+}
 
 void game_play_move(game g, uint i, uint j, square s) {
   // Validate parameters
@@ -294,8 +350,21 @@ void game_play_move(game g, uint i, uint j, square s) {
   assert(j < g->width && i >= 0);
   assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
 
+  game_move *data = (game_move *)malloc(sizeof(game_move));
+  assert(data);
+
+  data->col = j;
+  data->row = i;
+  data->previous = game_get_state(g, i, j);
+
   game_set_square(g, i, j, s);
   game_update_flags(g);
+
+  data->current = game_get_state(g, i, j);
+
+  queue_push_head(g->undo_queue, data);
+
+  queue_clear_full(g->redo_queue, free);
 }
 
 // Applies the effect of the lightbulb on the current square
@@ -532,4 +601,8 @@ void game_restart(game g) {
       }
     }
   }
+
+  // Clear undo and redo queues
+  queue_clear_full(g->undo_queue, free);
+  queue_clear_full(g->redo_queue, free);
 }
