@@ -319,18 +319,40 @@ bool test_game_is_marked() {
 bool test_game_new_ext() {
   // Création des arrays
   square *array_with_all = create_array_all_values();
-  square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+
   for (int z = 0; z < SIZE_ALL_VALUES; z++) {
-    for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
-      // Remplis array_element avec tout les square possible
-      array_element[i] = array_with_all[z];
+    for (int height = 1; height <= 20; height++) {
+      for (int width = 1; width <= 20; width++) {
+        square array_element[height * width];
+        for (int i = 0; i < height * width; i++) {
+          // Remplis array_element avec tout les squares possible
+          array_element[i] = array_with_all[z];
+        }
+        game game_test = game_new_ext(height, width, array_element, false);
+        game game_test_wrapping =
+            game_new_ext(height, width, array_element, true);
+
+        // test si chaque jeu crée correspond a l'array
+        ASSERT(check_game(array_element, game_test));
+        ASSERT(check_game(array_element, game_test_wrapping));
+
+        // test height, width and wrapping (game_test)
+        ASSERT(game_nb_cols(game_test) == width);
+        ASSERT(game_nb_rows(game_test) == height);
+        ASSERT(game_is_wrapping(game_test) == false);
+
+        // test height, width and wrapping (game_test_wrapping)
+        ASSERT(game_nb_cols(game_test_wrapping) == width);
+        ASSERT(game_nb_rows(game_test_wrapping) == width);
+        ASSERT(game_is_wrapping(game_test_wrapping) == true);
+
+        // delete games
+        game_delete(game_test);
+        game_delete(game_test_wrapping);
+      }
     }
-    game game_test =
-        game_new_ext(DEFAULT_SIZE, DEFAULT_SIZE, array_element, false);
-    // test si chaque jeu crée correspond a l'array
-    ASSERT(check_game(array_element, game_test));
-    game_delete(game_test);
   }
+
   // clean-up test array
   free(array_with_all);
   return true;
@@ -339,16 +361,33 @@ bool test_game_new_ext() {
 /* ********** TEST GAME_NEW_EMPTY_EXT********** */
 
 bool test_game_new_empty_ext() {
-  // Création d'un jeu vide
-  game game_test = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
-  // Mon array de S_BLANK correspond à ce que devrai me renvoyé game_new_empty
-  for (int y = 0; y < DEFAULT_SIZE; y++) {
-    for (int x = 0; x < DEFAULT_SIZE; x++) {
-      ASSERT(game_get_square(game_test, x, y) == S_BLANK);
+  for (int height = 1; height <= 20; height++) {
+    for (int width = 1; width <= 20; width++) {
+      game game_test = game_new_empty_ext(height, width, false);
+      game game_test_wrapping = game_new_empty_ext(height, width, true);
+
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          ASSERT(game_get_square(game_test, x, y) == S_BLANK);
+          ASSERT(game_get_square(game_test_wrapping, x, y) == S_BLANK);
+        }
+      }
+
+      // test height, width and wrapping (game_test)
+      ASSERT(game_nb_cols(game_test) == width);
+      ASSERT(game_nb_rows(game_test) == height);
+      ASSERT(game_is_wrapping(game_test) == false);
+
+      // test height, width and wrapping (game_test_wrapping)
+      ASSERT(game_nb_cols(game_test_wrapping) == width);
+      ASSERT(game_nb_rows(game_test_wrapping) == width);
+      ASSERT(game_is_wrapping(game_test_wrapping) == true);
+
+      // delete games
+      game_delete(game_test);
+      game_delete(game_test_wrapping);
     }
   }
-  // Clean up
-  game_delete(game_test);
   return true;
 }
 

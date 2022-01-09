@@ -5,6 +5,7 @@
 
 #include "game.h"
 #include "game_aux.h"
+#include "game_ext.h"
 
 #define SIZE_ALL_VALUES 20
 
@@ -80,10 +81,10 @@ game game_default_other() {
 /* ********** TEST COMMUN ********** */
 
 bool check_game(square *liste, game game_test) {
-  for (uint y = 0; y < DEFAULT_SIZE; y++) {
-    for (uint x = 0; x < DEFAULT_SIZE; x++) {
-      square carre = game_get_square(game_test, y, x);
-      if (liste[x + DEFAULT_SIZE * y] != carre) {
+  for (uint i = 0; i < game_nb_rows(game_test); i++) {
+    for (uint j = 0; j < game_nb_cols(game_test); j++) {
+      square carre = game_get_square(game_test, i, j);
+      if (liste[j + game_nb_rows(game_test) * i] != carre) {
         return false;
       }
     }
