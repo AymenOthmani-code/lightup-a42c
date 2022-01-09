@@ -7,6 +7,10 @@ Membres du projet :
 * Shams Azarfane shams-dyn.azarfane@etu.u-bordeaux.fr
 * Aymen Othmani aymen.othmani@etu.u-bordeaux.fr
 
+## Tasks
+
+Tasks are tracked in gitlab issues: <https://gitlab.emi.u-bordeaux.fr/pt2/teams/a42/lightup-a42c/-/issues>
+
 ## Functions
 
 |Function|Description|Branch|Responsible|
@@ -48,7 +52,6 @@ Number of tests: 24
 |bool game_is_wrapping(cgame g) |Checks if the game has the wrapping option | dev_is_wrapping |  |
 |void game_undo(game g) |Undoes the last move | dev_undo_redo |  |
 |void game_redo(game g) |Redoes the last move | dev_undo_redo |  |
-
 
 ### game_aux.h
 
