@@ -313,6 +313,14 @@ bool test_game_is_marked() {
   return true;
 }
 
+/* ********** TEST GAME_NEW_EXT********** */
+
+bool test_game_new_ext() { return true; }
+
+/* ********** TEST GAME_NEW_EMPTY_EXT********** */
+
+bool test_game_new_empty_ext() { return true; }
+
 /* ********** USAGE ********** */
 
 void usage(int argc, char *argv[]) {
@@ -347,7 +355,10 @@ int main(int argc, char *argv[]) {
     ok = test_game_get_black_number();
   else if (strcmp("game_is_marked", argv[1]) == 0)
     ok = test_game_is_marked();
-
+  else if (strcmp("game_new_ext", argv[1]) == 0)
+    ok = test_game_new_ext();
+  else if (strcmp("game_new_empty_ext", argv[1]) == 0)
+    ok = test_game_new_empty_ext();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);

@@ -467,6 +467,10 @@ bool test_game_restart() {
     }
   }
 
+  bool test_game_undo() { return true; }
+
+  bool test_game_redo() { return true; }
+
   // clean-up test game restart on each square for each value
   free(allSquares);
   game_delete(testGame);
@@ -499,6 +503,10 @@ int main(int argc, char *argv[]) {
     ok = test_game_is_over();
   else if (strcmp("game_restart", argv[1]) == 0)
     ok = test_game_restart();
+  else if (strcmp("game_undo", argv[1]) == 0)
+    ok = test_game_undo();
+  else if (strcmp("game_redo", argv[1]) == 0)
+    ok = test_game_redo();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);

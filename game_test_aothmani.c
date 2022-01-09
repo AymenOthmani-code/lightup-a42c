@@ -319,6 +319,20 @@ bool test_game_get_flags() {
   return true;
 }
 
+/* ********** TEST game_nb_rows ********** */
+
+bool test_game_nb_rows() { return true; }
+
+/* ********** TEST game_nb_cols ********** */
+
+bool test_game_nb_cols() { return true; }
+
+/* ********** TEST game_is_wrapping ********** */
+
+bool test_game_is_wrapping() { return true; }
+
+/* ********** Usage********** */
+
 void usage(int argc, char *argv[]) {
   fprintf(stderr, "Usage: %s <dummy> [<...>]\n", argv[0]);
   exit(EXIT_FAILURE);
@@ -349,6 +363,12 @@ int main(int argc, char *argv[]) {
     ok = test_game_has_error();
   else if (strcmp("game_get_flags", argv[1]) == 0)
     ok = test_game_get_flags();
+  else if (strcmp("game_nb_rows", argv[1]) == 0)
+    ok = test_game_nb_rows();
+  else if (strcmp("game_nb_cols", argv[1]) == 0)
+    ok = test_game_nb_cols();
+  else if (strcmp("game_is_wrapping", argv[1]) == 0)
+    ok = test_game_is_wrapping();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);
