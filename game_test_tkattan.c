@@ -477,39 +477,60 @@ bool test_game_restart() {
 
 bool test_game_undo_redo() {
   // Create game
-  game g = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
+  game gameTest = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
+  game gameEmpty = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
 
   for (int i = 0; i < DEFAULT_SIZE; i++) {
     for (int j = 0; j < DEFAULT_SIZE; j++) {
       // Check undo / redo for S_LIGHTBULB
-      game_play_move(g, i, j, S_LIGHTBULB);
-      ASSERT(game_get_state(g, i, j) == S_LIGHTBULB);
-      game_undo(g);
-      ASSERT(game_get_state(g, i, j) == S_BLANK);
-      game_redo(g);
-      ASSERT(game_get_state(g, i, j) == S_LIGHTBULB);
+      game_play_move(gameTest, i, j, S_LIGHTBULB);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
 
       // Check undo / redo for S_MARK
-      game_play_move(g, i, j, S_MARK);
-      ASSERT(game_get_state(g, i, j) == S_MARK);
-      game_undo(g);
-      ASSERT(game_get_state(g, i, j) == S_LIGHTBULB);
-      game_redo(g);
-      ASSERT(game_get_state(g, i, j) == S_MARK);
+      game_play_move(gameTest, i, j, S_MARK);
+      ASSERT(game_get_state(gameTest, i, j) == S_MARK);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_MARK);
 
       // Check undo / redo for S_BLANK
-      game_play_move(g, i, j, S_LIGHTBULB);
-      ASSERT(game_get_state(g, i, j) == S_LIGHTBULB);
-      game_play_move(g, i, j, S_BLANK);
-      ASSERT(game_get_state(g, i, j) == S_BLANK);
-      game_undo(g);
-      ASSERT(game_get_state(g, i, j) == S_LIGHTBULB);
-      game_redo(g);
-      ASSERT(game_get_state(g, i, j) == S_BLANK);
+      game_play_move(gameTest, i, j, S_LIGHTBULB);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_play_move(gameTest, i, j, S_BLANK);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
     }
   }
+
+  game_play_move(gameEmpty, 0, 0, S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+
+  game_play_move(gameEmpty, 0, 1, S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_LIGHTBULB);
+
+  game_undo(gameEmpty);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_BLANK);
+
+  game_play_move(gameEmpty, 0, 2, S_MARK);
+  ASSERT(game_get_state(gameEmpty, 0, 2) == S_MARK);
+
+  game_redo(gameEmpty);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_BLANK);
+  ASSERT(game_get_state(gameEmpty, 0, 2) == S_MARK);
+
   // Clean up
-  game_delete(g);
+  game_delete(gameTest);
+  game_delete(gameEmpty);
   return true;
 }
 
