@@ -283,9 +283,9 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
   return true;
 }
 
-void game_undo(game g) { return NULL; }
+void game_undo(game g) {}
 
-void game_redo(game g) { return NULL; }
+void game_redo(game g) {}
 
 void game_play_move(game g, uint i, uint j, square s) {
   // Validate parameters

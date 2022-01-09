@@ -466,17 +466,20 @@ bool test_game_restart() {
       game_set_square(testGame, row, column, S_BLANK);
     }
   }
-
-  bool test_game_undo() { return true; }
-
-  bool test_game_redo() { return true; }
-
   // clean-up test game restart on each square for each value
   free(allSquares);
   game_delete(testGame);
 
   return true;
 }
+
+/* ********** TEST game_undo ********** */
+
+bool test_game_undo() { return true; }
+
+/* ********** TEST game_redo ********** */
+
+bool test_game_redo() { return true; }
 
 /* ********** USAGE ********** */
 
