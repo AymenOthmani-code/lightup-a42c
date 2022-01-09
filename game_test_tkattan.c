@@ -473,13 +473,66 @@ bool test_game_restart() {
   return true;
 }
 
-/* ********** TEST game_undo ********** */
+/* ********** TEST game_undo_redo ********** */
 
-bool test_game_undo() { return true; }
+bool test_game_undo_redo() {
+  // Create game
+  game gameTest = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
+  game gameEmpty = game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
 
-/* ********** TEST game_redo ********** */
+  for (int i = 0; i < DEFAULT_SIZE; i++) {
+    for (int j = 0; j < DEFAULT_SIZE; j++) {
+      // Check undo / redo for S_LIGHTBULB
+      game_play_move(gameTest, i, j, S_LIGHTBULB);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
 
-bool test_game_redo() { return true; }
+      // Check undo / redo for S_MARK
+      game_play_move(gameTest, i, j, S_MARK);
+      ASSERT(game_get_state(gameTest, i, j) == S_MARK);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_MARK);
+
+      // Check undo / redo for S_BLANK
+      game_play_move(gameTest, i, j, S_LIGHTBULB);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_play_move(gameTest, i, j, S_BLANK);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
+      game_undo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_LIGHTBULB);
+      game_redo(gameTest);
+      ASSERT(game_get_state(gameTest, i, j) == S_BLANK);
+    }
+  }
+
+  game_play_move(gameEmpty, 0, 0, S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+
+  game_play_move(gameEmpty, 0, 1, S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_LIGHTBULB);
+
+  game_undo(gameEmpty);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_BLANK);
+
+  game_play_move(gameEmpty, 0, 2, S_MARK);
+  ASSERT(game_get_state(gameEmpty, 0, 2) == S_MARK);
+
+  game_redo(gameEmpty);
+  ASSERT(game_get_state(gameEmpty, 0, 0) == S_LIGHTBULB);
+  ASSERT(game_get_state(gameEmpty, 0, 1) == S_BLANK);
+  ASSERT(game_get_state(gameEmpty, 0, 2) == S_MARK);
+
+  // Clean up
+  game_delete(gameTest);
+  game_delete(gameEmpty);
+  return true;
+}
 
 /* ********** USAGE ********** */
 
@@ -507,9 +560,9 @@ int main(int argc, char *argv[]) {
   else if (strcmp("game_restart", argv[1]) == 0)
     ok = test_game_restart();
   else if (strcmp("game_undo", argv[1]) == 0)
-    ok = test_game_undo();
+    ok = test_game_undo_redo();
   else if (strcmp("game_redo", argv[1]) == 0)
-    ok = test_game_redo();
+    ok = test_game_undo_redo();
   else {
     fprintf(stderr, "Error: test \"%s\" not found!\n", argv[1]);
     exit(EXIT_FAILURE);
