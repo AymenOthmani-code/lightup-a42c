@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "game.h"
+#include "game.c"
 #include "game_aux.h"
 #include "game_test_commun.c"
 
@@ -315,7 +316,24 @@ bool test_game_is_marked() {
 
 /* ********** TEST GAME_NEW_EXT********** */
 
-bool test_game_new_ext() { return true; }
+bool test_game_new_ext() {
+  // Création des arrays
+  square *array_with_all = create_array_all_values();
+  square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+  for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+    for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
+      // Remplis array_element avec tout les square possible
+      array_element[i] = array_with_all[z];
+    }
+    game game_test = game_new_ext(DEFAULT_SIZE, DEFAULT_SIZE, array_element, false);
+    // test si chaque jeu crée correspond a l'array
+    ASSERT(check_game(array_element, game_test));
+    game_delete(game_test);
+  }
+  // clean-up test array
+  free(array_with_all);
+  return true;
+}
 
 /* ********** TEST GAME_NEW_EMPTY_EXT********** */
 
