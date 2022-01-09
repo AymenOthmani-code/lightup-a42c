@@ -7,6 +7,11 @@
 #include "game_ext.h"
 #include "queue.h"
 
+typedef struct {
+  int col;
+  int row;
+} game_cell;
+
 typedef struct game_move {
   uint col;
   uint row;
@@ -27,8 +32,8 @@ typedef struct game_s gameStruct;
 
 game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   // Validate parameters
-  assert(nb_rows >= 0);
-  assert(nb_cols >= 0);
+  assert(nb_rows > 0);
+  assert(nb_cols > 0);
 
   // Allocate memory the new game
   game newGame = (game)malloc(sizeof(gameStruct));
@@ -42,18 +47,18 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   newGame->undo_queue = queue_new();
   newGame->redo_queue = queue_new();
 
-  newGame->cell = (square **)malloc(newGame->height * sizeof(square *));
+  newGame->cell = (square **)malloc(nb_rows * sizeof(square *));
   assert(newGame->cell != NULL);
 
   // Allocte memory to the cells of newgame
-  for (int i = 0; i < newGame->height; i++) {
-    newGame->cell[i] = (square *)calloc(newGame->width, sizeof(square));
+  for (int i = 0; i < nb_rows; i++) {
+    newGame->cell[i] = (square *)calloc(nb_cols, sizeof(square));
     assert(newGame->cell[i] != NULL);
   }
 
   // Add values to the matrice of newgame
-  for (uint row = 0; row < newGame->height; row++) {
-    for (uint column = 0; column < newGame->width; column++) {
+  for (uint row = 0; row < nb_rows; row++) {
+    for (uint column = 0; column < nb_cols; column++) {
       newGame->cell[row][column] = S_BLANK;
     }
   }
@@ -64,15 +69,15 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
 game game_new_ext(uint nb_rows, uint nb_cols, square *squares, bool wrapping) {
   // Validate parameters
   assert(squares != NULL);
-  assert(nb_rows >= 0);
-  assert(nb_cols >= 0);
+  assert(nb_rows > 0);
+  assert(nb_cols > 0);
 
   game newGame = game_new_empty_ext(nb_rows, nb_cols, wrapping);
 
   // Add values to the matrice of newgame
   int j = 0;
-  for (uint row = 0; row < newGame->height; row++) {
-    for (uint column = 0; column < newGame->width; column++) {
+  for (uint row = 0; row < game_nb_rows(newGame); row++) {
+    for (uint column = 0; column < game_nb_cols(newGame); column++) {
       newGame->cell[row][column] = squares[j];
       j = j + 1;
     }
@@ -114,7 +119,8 @@ bool game_equal(cgame g1, cgame g2) {
   assert(g2);
 
   // Check if dimensions are equal
-  if (game_nb_rows(g1) != game_nb_rows(g2) || game_nb_cols(g1) != game_nb_cols(g2))
+  if (game_nb_rows(g1) != game_nb_rows(g2) ||
+      game_nb_cols(g1) != game_nb_cols(g2))
     return false;
 
   // Check if wrapping is equal
@@ -181,7 +187,7 @@ void game_set_square(game g, uint i, uint j, square s) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   g->cell[i][j] = s;
 }
@@ -190,7 +196,7 @@ square game_get_square(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return g->cell[i][j];
 }
@@ -199,7 +205,7 @@ square game_get_state(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return g->cell[i][j] & S_MASK;
 }
@@ -208,7 +214,7 @@ square game_get_flags(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return g->cell[i][j] & F_MASK;
 }
@@ -217,7 +223,7 @@ bool game_is_blank(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_state(g, i, j) == S_BLANK;
 }
@@ -226,7 +232,7 @@ bool game_is_lightbulb(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_state(g, i, j) == S_LIGHTBULB;
 }
@@ -235,7 +241,7 @@ int game_get_black_number(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   square state = game_get_state(g, i, j);
 
@@ -261,7 +267,7 @@ bool game_is_black(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_state(g, i, j) & S_BLACK;
 }
@@ -270,7 +276,7 @@ bool game_is_marked(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_state(g, i, j) == S_MARK;
 }
@@ -279,7 +285,7 @@ bool game_is_lighted(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_flags(g, i, j) & F_LIGHTED;
 }
@@ -288,7 +294,7 @@ bool game_has_error(cgame g, uint i, uint j) {
   // Validate parameters
   assert(g);
   assert(i < game_nb_rows(g) && i >= 0);  // check row parameter
-  assert(j < game_nb_cols(g) && j >= 0);         // check column parameter
+  assert(j < game_nb_cols(g) && j >= 0);  // check column parameter
 
   return game_get_flags(g, i, j) & F_ERROR;
 }
@@ -366,6 +372,108 @@ void game_play_move(game g, uint i, uint j, square s) {
   queue_push_head(g->undo_queue, data);
 
   queue_clear_full(g->redo_queue, free);
+}
+
+game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
+  // Validate parameters
+  assert(g);
+  assert(i < game_nb_rows(g) && i >= 0);
+  assert(j < game_nb_cols(g) && i >= 0);
+
+  uint sizeOfCells = 0;
+  game_cell up;
+  game_cell right;
+  game_cell down;
+  game_cell left;
+  up.row = -1;
+  up.col = -1;
+  down.row = -1;
+  down.col = -1;
+  right.row = -1;
+  right.col = -1;
+  left.row = -1;
+  left.col = -1;
+
+  if (game_is_wrapping(g)) {
+    sizeOfCells = 4;
+    if (i + 1 < game_nb_rows(g)) {
+      down.col = j;
+      down.row = i + 1;
+    } else {
+      down.col = j;
+      down.row = 0;
+    }
+    if (j + 1 < game_nb_cols(g)) {
+      right.col = j + 1;
+      right.row = i;
+    } else {
+      right.col = 0;
+      right.row = i;
+    }
+    if (j != 0) {
+      left.col = j - 1;
+      left.row = i;
+    } else {
+      left.col = game_nb_cols(g) - 1;
+      left.row = i;
+    }
+    if (i != 0) {
+      up.col = j;
+      up.row = i - 1;
+    } else {
+      up.col = j;
+      up.row = game_nb_rows(g) - 1;
+    }
+  } else {
+    if (i + 1 < game_nb_rows(g)) {
+      sizeOfCells++;
+      down.col = j;
+      down.row = i + 1;
+    }
+    if (j + 1 < game_nb_cols(g)) {
+      sizeOfCells++;
+      right.col = j + 1;
+      right.row = i;
+    }
+    if (j != 0) {
+      sizeOfCells++;
+      left.col = j - 1;
+      left.row = i;
+    }
+    if (i != 0) {
+      sizeOfCells++;
+      up.col = j;
+      up.row = i - 1;
+    }
+  }
+
+  game_cell *cells = (game_cell *)malloc(sizeOfCells * sizeof(game_cell));
+  assert(cells);
+
+  uint x = 0;
+  if (up.col != -1 && x < sizeOfCells) {
+    cells[x].col = up.col;
+    cells[x].row = up.row;
+    x++;
+  }
+  if (down.col != -1 && x < sizeOfCells) {
+    cells[x].col = down.col;
+    cells[x].row = down.row;
+    x++;
+  }
+  if (right.col != -1 && x < sizeOfCells) {
+    cells[x].col = right.col;
+    cells[x].row = right.row;
+    x++;
+  }
+  if (left.col != -1 && x < sizeOfCells) {
+    cells[x].col = left.col;
+    cells[x].row = left.row;
+    x++;
+  }
+
+  *size = sizeOfCells;
+  return cells;
 }
 
 // Applies the effect of the lightbulb on the current square
@@ -463,14 +571,16 @@ void update_wall_flags(game g, uint i, uint j) {
   int wallLimit = game_get_black_number(g, i, j);
   // If there is a limit verify it
   if (wallLimit != -1) {
+    uint sizeOfCells = 0;
+
+    game_cell *ajacent_cells = get_ajacent_cells(g, i, j, &sizeOfCells);
+
     // Find the number of ajacent lightbulbs
     int noAjacentLightbulbs = 0;
-    if (i + 1 < game_nb_rows(g) && game_is_lightbulb(g, i + 1, j))
-      noAjacentLightbulbs++;
-    if (j + 1 < game_nb_cols(g) && game_is_lightbulb(g, i, j + 1))
-      noAjacentLightbulbs++;
-    if (j != 0 && game_is_lightbulb(g, i, j - 1)) noAjacentLightbulbs++;
-    if (i != 0 && game_is_lightbulb(g, i - 1, j)) noAjacentLightbulbs++;
+    for (uint x = 0; x < sizeOfCells; x++) {
+      if (game_is_lightbulb(g, ajacent_cells[x].row, ajacent_cells[x].col))
+        noAjacentLightbulbs++;
+    }
 
     if (noAjacentLightbulbs > wallLimit)
       game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
@@ -479,40 +589,22 @@ void update_wall_flags(game g, uint i, uint j) {
       // check if other (non-ajacent) lightbulbs cause an error
       int noAvailableValidLightbulbSpots = 4;
 
-      // Check if the square to the right of the wall can accept a
-      // lightbulb, it cant if it is on an edge or black
-      if (j + 1 >= game_nb_cols(g) || game_is_black(g, i, j + 1))
-        noAvailableValidLightbulbSpots--;
-      else  // check if a lightbulb intersects
-          if (has_intersecting_lightbulb(g, i, j + 1))
-        noAvailableValidLightbulbSpots--;
-
-      // Check if the square to the left of the wall can accept a
-      // lightbulb,
-      if (j == 0 || game_is_black(g, i, j - 1))
-        noAvailableValidLightbulbSpots--;
-      else  // check if a lightbulb is on the row to the left
-          if (has_intersecting_lightbulb(g, i, j - 1))
-        noAvailableValidLightbulbSpots--;
-
-      // Check if the square above the wall can accept a lightbulb,
-      if (i == 0 || game_is_black(g, i - 1, j))
-        noAvailableValidLightbulbSpots--;
-      else  // check if a lightbulb is on the column above
-          if (has_intersecting_lightbulb(g, i - 1, j))
-        noAvailableValidLightbulbSpots--;
-
-      // Check if the square below the wall can accept a lightbulb,
-      if (i + 1 >= game_nb_rows(g) || game_is_black(g, i + 1, j))
-        noAvailableValidLightbulbSpots--;
-      else  // check if a lightbulb is on the column below
-          if (has_intersecting_lightbulb(g, i + 1, j))
-        noAvailableValidLightbulbSpots--;
+      for (uint x = 0; x < sizeOfCells; x++) {
+        uint row = ajacent_cells[x].row;
+        uint col = ajacent_cells[x].col;
+        if (game_is_black(g, row, col) || game_is_lighted(g, row, col))
+          noAvailableValidLightbulbSpots--;
+      }
 
       // If the number of lightbulbs that can be placed will be less
       // the required amount the wall is flagged as in error
       if (noAjacentLightbulbs + noAvailableValidLightbulbSpots < wallLimit)
         game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
+    }
+
+    if (ajacent_cells != NULL) {
+      free(ajacent_cells);
+      ajacent_cells = NULL;
     }
   }
 }
@@ -543,7 +635,13 @@ void game_update_flags(game g) {
         game_set_square(g, row, column,
                         (game_get_square(g, row, column) | F_LIGHTED));
         update_lightbulb_flags(g, row, column);
-      } else if (game_is_black(g, row, column)) {
+      }
+    }
+  }
+
+  for (uint row = 0; row < game_nb_rows(g); row++) {
+    for (uint column = 0; column < game_nb_cols(g); column++) {
+      if (game_is_black(g, row, column)) {
         update_wall_flags(g, row, column);
       }
     }
