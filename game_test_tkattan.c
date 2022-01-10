@@ -367,6 +367,22 @@ bool test_game_update_flags() {
   ASSERT(game_get_square(testGame, 3, 2) == (S_BLACK3 | F_ERROR));
 
   game_delete(testGame);
+
+  // [6] Test wrapping
+  testGame = game_new_empty_ext(5, 3, true);
+
+  game_set_square(testGame, 1, 0, S_BLACKU);
+  game_set_square(testGame, 2, 1, S_BLACK2);
+  game_set_square(testGame, 1, 2, S_BLACK1);
+
+  game_play_move(testGame, 1, 1, S_LIGHTBULB);
+  game_play_move(testGame, 2, 0, S_LIGHTBULB);
+  game_play_move(testGame, 3, 2, S_LIGHTBULB);
+
+  ASSERT(game_is_over(testGame));
+
+  game_delete(testGame);
+
   return true;
 }
 

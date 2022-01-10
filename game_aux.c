@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "game_ext.h"
+
 #define TOP_ROW_NUM "   0123456\n"
 #define T_B_ROW_LINE "   -------\n"
 #define MAIN_ROW_START "%u |"
@@ -27,8 +29,8 @@ void game_print(cgame g) {
   printf(T_B_ROW_LINE);
 
   // Get width and height of game (use default for now)
-  int gameWidth = DEFAULT_SIZE;
-  int gameHeight = DEFAULT_SIZE;
+  int gameWidth = game_nb_cols(g);
+  int gameHeight = game_nb_rows(g);
 
   square cell = S_BLANK;
   square cellState = S_BLANK;

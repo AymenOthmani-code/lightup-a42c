@@ -7,10 +7,15 @@
 #include "game_ext.h"
 #include "queue.h"
 
-typedef struct {
+typedef struct game_cell {
   int col;
   int row;
 } game_cell;
+
+typedef struct game_line {
+  uint size;
+  game_cell *line;
+} game_line;
 
 typedef struct game_move {
   uint col;
@@ -380,6 +385,7 @@ game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
   assert(i < game_nb_rows(g) && i >= 0);
   assert(j < game_nb_cols(g) && i >= 0);
 
+  // Initialise variables
   uint sizeOfCells = 0;
   game_cell up;
   game_cell right;
@@ -394,6 +400,8 @@ game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
   left.row = -1;
   left.col = -1;
 
+  // Assign the values of up, down, right and left depending on if it is
+  // wrapping or not
   if (game_is_wrapping(g)) {
     sizeOfCells = 4;
     if (i + 1 < game_nb_rows(g)) {
@@ -447,9 +455,11 @@ game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
     }
   }
 
+  // Allocate memory
   game_cell *cells = (game_cell *)malloc(sizeOfCells * sizeof(game_cell));
   assert(cells);
 
+  // Assign values of the cells
   uint x = 0;
   if (up.col != -1 && x < sizeOfCells) {
     cells[x].col = up.col;
@@ -472,8 +482,79 @@ game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
     x++;
   }
 
+  // Assign the size and return the cells
   *size = sizeOfCells;
   return cells;
+}
+
+game_line *get_ajacent_lines(game g, uint i, uint j) {
+  // Validate parameters
+  assert(g);
+  assert(i < game_nb_rows(g) && i >= 0);
+  assert(j < game_nb_cols(g) && i >= 0);
+
+  // Allocate memory
+  game_line *line = (game_line *)malloc(4 * sizeof(game_line));
+  assert(line);
+
+  // Set size of the lines depending on if the game is wrapping or not
+  if (game_is_wrapping(g)) {
+    line[0].size = game_nb_rows(g) - 1;
+    line[1].size = game_nb_cols(g) - 1;
+    line[2].size = game_nb_rows(g) - 1;
+    line[3].size = game_nb_cols(g) - 1;
+  } else {
+    line[0].size = i;
+    line[3].size = j;
+    line[2].size = game_nb_rows(g) - 1 - i;
+    line[1].size = game_nb_cols(g) - 1 - j;
+  }
+
+  // UP
+  line[0].line = (game_cell *)calloc(line[0].size, sizeof(game_cell));
+  assert(line[0].line);
+  int x = j;
+  int y = i - 1;
+  for (uint z = 0; z < line[0].size; z++) {
+    if (y == -1) y = game_nb_rows(g) - 1;
+    line[0].line[z].row = y--;
+    line[0].line[z].col = x;
+  }
+
+  // RIGHT
+  line[1].line = (game_cell *)calloc(line[1].size, sizeof(game_cell));
+  assert(line[1].line);
+  x = j + 1;
+  y = i;
+  for (uint z = 0; z < line[1].size; z++) {
+    if (x == game_nb_cols(g)) x = 0;
+    line[1].line[z].row = y;
+    line[1].line[z].col = x++;
+  }
+
+  // DOWN
+  line[2].line = (game_cell *)calloc(line[2].size, sizeof(game_cell));
+  assert(line[2].line);
+  x = j;
+  y = i + 1;
+  for (uint z = 0; z < line[2].size; z++) {
+    if (y == game_nb_rows(g)) y = 0;
+    line[2].line[z].row = y++;
+    line[2].line[z].col = x;
+  }
+
+  // LEFT
+  line[3].line = (game_cell *)calloc(line[3].size, sizeof(game_cell));
+  assert(line[3].line);
+  x = j - 1;
+  y = i;
+  for (uint z = 0; z < line[3].size; z++) {
+    if (x == -1) x = game_nb_cols(g) - 1;
+    line[3].line[z].row = y;
+    line[3].line[z].col = x--;
+  }
+
+  return line;
 }
 
 // Applies the effect of the lightbulb on the current square
@@ -497,68 +578,20 @@ void update_lightbulb_flags(game g, uint i, uint j) {
   assert(i < game_nb_rows(g) && i >= 0);
   assert(j < game_nb_cols(g) && i >= 0);
 
-  // Update the flags to the right of the lightbulb until we reach either
-  // a wall or another lightbulb
-  for (int right = j + 1; right < game_nb_cols(g); right++) {
-    if (apply_effect_of_lightbulb_on_square(g, i, right)) break;
+  game_line *line = get_ajacent_lines(g, i, j);
+
+  for (uint x = 0; x < 4; x++) {
+    for (uint y = 0; y < line[x].size; y++) {
+      if (apply_effect_of_lightbulb_on_square(g, line[x].line[y].row,
+                                              line[x].line[y].col))
+        break;
+    }
+    free(line[x].line);
+    line[x].line = NULL;
   }
 
-  // Update the flags to the left of the lightbulb
-  for (int left = j - 1; left >= 0; left--) {
-    if (apply_effect_of_lightbulb_on_square(g, i, left)) break;
-  }
-
-  // Update the flags above the lightbulb
-  for (int up = i - 1; up >= 0; up--) {
-    if (apply_effect_of_lightbulb_on_square(g, up, j)) break;
-  }
-
-  // Update the flags below the lightbulb
-  for (int down = i + 1; down < game_nb_rows(g); down++) {
-    if (apply_effect_of_lightbulb_on_square(g, down, j)) break;
-  }
-}
-
-bool has_intersecting_lightbulb(game g, uint i, uint j) {
-  // Validate parameters
-  assert(g);
-  assert(i < game_nb_rows(g) && i >= 0);
-  assert(j < game_nb_cols(g) && i >= 0);
-
-  // Iterate the squares to the right of the lightbulb until we reach either
-  // a wall or another lightbulb
-  for (int right = j + 1; right < game_nb_cols(g); right++) {
-    if (game_is_lightbulb(g, i, right))
-      return true;
-    else if (game_is_black(g, i, right))
-      break;
-  }
-
-  // Iterate the squares to the left of the lightbulb
-  for (int left = j - 1; left >= 0; left--) {
-    if (game_is_lightbulb(g, i, left))
-      return true;
-    else if (game_is_black(g, i, left))
-      break;
-  }
-
-  // Iterate the squares above the lightbulb
-  for (int up = i - 1; up >= 0; up--) {
-    if (game_is_lightbulb(g, up, j))
-      return true;
-    else if (game_is_black(g, up, j))
-      break;
-  }
-
-  // Iterate the squares below the lightbulb
-  for (int down = i + 1; down < game_nb_rows(g); down++) {
-    if (game_is_lightbulb(g, down, j))
-      return true;
-    else if (game_is_black(g, down, j))
-      break;
-  }
-
-  return false;
+  free(line);
+  line = NULL;
 }
 
 void update_wall_flags(game g, uint i, uint j) {
@@ -587,7 +620,7 @@ void update_wall_flags(game g, uint i, uint j) {
     else {
       // If the ajacent lightbulbs havent caused an error
       // check if other (non-ajacent) lightbulbs cause an error
-      int noAvailableValidLightbulbSpots = 4;
+      int noAvailableValidLightbulbSpots = sizeOfCells;
 
       for (uint x = 0; x < sizeOfCells; x++) {
         uint row = ajacent_cells[x].row;
