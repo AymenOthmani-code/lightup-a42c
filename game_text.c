@@ -10,7 +10,8 @@
 #define TEXT_RESET "reset"
 #define TEXT_QUIT "quit"
 #define TEXT_ACTION_MOVE "> action: play move '%c' into square (%u,%u)\n"
-#define TEXT_ERROR "Error at light bulb (%u,%u)\n"
+#define TEXT_ERROR_LIGHTBULB "Error at light bulb (%u,%u)\n"
+#define TEXT_ERROR_WALL "Error at wall (%u,%u)\n"
 #define TEXT_UNDO "undo"
 #define TEXT_REDO "redo"
 
@@ -122,8 +123,13 @@ void print_errors(cgame g) {
     // For each square in the game check if it has an error
     for (uint i = 0; i < DEFAULT_SIZE; i++)
         for (uint j = 0; j < DEFAULT_SIZE; j++)
-            if (game_has_error(g, i, j))
-                if (game_is_lightbulb(g, i, j)) printf(TEXT_ERROR, i, j);
+            if (game_has_error(g, i, j)) {
+                if (game_is_lightbulb(g, i, j)) {
+                    printf(TEXT_ERROR_LIGHTBULB, i, j);
+                } else if (game_is_black(g, i, j)) {
+                    printf(TEXT_ERROR_WALL, i, j);
+                }
+            }
 }
 
 void print_invalid_move() {
