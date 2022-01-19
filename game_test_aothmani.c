@@ -26,6 +26,7 @@ bool test_game_print() {
         game_delete(mygame);
     }
 
+    free(array_with_all);
     return true;
 }
 

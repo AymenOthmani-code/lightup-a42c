@@ -161,7 +161,7 @@ bool test_game_play_move() {
 
 /* ********** TEST GAME UPDATE FLAGS ********** */
 
-bool test_game_update_flags() {
+bool test_update_flag_default() {
     // [0] Test provided
     // test lighted flags (default solution)
     game g0 = game_default();
@@ -195,6 +195,10 @@ bool test_game_update_flags() {
     game_delete(g2);
     game_delete(g3);
 
+    return true;
+}
+
+bool tests_on_game() {
     // [1] Test if adding lightbulbs works
     game testGame = game_new_empty();
     uint size_allPlayableValues = 7;
@@ -281,7 +285,12 @@ bool test_game_update_flags() {
             game_play_move(testGame, ajacent_row, ajacent_column, S_BLANK);
         }
     }
+    game_delete(testGame);
+    return true;
+}
 
+bool test_game_properties() {
+    game testGame = game_new_empty();
     // [2] Test if adding lightbulbs next to walls works
     for (uint row = 0; row < DEFAULT_SIZE; row++) {
         for (uint column = 0; column < DEFAULT_SIZE; column++) {
@@ -313,7 +322,12 @@ bool test_game_update_flags() {
             game_set_square(testGame, row, column, S_BLANK);
         }
     }
+    game_delete(testGame);
+    return true;
+}
 
+bool test_walls_block_light() {
+    game testGame = game_new_empty();
     // [3] Test that walls block light
     game_set_square(testGame, 0, 3, S_BLACK1);
     game_play_move(testGame, 0, 2, S_LIGHTBULB);
@@ -327,6 +341,12 @@ bool test_game_update_flags() {
     ASSERT(game_get_square(testGame, 0, 4) == (S_LIGHTBULB | F_LIGHTED));
     ASSERT(game_get_square(testGame, 0, 5) == (F_LIGHTED));
 
+    game_delete(testGame);
+    return true;
+}
+
+bool test_walls_errored() {
+    game testGame = game_new_empty();
     // [4] Test that all the walls can be errored
     game_delete(testGame);
     testGame = game_new_empty();
@@ -371,9 +391,13 @@ bool test_game_update_flags() {
     ASSERT(game_get_square(testGame, 1, 3) == (S_BLACK3 | F_ERROR));
     ASSERT(game_get_square(testGame, 2, 3) == (S_LIGHTBULB | F_LIGHTED));
 
-    // [5] Test that lightbulb can cause error on far walls
     game_delete(testGame);
-    testGame = game_new_empty();
+    return true;
+}
+
+bool test_lightbulb_error() {
+    game testGame = game_new_empty();
+    // [5] Test that lightbulb can cause error on far walls
 
     game_set_square(testGame, 3, 2, S_BLACK3);
     game_set_square(testGame, 3, 3, S_BLACKU);
@@ -381,9 +405,12 @@ bool test_game_update_flags() {
     ASSERT(game_get_square(testGame, 3, 2) == (S_BLACK3 | F_ERROR));
 
     game_delete(testGame);
+    return true;
+}
 
+bool test_wrapping() {
     // [6] Test wrapping
-    testGame = game_new_empty_ext(5, 3, true);
+    game testGame = game_new_empty_ext(5, 3, true);
 
     game_set_square(testGame, 1, 0, S_BLACKU);
     game_set_square(testGame, 2, 1, S_BLACK2);
@@ -396,6 +423,17 @@ bool test_game_update_flags() {
     ASSERT(game_is_over(testGame));
 
     game_delete(testGame);
+    return true;
+}
+
+bool test_game_update_flags() {
+    ASSERT(test_update_flag_default());
+    ASSERT(tests_on_game());
+    ASSERT(test_game_properties());
+    ASSERT(test_walls_block_light());
+    ASSERT(test_walls_errored());
+    ASSERT(test_lightbulb_error());
+    ASSERT(test_wrapping());
 
     return true;
 }
