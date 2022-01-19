@@ -24,118 +24,119 @@
 #define ERROR_INVALID_CELL_STATE "Invalid cell state at (%u, %u), state = %d.\n"
 
 void game_print(cgame g) {
-  // Print numbers at top of game and line
-  printf(TOP_ROW_NUM);
-  printf(T_B_ROW_LINE);
+    // Print numbers at top of game and line
+    printf(TOP_ROW_NUM);
+    printf(T_B_ROW_LINE);
 
-  // Get width and height of game (use default for now)
-  int gameWidth = game_nb_cols(g);
-  int gameHeight = game_nb_rows(g);
+    // Get width and height of game (use default for now)
+    int gameWidth = game_nb_cols(g);
+    int gameHeight = game_nb_rows(g);
 
-  square cell = S_BLANK;
-  square cellState = S_BLANK;
-  square cellFlag = S_BLANK;
+    square cell = S_BLANK;
+    square cellState = S_BLANK;
+    square cellFlag = S_BLANK;
 
-  // Iterate over rows
-  for (uint i = 0; i < gameHeight; i++) {
-    // Print row start
-    printf(MAIN_ROW_START, i);
+    // Iterate over rows
+    for (uint i = 0; i < gameHeight; i++) {
+        // Print row start
+        printf(MAIN_ROW_START, i);
 
-    // Iterate over columns
-    for (uint j = 0; j < gameWidth; j++) {
-      // Get the cell and apply state mask
-      cell = game_get_square(g, i, j);
-      cellState = cell & S_MASK;
-      cellFlag = cell & F_MASK;
+        // Iterate over columns
+        for (uint j = 0; j < gameWidth; j++) {
+            // Get the cell and apply state mask
+            cell = game_get_square(g, i, j);
+            cellState = cell & S_MASK;
+            cellFlag = cell & F_MASK;
 
-      // Print value depending on state of cell
-      switch (cellState) {
-        case S_BLANK:
-          if (cellFlag == F_LIGHTED)
-            printf(SQUARE_LIGHTED);
-          else
-            printf(SQUARE_BLANK);
-          break;
-        case S_LIGHTBULB:
-          printf(SQUARE_LIGHT_BULB);
-          break;
-        case S_MARK:
-          printf(SQUARE_MARK);
-          break;
-        case S_BLACK0:
-          printf(SQUARE_BLACK_WALL_ZERO);
-          break;
-        case S_BLACK1:
-          printf(SQUARE_BLACK_WALL_ONE);
-          break;
-        case S_BLACK2:
-          printf(SQUARE_BLACK_WALL_TWO);
-          break;
-        case S_BLACK3:
-          printf(SQUARE_BLACK_WALL_THREE);
-          break;
-        case S_BLACK4:
-          printf(SQUARE_BLACK_WALL_FOUR);
-          break;
-        case S_BLACKU:
-          printf(SQUARE_BLACK_WALL_UNNUMBERED);
-          break;
-        default:
-          // In case the state in invalid print an error message and exit
-          printf(ERROR_MESSAGE_GENERIC);
-          printf(ERROR_INVALID_CELL_STATE, i, j, cell);
-          return;
-      }
+            // Print value depending on state of cell
+            switch (cellState) {
+                case S_BLANK:
+                    if (cellFlag == F_LIGHTED)
+                        printf(SQUARE_LIGHTED);
+                    else
+                        printf(SQUARE_BLANK);
+                    break;
+                case S_LIGHTBULB:
+                    printf(SQUARE_LIGHT_BULB);
+                    break;
+                case S_MARK:
+                    printf(SQUARE_MARK);
+                    break;
+                case S_BLACK0:
+                    printf(SQUARE_BLACK_WALL_ZERO);
+                    break;
+                case S_BLACK1:
+                    printf(SQUARE_BLACK_WALL_ONE);
+                    break;
+                case S_BLACK2:
+                    printf(SQUARE_BLACK_WALL_TWO);
+                    break;
+                case S_BLACK3:
+                    printf(SQUARE_BLACK_WALL_THREE);
+                    break;
+                case S_BLACK4:
+                    printf(SQUARE_BLACK_WALL_FOUR);
+                    break;
+                case S_BLACKU:
+                    printf(SQUARE_BLACK_WALL_UNNUMBERED);
+                    break;
+                default:
+                    // In case the state in invalid print an error message and
+                    // exit
+                    printf(ERROR_MESSAGE_GENERIC);
+                    printf(ERROR_INVALID_CELL_STATE, i, j, cell);
+                    return;
+            }
+        }
+
+        // Print row end
+        printf(MAIN_ROW_END);
     }
 
-    // Print row end
-    printf(MAIN_ROW_END);
-  }
-
-  // Print line at bottom of game
-  printf(T_B_ROW_LINE);
+    // Print line at bottom of game
+    printf(T_B_ROW_LINE);
 }
 
 game game_default(void) {
-  // Variables
-  square blackWallUnnumbered = S_BLACKU;
-  square blackWallOne = S_BLACK1;
-  square blackWallTwo = S_BLACK2;
+    // Variables
+    square blackWallUnnumbered = S_BLACKU;
+    square blackWallOne = S_BLACK1;
+    square blackWallTwo = S_BLACK2;
 
-  // Create new empty game
-  game newGame = game_new_empty();
+    // Create new empty game
+    game newGame = game_new_empty();
 
-  // Set square values
-  game_set_square(newGame, 0, 2, blackWallOne);
-  game_set_square(newGame, 1, 2, blackWallTwo);
-  game_set_square(newGame, 2, 5, blackWallUnnumbered);
-  game_set_square(newGame, 2, 6, blackWallTwo);
-  game_set_square(newGame, 4, 0, blackWallOne);
-  game_set_square(newGame, 4, 1, blackWallUnnumbered);
-  game_set_square(newGame, 5, 4, blackWallTwo);
-  game_set_square(newGame, 6, 4, blackWallUnnumbered);
+    // Set square values
+    game_set_square(newGame, 0, 2, blackWallOne);
+    game_set_square(newGame, 1, 2, blackWallTwo);
+    game_set_square(newGame, 2, 5, blackWallUnnumbered);
+    game_set_square(newGame, 2, 6, blackWallTwo);
+    game_set_square(newGame, 4, 0, blackWallOne);
+    game_set_square(newGame, 4, 1, blackWallUnnumbered);
+    game_set_square(newGame, 5, 4, blackWallTwo);
+    game_set_square(newGame, 6, 4, blackWallUnnumbered);
 
-  return newGame;
+    return newGame;
 }
 
 game game_default_solution(void) {
-  // Variables
-  square lightbulb = S_LIGHTBULB;
+    // Variables
+    square lightbulb = S_LIGHTBULB;
 
-  // Get default game to get a game prefilled with walls
-  game newGameSolution = game_default();
+    // Get default game to get a game prefilled with walls
+    game newGameSolution = game_default();
 
-  // Set lightbulbs
-  game_play_move(newGameSolution, 0, 0, lightbulb);
-  game_play_move(newGameSolution, 0, 3, lightbulb);
-  game_play_move(newGameSolution, 1, 1, lightbulb);
-  game_play_move(newGameSolution, 1, 6, lightbulb);
-  game_play_move(newGameSolution, 2, 2, lightbulb);
-  game_play_move(newGameSolution, 3, 6, lightbulb);
-  game_play_move(newGameSolution, 4, 4, lightbulb);
-  game_play_move(newGameSolution, 5, 0, lightbulb);
-  game_play_move(newGameSolution, 5, 5, lightbulb);
-  game_play_move(newGameSolution, 6, 1, lightbulb);
+    // Set lightbulbs
+    game_play_move(newGameSolution, 0, 0, lightbulb);
+    game_play_move(newGameSolution, 0, 3, lightbulb);
+    game_play_move(newGameSolution, 1, 1, lightbulb);
+    game_play_move(newGameSolution, 1, 6, lightbulb);
+    game_play_move(newGameSolution, 2, 2, lightbulb);
+    game_play_move(newGameSolution, 3, 6, lightbulb);
+    game_play_move(newGameSolution, 4, 4, lightbulb);
+    game_play_move(newGameSolution, 5, 0, lightbulb);
+    game_play_move(newGameSolution, 5, 5, lightbulb);
+    game_play_move(newGameSolution, 6, 1, lightbulb);
 
-  return newGameSolution;
+    return newGameSolution;
 }
