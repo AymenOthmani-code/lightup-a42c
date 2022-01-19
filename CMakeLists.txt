@@ -5,7 +5,7 @@ project(lightup C)
 include(CTest)
 enable_testing()
 
-set(CMAKE_C_FLAGS "-std=c99 -g -Wall")
+set(CMAKE_C_FLAGS "-std=c99 -g -Wall --coverage")
 add_executable(game_text game_text.c)
 add_executable(game_test_tkattan game_test_tkattan.c)
 add_executable(game_test_aothmani game_test_aothmani.c)

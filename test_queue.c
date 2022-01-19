@@ -142,8 +142,6 @@ bool test_empty(int k) {
     queue_push_head(q, data);
   }
   ASSERT(!queue_is_empty(q));
-  queue_clear_full(q, free);
-  ASSERT(queue_is_empty(q));
   queue_free(q);
   return true;
 }
