@@ -10,9 +10,22 @@
 /* ********** TEST game_print ********** */
 
 bool test_game_print() {
-    game mygame = game_new_empty();
-    game_print(mygame);
-    game_delete(mygame);
+    // Creation of arrays
+    square *array_with_all = create_array_all_values();
+    square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+
+    for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+        for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
+            // Fill array_elements with all the squares possible
+            array_element[i] = array_with_all[z];
+        }
+        // Create game with the last array created
+
+        game mygame = game_new(array_element);
+        game_print(mygame);
+        game_delete(mygame);
+    }
+
     return true;
 }
 
