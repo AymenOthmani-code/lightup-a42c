@@ -131,11 +131,7 @@ void *queue_peek_tail(queue *q) {
 void queue_clear(queue *q) {
     assert(q);
     element_t *e = q->head;
-    while (e) {
-        element_t *tmp = e;
-        e = e->next;
-        free(tmp);
-    }
+    assert(!e);
     q->head = q->tail = NULL;
     q->length = 0;
 }
