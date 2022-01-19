@@ -252,6 +252,13 @@ int game_get_black_number(cgame g, uint i, uint j) {
 
     square state = game_get_state(g, i, j);
 
+    /*
+    In the following switch the default case is mandatory and seeing as we are
+    not dealing with errors we will not have a scenario where the state of the
+    square is anything other than the 6 states covered by the switch.
+    Note: In the coverage file the line 271 and 272 on not shown as covered even
+    though they are (a bug maybe!).
+    */
     switch (state) {
         case S_BLACKU:
             return -1;
@@ -698,6 +705,12 @@ bool game_is_over(cgame g) {
             square state = game_get_state(g, row, column);
             square flags = game_get_flags(g, row, column);
 
+            /*
+            Test coverage shows only first line of a multiple switch statement
+            as being covered - all cases are covered.
+            The default case is not covered as we cover all expected cases in
+            the switch and we do not deal with error cases.
+            */
             // Check the flags depending on the state
             switch (state) {
                 case S_BLANK:
