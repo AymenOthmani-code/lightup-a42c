@@ -22,7 +22,7 @@
 
 /* ************************************************************************** */
 
-// default game with some moves that cause an error
+// Default game with some moves that cause an error (provided by teachers)
 game game_default_other() {
     square squares[] = {
         (S_LIGHTBULB | F_LIGHTED | F_ERROR),
@@ -81,6 +81,7 @@ game game_default_other() {
 /* ********** TEST COMMUN ********** */
 
 bool check_game(square *liste, game game_test) {
+    // For each square check that the corresponding list value is correct
     for (uint i = 0; i < game_nb_rows(game_test); i++) {
         for (uint j = 0; j < game_nb_cols(game_test); j++) {
             square carre = game_get_square(game_test, i, j);
@@ -93,17 +94,19 @@ bool check_game(square *liste, game game_test) {
             }
         }
     }
+
     return true;
 }
 
+// Returns an array with all the possible values.
 square *create_array_all_values() {
     square *array_all_values =
         (square *)malloc(sizeof(square) * DEFAULT_SIZE * DEFAULT_SIZE);
-
     if (array_all_values == NULL) {
         fprintf(stderr, "NULL POINTER");
         exit(EXIT_FAILURE);
     }
+
     square array[20] = {S_BLANK,
                         S_BLACK,
                         S_BLACK0,
@@ -124,8 +127,11 @@ square *create_array_all_values() {
                         S_BLACK3 | F_ERROR,
                         S_BLACK4 | F_ERROR,
                         S_BLACK | F_ERROR};
+
+    // Insert the array values into the malloc-ed array
     for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
         array_all_values[i] = array[i];
     }
+
     return array_all_values;
 }

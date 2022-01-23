@@ -10,30 +10,38 @@
 /* ********** TEST game_print ********** */
 
 bool test_game_print() {
-    // Creation of arrays
+    // Get array of all possible values
     square *array_with_all = create_array_all_values();
+
     square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
 
+    // For each possible value create a game full of that value
     for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+        // Fill array_elements with all the squares possible
         for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
-            // Fill array_elements with all the squares possible
             array_element[i] = array_with_all[z];
         }
-        // Create game with the last array created
 
+        // Create game with the array created
         game mygame = game_new(array_element);
+
+        // Print and delete the game
         game_print(mygame);
         game_delete(mygame);
     }
 
     free(array_with_all);
+
     return true;
 }
 
 /* ********** TEST game_default ********** */
 
 bool test_game_default() {
+    // Create a default game and ensure that it matches the elements of the
+    // default array created
     game mydefaultgame = game_default();
+
     square array[DEFAULT_SIZE * DEFAULT_SIZE] = {
         S_BLANK,  S_BLANK,  S_BLACK1, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
         S_BLANK,  S_BLANK,  S_BLACK2, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
@@ -49,14 +57,19 @@ bool test_game_default() {
                    array[j + DEFAULT_SIZE * i]);
         }
     }
+
     game_delete(mydefaultgame);
+
     return true;
 }
 
 /* ********** TEST game_default_solution ********** */
 
 bool test_game_default_solution() {
-    game mydefaultgamesolution = game_default_solution();
+    // Create a default game solution and ensure that it matches the elements of
+    // the default array created
+    game defaultGame = game_default_solution();
+
     square array[DEFAULT_SIZE * DEFAULT_SIZE] = {
         S_BLANK,  S_BLANK,  S_BLACK1, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
         S_BLANK,  S_BLANK,  S_BLACK2, S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
@@ -65,17 +78,22 @@ bool test_game_default_solution() {
         S_BLACK1, S_BLACKU, S_BLANK,  S_BLANK, S_BLANK,  S_BLANK,  S_BLANK,
         S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLACK2, S_BLANK,  S_BLANK,
         S_BLANK,  S_BLANK,  S_BLANK,  S_BLANK, S_BLACKU, S_BLANK,  S_BLANK};
-    game new_game = game_new(array);
+
+    game defaultGameFromArray = game_new(array);
+
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
-            if (game_get_square(mydefaultgamesolution, height, width) & S_BLACK)
-                ASSERT(game_get_square(mydefaultgamesolution, height, width) ==
-                       (game_get_square(new_game, height, width)));
+            if (game_get_square(defaultGame, height, width) & S_BLACK)
+                ASSERT(game_get_square(defaultGame, height, width) ==
+                       (game_get_square(defaultGameFromArray, height, width)));
         }
     }
-    ASSERT(game_is_over(mydefaultgamesolution));
-    game_delete(new_game);
-    game_delete(mydefaultgamesolution);
+
+    ASSERT(game_is_over(defaultGame));
+
+    game_delete(defaultGame);
+    game_delete(defaultGameFromArray);
+
     return true;
 }
 
@@ -94,35 +112,37 @@ bool test_game_is_blank() {
     int size_blank_array = 2;
     square blank_array[2] = {S_BLANK, S_BLANK | F_LIGHTED};
 
-    // Creating an array with every square type possible other then blank
-    int size_array_error = 18;
-    square array_error[18] = {S_BLACK | F_ERROR,
-                              S_BLACK0 | F_ERROR,
-                              S_BLACK1 | F_ERROR,
-                              S_BLACK2 | F_ERROR,
-                              S_BLACK3 | F_ERROR,
-                              S_BLACK4 | F_ERROR,
-                              S_BLACK,
-                              S_BLACK1,
-                              S_BLACK2,
-                              S_BLACK3,
-                              S_BLACK4,
-                              S_BLACKU,
-                              S_LIGHTBULB,
-                              S_MARK | F_LIGHTED,
-                              S_MARK,
-                              S_BLACK0,
-                              S_LIGHTBULB | F_LIGHTED | F_ERROR,
-                              S_MARK | F_LIGHTED};
+    // Create an array with every square type possible other then blank
+    int size_non_blank_array = 18;
+    square non_blank_array[18] = {S_BLACK | F_ERROR,
+                                  S_BLACK0 | F_ERROR,
+                                  S_BLACK1 | F_ERROR,
+                                  S_BLACK2 | F_ERROR,
+                                  S_BLACK3 | F_ERROR,
+                                  S_BLACK4 | F_ERROR,
+                                  S_BLACK,
+                                  S_BLACK1,
+                                  S_BLACK2,
+                                  S_BLACK3,
+                                  S_BLACK4,
+                                  S_BLACKU,
+                                  S_LIGHTBULB,
+                                  S_MARK | F_LIGHTED,
+                                  S_MARK,
+                                  S_BLACK0,
+                                  S_LIGHTBULB | F_LIGHTED | F_ERROR,
+                                  S_MARK | F_LIGHTED};
     ;
 
-    // Creating a game to test
+    // Create a game to test
     game game_test = game_new_empty();
 
+    // For each square set the square to the different blank and non-blank
+    // values
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
-            for (int i = 0; i < size_array_error; i++) {
-                game_set_square(game_test, height, width, array_error[i]);
+            for (int i = 0; i < size_non_blank_array; i++) {
+                game_set_square(game_test, height, width, non_blank_array[i]);
                 ASSERT(!game_is_blank(game_test, height, width));
             }
             for (int j = 0; j < size_blank_array; j++) {
@@ -131,18 +151,20 @@ bool test_game_is_blank() {
             }
         }
     }
+
     game_delete(game_test);
+
     return true;
 }
 
 /* ********** TEST game_is_lightbulb ********** */
 
 bool test_game_is_lightbulb() {
-    // Creating an array with only lightbulb square
+    // Create an array with only lightbulb square
     int size_lightbulb_array = 2;
     square lightbulb_array[2] = {S_LIGHTBULB,
                                  S_LIGHTBULB | F_LIGHTED | F_ERROR};
-    // Creating an array with every square type possible other then lightbulb
+    // Create an array with every square type possible other then lightbulb
     int size_array_error = 18;
     square array_error[18] = {S_BLACK | F_ERROR,
                               S_BLACK0 | F_ERROR,
@@ -162,9 +184,11 @@ bool test_game_is_lightbulb() {
                               S_BLACK0,
                               S_BLACK3,
                               S_BLACK4};
-    // Creating a new_game to test
+
     game game_test = game_new_empty();
 
+    // For each square set the square to the different lightbulb and
+    // non-lightbulb values
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
             for (int i = 0; i < size_array_error; i++) {
@@ -177,7 +201,9 @@ bool test_game_is_lightbulb() {
             }
         }
     }
+
     game_delete(game_test);
+
     return true;
 }
 
@@ -208,9 +234,11 @@ bool test_game_is_lighted() {
                               S_BLACK3,
                               S_BLACK4,
                               S_LIGHTBULB};
-    // Creating a new_game to test
+
     game game_test = game_new_empty();
 
+    // For each square set the square to the different lighted and
+    // non-lighted values
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
             for (int i = 0; i < size_array_error; i++) {
@@ -223,14 +251,16 @@ bool test_game_is_lighted() {
             }
         }
     }
+
     game_delete(game_test);
+
     return true;
 }
 
 /* ********** TEST game_has_error ********** */
 
 bool test_game_has_error() {
-    // Creating an array with only squares with errors
+    // Create an array with only squares with errors
     int size_array_of_error = 7;
     square array_of_errors[7] = {S_LIGHTBULB | F_LIGHTED | F_ERROR,
                                  S_BLACK0 | F_ERROR,
@@ -240,7 +270,7 @@ bool test_game_has_error() {
                                  S_BLACK4 | F_ERROR,
                                  S_BLACK | F_ERROR};
 
-    // Creating an array with squares with no errors
+    // Create an array with squares with no errors
     int size_array_no_error = 13;
     square array_no_errors[13] = {S_BLANK,
                                   S_BLACK,
@@ -255,9 +285,11 @@ bool test_game_has_error() {
                                   S_MARK,
                                   S_BLANK | F_LIGHTED,
                                   S_MARK | F_LIGHTED};
-    // Creating a new_game to test
+
     game game_test = game_new_empty();
 
+    // For each square set the square to the different error and
+    // non-error values
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
             for (int i = 0; i < size_array_no_error; i++) {
@@ -270,16 +302,18 @@ bool test_game_has_error() {
             }
         }
     }
+
     game_delete(game_test);
+
     return true;
 }
 
 /* ********** TEST game_get_flags ********** */
 
 bool test_game_get_flags() {
-    // Creating a new game
     game game_test = game_new_empty();
-    // Creating an array with every square
+
+    // Create an array with every square
     square array_all_square[20] = {S_BLANK,
                                    S_BLACK,
                                    S_BLACK0,
@@ -300,7 +334,8 @@ bool test_game_get_flags() {
                                    S_BLACK3 | F_ERROR,
                                    S_BLACK4 | F_ERROR,
                                    S_BLACK | F_ERROR};
-    // Creating an array with every flag
+
+    // Create an array with every flag
     square array_all_flags[20] = {S_BLANK,
                                   S_BLANK,
                                   S_BLANK,
@@ -321,7 +356,9 @@ bool test_game_get_flags() {
                                   F_ERROR,
                                   F_ERROR,
                                   F_ERROR};
-    // Asserting that we can get every flag square type in our new game
+
+    // For each square set it to all the different possible values and ensure
+    // that the correct flag is returned
     for (int height = 0; height < DEFAULT_SIZE; height++) {
         for (int width = 0; width < DEFAULT_SIZE; width++) {
             for (int z = 0; z < 20; z++) {
@@ -331,33 +368,38 @@ bool test_game_get_flags() {
             }
         }
     }
+
     game_delete(game_test);
+
     return true;
 }
 
 /* ********** TEST game_size_wrapping ********** */
 
 bool test_game_size_wrapping() {
+    // For games size 1 to 10 check that the size and wrapping values are
+    // correct
     for (int height = 1; height <= 10; height++) {
         for (int width = 1; width <= 10; width++) {
             game game_test = game_new_empty_ext(height, width, false);
             game game_test_wrapping = game_new_empty_ext(height, width, true);
 
-            // test height, width and wrapping (game_test)
+            // Test height, width and wrapping (game_test)
             ASSERT(game_nb_cols(game_test) == width);
             ASSERT(game_nb_rows(game_test) == height);
             ASSERT(game_is_wrapping(game_test) == false);
 
-            // test height, width and wrapping (game_test_wrapping)
+            // Test height, width and wrapping (game_test_wrapping)
             ASSERT(game_nb_cols(game_test_wrapping) == width);
             ASSERT(game_nb_rows(game_test_wrapping) == height);
             ASSERT(game_is_wrapping(game_test_wrapping) == true);
 
-            // delete games
+            // Delete games
             game_delete(game_test);
             game_delete(game_test_wrapping);
         }
     }
+
     return true;
 }
 /* ********** Usage********** */
