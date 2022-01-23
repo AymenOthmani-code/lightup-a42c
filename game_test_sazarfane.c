@@ -144,6 +144,17 @@ bool test_game_equal() {
 
     ASSERT(!game_equal(testGame, testGameTwo));
 
+    // Check if heights are equal
+    game g1 = game_new_empty_ext(5, 5, false);
+    game g2 = game_new_empty_ext(4, 4, false);
+
+    ASSERT(!game_equal(g1, g2));
+    ASSERT(!game_equal(g2, g1));
+
+    game g3 = game_new_empty_ext(5, 5, true);
+
+    ASSERT(!game_equal(g1, g3));
+
     // Clean up
     game_delete(testGame);
     game_delete(testGameTwo);
