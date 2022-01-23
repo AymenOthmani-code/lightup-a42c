@@ -72,60 +72,103 @@ bool test_game_copy() {
 /* ********** TEST GAME_EQUAL ********** */
 
 bool test_game_equal() {
-    // Create array
+    // [1] Test that game defaults are equal/not equal
+    game gameDefault = game_default();
+    game gameDefaultCopy = game_default();
+    game gameDefaultSolution = game_default_solution();
+    game gameDefaultSolutionCopy = game_default_solution();
+
+    ASSERT(game_equal(gameDefault, gameDefaultCopy));
+    ASSERT(game_equal(gameDefaultSolution, gameDefaultSolutionCopy));
+    ASSERT(!game_equal(gameDefault, gameDefaultSolution));
+
+    game_delete(gameDefault);
+    game_delete(gameDefaultCopy);
+    game_delete(gameDefaultSolution);
+    game_delete(gameDefaultSolutionCopy);
+
+    // [2] Test that combinations of wrapping
+    game gameWrappingTrue =
+        game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, true);
+    game gameWrappingTrueCopy =
+        game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, true);
+    game gameWrappingFalse =
+        game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
+    game gameWrappingFalseCopy =
+        game_new_empty_ext(DEFAULT_SIZE, DEFAULT_SIZE, false);
+
+    ASSERT(game_equal(gameWrappingTrue, gameWrappingTrueCopy));
+    ASSERT(game_equal(gameWrappingFalse, gameWrappingFalseCopy));
+    ASSERT(!game_equal(gameWrappingTrue, gameWrappingFalse));
+
+    // [3] Test for different heights
     square *array_with_all = create_array_all_values();
-    square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
 
-    // Create game_sol with game_default_solution
-    game game_sol = game_default_solution();
+    for (uint x = 2; x <= 10; x++) {
+        for (uint y = 2; y <= 10; y++) {
+            square gameCreationArray[x * y];
+            for (int z = 0; z < SIZE_ALL_VALUES; z++) {
+                for (int i = 0; i < x * y; i++) {
+                    gameCreationArray[i] = array_with_all[z];
+                }
+                game g1 = game_new_ext(x, y, gameCreationArray, false);
+                game g2 = game_new_ext(x, y, gameCreationArray, false);
+                game g3 = game_new_ext(y, x, gameCreationArray, false);
+                game g4 = game_new_ext(y, x, gameCreationArray, false);
 
-    for (int z = 0; z < SIZE_ALL_VALUES; z++) {
-        for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
-            array_element[i] = array_with_all[z];
+                ASSERT(game_equal(g1, g2));
+                ASSERT(game_equal(g3, g4));
+                ASSERT((x == y) == game_equal(g1, g4));
+
+                game_delete(g1);
+                game_delete(g2);
+                game_delete(g3);
+                game_delete(g4);
+            }
         }
-        game game_test = game_new(array_element);
-        game game_test_copy = game_copy(game_test);
-
-        ASSERT(check_game(array_element, game_test));
-        ASSERT(check_game(array_element, game_test_copy));
-        ASSERT(game_equal(game_test, game_test_copy));
-        ASSERT(!game_equal(game_test, game_sol));
-        // Clean up
-        game_delete(game_test);
-        game_delete(game_test_copy);
     }
 
-    // Test all possible values of each square
+    // [4] Test all possible values of each square
     game testGame = game_new_empty();
     game testGameTwo = game_new_empty();
+    game testGameThree = game_new_empty();
+    game testGameFour = game_new_empty();
+    game testGameFive = game_new_empty();
+    game testGameSix = game_new_empty();
+
     for (uint row = 0; row < DEFAULT_SIZE; row++) {
         for (uint column = 0; column < DEFAULT_SIZE; column++) {
             for (uint i = 0; i < SIZE_ALL_VALUES; i++) {
                 game_set_square(testGame, row, column, array_with_all[i]);
                 game_set_square(testGameTwo, row, column, array_with_all[i]);
                 ASSERT(game_equal(testGame, testGameTwo));
+
+                game_set_square(testGameThree, row, column, S_BLANK);
+                ASSERT((array_with_all[i] == S_BLANK) ==
+                       game_equal(testGame, testGameThree));
+
+                game_set_square(testGameFour, row, column, S_BLANK | F_LIGHTED);
+                ASSERT((array_with_all[i] == (S_BLANK | F_LIGHTED)) ==
+                       game_equal(testGame, testGameFour));
+
+                game_set_square(testGameFive, row, column, S_BLANK | F_ERROR);
+                ASSERT((array_with_all[i] == (S_BLANK | F_ERROR)) ==
+                       game_equal(testGame, testGameFive));
+
+                game_set_square(testGameSix, row, column,
+                                S_BLANK | F_LIGHTED | F_ERROR);
+                ASSERT((array_with_all[i] == (S_BLANK | F_LIGHTED | F_ERROR)) ==
+                       game_equal(testGame, testGameSix));
             }
             game_set_square(testGame, row, column, S_BLANK);
             game_set_square(testGameTwo, row, column, S_BLANK);
+            game_set_square(testGameThree, row, column, S_BLANK);
+            game_set_square(testGameFour, row, column, S_BLANK);
+            game_set_square(testGameFive, row, column, S_BLANK);
+            game_set_square(testGameSix, row, column, S_BLANK);
             ASSERT(game_equal(testGame, testGameTwo));
         }
     }
-
-    // Test that two instances of game_default and game_default_solution are
-    // equal
-    game new_default = game_default_solution();
-    game new_def = game_default();
-    game new_new_def = game_default();
-
-    ASSERT(game_equal(game_sol, new_default));
-    ASSERT(game_equal(new_def, new_new_def));
-
-    game_delete(new_default);
-    game_delete(new_def);
-    game_delete(new_new_def);
-
-    game_delete(testGame);
-    game_delete(testGameTwo);
 
     // Check if it is not checking flags
     testGame = game_new_empty();
@@ -145,28 +188,12 @@ bool test_game_equal() {
 
     ASSERT(!game_equal(testGame, testGameTwo));
 
-    // Check if heights are equal
-    game g1 = game_new_empty_ext(5, 5, false);
-    game g2 = game_new_empty_ext(4, 4, false);
-
-    ASSERT(!game_equal(g1, g2));
-    ASSERT(!game_equal(g2, g1));
-
-    game g4 = game_new_empty_ext(5, 7, false);
-    game g5 = game_new_empty_ext(7, 5, false);
-
-    ASSERT(!game_equal(g4, g5));
-    ASSERT(!game_equal(g5, g4));
-
-    // Check if wrapping is set correctly
-    game g3 = game_new_empty_ext(5, 5, true);
-
-    ASSERT(!game_equal(g1, g3));
-
-    // Clean up
     game_delete(testGame);
     game_delete(testGameTwo);
-    game_delete(game_sol);
+    game_delete(testGameThree);
+    game_delete(testGameFour);
+    game_delete(testGameFive);
+    game_delete(testGameSix);
     free(array_with_all);
     return true;
 }
