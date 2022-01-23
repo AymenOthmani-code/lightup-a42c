@@ -562,10 +562,20 @@ bool test_game_restart() {
     game_undo(testGameTwo);
     ASSERT(!game_is_lightbulb(testGameTwo, 1, 1));
 
+    // [4] Test redo
+    game testGameThree = game_new_empty();
+    game_play_move(testGameThree, 1, 1, S_LIGHTBULB);
+    ASSERT(game_is_lightbulb(testGameThree, 1, 1));
+    game_restart(testGameThree);
+    ASSERT(!game_is_lightbulb(testGameThree, 1, 1));
+    game_redo(testGameThree);
+    ASSERT(!game_is_lightbulb(testGameThree, 1, 1));
+
     // Clean-up test game restart on each square for each value
     free(allSquares);
     game_delete(testGame);
     game_delete(testGameTwo);
+    game_delete(testGameThree);
 
     return true;
 }
