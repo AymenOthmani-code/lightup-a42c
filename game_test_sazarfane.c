@@ -32,8 +32,9 @@ bool test_game_new() {
     }
 
     game game_test = game_new_ext(4, 5, array_element, false);
-    ASSERT(game_nb_cols(game_test) == 5);
-    ASSERT(game_nb_rows(game_test) == 4);
+    ASSERT(game_test->width == 5);
+    ASSERT(game_test->height == 4);
+    game_delete(game_test);
 
     // clean-up test array
     free(array_with_all);
