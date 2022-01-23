@@ -24,6 +24,17 @@ bool test_game_new() {
         ASSERT(check_game(array_element, game_test));
         game_delete(game_test);
     }
+
+    // test inversion of parameters
+    for (int i = 0; i < 4 * 5; i++) {
+        // Fill array_elements with all the squares possible
+        array_element[i] = S_BLANK;
+    }
+
+    game game_test = game_new_ext(4, 5, array_element, false);
+    ASSERT(game_nb_cols(game_test) == 5);
+    ASSERT(game_nb_rows(game_test) == 4);
+
     // clean-up test array
     free(array_with_all);
     return true;
