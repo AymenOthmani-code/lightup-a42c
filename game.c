@@ -354,8 +354,7 @@ void game_redo(game g) {
 
     if (!queue_is_empty(g->redo_queue)) {
         game_move *data = (game_move *)queue_pop_head(g->redo_queue);
-        printf("%d, %d\n", data->previous,
-               game_get_state(g, data->row, data->col));
+
         assert(data->previous == game_get_state(g, data->row, data->col));
 
         game_set_square(g, data->row, data->col, data->current);
@@ -389,111 +388,89 @@ void game_play_move(game g, uint i, uint j, square s) {
     queue_clear_full(g->redo_queue, free);
 }
 
-game_cell *get_ajacent_cells(game g, uint i, uint j, uint *size) {
+void game_add_flags(game g, uint i, uint j, square s) {
+    // Validate parameters
+    assert(g);
+    assert(i < game_nb_rows(g) && i >= 0);
+    assert(j < game_nb_cols(g) && i >= 0);
+    assert(s == F_ERROR || s == F_LIGHTED || s == (F_LIGHTED | F_ERROR));
+
+    game_set_square(g, i, j, (game_get_square(g, i, j) | s));
+}
+
+void game_set_flags(game g, uint i, uint j, square s) {
+    // Validate parameters
+    assert(g);
+    assert(i < game_nb_rows(g) && i >= 0);
+    assert(j < game_nb_cols(g) && i >= 0);
+    assert(s == F_ERROR || s == F_LIGHTED || s == (F_LIGHTED | F_ERROR));
+
+    game_set_square(g, i, j, (game_get_state(g, i, j) | s));
+}
+
+game_cell *get_ajacent_cells(game g, uint i, uint j) {
     // Validate parameters
     assert(g);
     assert(i < game_nb_rows(g) && i >= 0);
     assert(j < game_nb_cols(g) && i >= 0);
 
     // Initialise variables
-    uint sizeOfCells = 0;
-    game_cell up;
-    game_cell right;
-    game_cell down;
-    game_cell left;
-    up.row = -1;
-    up.col = -1;
-    down.row = -1;
-    down.col = -1;
-    right.row = -1;
-    right.col = -1;
-    left.row = -1;
-    left.col = -1;
+    game_cell up = {.col = j, .row = i - 1};
+    game_cell right = {.col = j + 1, .row = i};
+    game_cell down = {.col = j, .row = i + 1};
+    game_cell left = {.col = j - 1, .row = i};
 
-    // Assign the values of up, down, right and left depending on if it is
-    // wrapping or not
-    if (game_is_wrapping(g)) {
-        sizeOfCells = 4;
-        if (i + 1 < game_nb_rows(g)) {
-            down.col = j;
-            down.row = i + 1;
-        } else {
-            down.col = j;
-            down.row = 0;
+    game_cell ajacent_cells[] = {up, right, down, left};
+
+    // If wrapping then wrap cells otherwise set the cells to the default value
+    for (uint direction = 0; direction < 4; direction++) {
+        // Is the cell off the left side
+        if (ajacent_cells[direction].col < 0) {
+            if (game_is_wrapping(g))  // Send the cell to the right of the game
+                ajacent_cells[direction].col = game_nb_cols(g) - 1;
+            else {
+                ajacent_cells[direction].col = -1;
+                ajacent_cells[direction].row = -1;
+            }
         }
-        if (j + 1 < game_nb_cols(g)) {
-            right.col = j + 1;
-            right.row = i;
-        } else {
-            right.col = 0;
-            right.row = i;
+        // Is the cell off the top side
+        if (ajacent_cells[direction].row < 0) {
+            if (game_is_wrapping(g))  // Send the cell to the bottom of the game
+                ajacent_cells[direction].row = game_nb_rows(g) - 1;
+            else {
+                ajacent_cells[direction].col = -1;
+                ajacent_cells[direction].row = -1;
+            }
         }
-        if (j != 0) {
-            left.col = j - 1;
-            left.row = i;
-        } else {
-            left.col = game_nb_cols(g) - 1;
-            left.row = i;
+        // Is the cell off the right side
+        if (ajacent_cells[direction].col == game_nb_cols(g)) {
+            if (game_is_wrapping(g))  // Send the cell to the left of the game
+                ajacent_cells[direction].col = 0;
+            else {
+                ajacent_cells[direction].col = -1;
+                ajacent_cells[direction].row = -1;
+            }
         }
-        if (i != 0) {
-            up.col = j;
-            up.row = i - 1;
-        } else {
-            up.col = j;
-            up.row = game_nb_rows(g) - 1;
-        }
-    } else {
-        if (i + 1 < game_nb_rows(g)) {
-            sizeOfCells++;
-            down.col = j;
-            down.row = i + 1;
-        }
-        if (j + 1 < game_nb_cols(g)) {
-            sizeOfCells++;
-            right.col = j + 1;
-            right.row = i;
-        }
-        if (j != 0) {
-            sizeOfCells++;
-            left.col = j - 1;
-            left.row = i;
-        }
-        if (i != 0) {
-            sizeOfCells++;
-            up.col = j;
-            up.row = i - 1;
+        // Is the cell off the bottom side
+        if (ajacent_cells[direction].row == game_nb_rows(g)) {
+            if (game_is_wrapping(g))  // Send the cell to the top of the game
+                ajacent_cells[direction].row = 0;
+            else {
+                ajacent_cells[direction].col = -1;
+                ajacent_cells[direction].row = -1;
+            }
         }
     }
 
     // Allocate memory
-    game_cell *cells = (game_cell *)malloc(sizeOfCells * sizeof(game_cell));
+    game_cell *cells = (game_cell *)malloc(4 * sizeof(game_cell));
     assert(cells);
 
     // Assign values of the cells
-    uint x = 0;
-    if (up.col != -1 && x < sizeOfCells) {
-        cells[x].col = up.col;
-        cells[x].row = up.row;
-        x++;
-    }
-    if (down.col != -1 && x < sizeOfCells) {
-        cells[x].col = down.col;
-        cells[x].row = down.row;
-        x++;
-    }
-    if (right.col != -1 && x < sizeOfCells) {
-        cells[x].col = right.col;
-        cells[x].row = right.row;
-        x++;
-    }
-    if (left.col != -1 && x < sizeOfCells) {
-        cells[x].col = left.col;
-        cells[x].row = left.row;
-        x++;
+    for (uint direction = 0; direction < 4; direction++) {
+        cells[direction] = ajacent_cells[direction];
     }
 
-    // Assign the size and return the cells
-    *size = sizeOfCells;
     return cells;
 }
 
@@ -504,80 +481,91 @@ game_line *get_ajacent_lines(game g, uint i, uint j) {
     assert(j < game_nb_cols(g) && i >= 0);
 
     // Allocate memory
-    game_line *line = (game_line *)malloc(4 * sizeof(game_line));
-    assert(line);
+    game_line *lines = (game_line *)malloc(4 * sizeof(game_line));
+    assert(lines);
 
     // Set size of the lines depending on if the game is wrapping or not
     if (game_is_wrapping(g)) {
-        line[0].size = game_nb_rows(g) - 1;
-        line[1].size = game_nb_cols(g) - 1;
-        line[2].size = game_nb_rows(g) - 1;
-        line[3].size = game_nb_cols(g) - 1;
+        lines[0].size = game_nb_rows(g) - 1;
+        lines[1].size = game_nb_cols(g) - 1;
+        lines[2].size = game_nb_rows(g) - 1;
+        lines[3].size = game_nb_cols(g) - 1;
     } else {
-        line[0].size = i;
-        line[3].size = j;
-        line[2].size = game_nb_rows(g) - 1 - i;
-        line[1].size = game_nb_cols(g) - 1 - j;
+        lines[0].size = i;
+        lines[1].size = game_nb_cols(g) - 1 - j;
+        lines[2].size = game_nb_rows(g) - 1 - i;
+        lines[3].size = j;
     }
 
     // UP
-    line[0].line = (game_cell *)calloc(line[0].size, sizeof(game_cell));
-    assert(line[0].line);
+    // Allocate memeory for line of cells heading upwards
+    lines[0].line = (game_cell *)calloc(lines[0].size, sizeof(game_cell));
+    assert(lines[0].line);
+    // Initialise first cell (the ajacent cell)
     int x = j;
     int y = i - 1;
-    for (uint z = 0; z < line[0].size; z++) {
-        if (y == -1) y = game_nb_rows(g) - 1;
-        line[0].line[z].row = y--;
-        line[0].line[z].col = x;
+    // Set row and column values for each cell
+    for (uint z = 0; z < lines[0].size; z++) {
+        if (y == -1) y = game_nb_rows(g) - 1;  // Wrap if needed
+        lines[0].line[z].row = y--;
+        lines[0].line[z].col = x;
     }
 
     // RIGHT
-    line[1].line = (game_cell *)calloc(line[1].size, sizeof(game_cell));
-    assert(line[1].line);
+    // Allocate memeory for line of cells heading right
+    lines[1].line = (game_cell *)calloc(lines[1].size, sizeof(game_cell));
+    assert(lines[1].line);
+    // Initialise first cell (the ajacent cell)
     x = j + 1;
     y = i;
-    for (uint z = 0; z < line[1].size; z++) {
-        if (x == game_nb_cols(g)) x = 0;
-        line[1].line[z].row = y;
-        line[1].line[z].col = x++;
+    // Set row and column values for each cell
+    for (uint z = 0; z < lines[1].size; z++) {
+        if (x == game_nb_cols(g)) x = 0;  // Wrap if needed
+        lines[1].line[z].row = y;
+        lines[1].line[z].col = x++;
     }
 
     // DOWN
-    line[2].line = (game_cell *)calloc(line[2].size, sizeof(game_cell));
-    assert(line[2].line);
+    // Allocate memeory for line of cells heading down
+    lines[2].line = (game_cell *)calloc(lines[2].size, sizeof(game_cell));
+    assert(lines[2].line);
+    // Initialise first cell (the ajacent cell)
     x = j;
     y = i + 1;
-    for (uint z = 0; z < line[2].size; z++) {
-        if (y == game_nb_rows(g)) y = 0;
-        line[2].line[z].row = y++;
-        line[2].line[z].col = x;
+    // Set row and column values for each cell
+    for (uint z = 0; z < lines[2].size; z++) {
+        if (y == game_nb_rows(g)) y = 0;  // Wrap if needed
+        lines[2].line[z].row = y++;
+        lines[2].line[z].col = x;
     }
 
     // LEFT
-    line[3].line = (game_cell *)calloc(line[3].size, sizeof(game_cell));
-    assert(line[3].line);
+    // Allocate memeory for line of cells heading left
+    lines[3].line = (game_cell *)calloc(lines[3].size, sizeof(game_cell));
+    assert(lines[3].line);
+    // Initialise first cell (the ajacent cell)
     x = j - 1;
     y = i;
-    for (uint z = 0; z < line[3].size; z++) {
-        if (x == -1) x = game_nb_cols(g) - 1;
-        line[3].line[z].row = y;
-        line[3].line[z].col = x--;
+    // Set row and column values for each cell
+    for (uint z = 0; z < lines[3].size; z++) {
+        if (x == -1) x = game_nb_cols(g) - 1;  // Wrap if needed
+        lines[3].line[z].row = y;
+        lines[3].line[z].col = x--;
     }
 
-    return line;
+    return lines;
 }
 
 // Applies the effect of the lightbulb on the current square
 // Return if light should stop or not
-bool apply_effect_of_lightbulb_on_square(game g, uint i, uint j) {
+bool apply_effect_of_lightbulb(game g, uint i, uint j) {
     // light up blank or marked flags
     if (game_is_blank(g, i, j) || game_is_marked(g, i, j)) {
-        game_set_square(g, i, j, (game_get_state(g, i, j) | F_LIGHTED));
+        game_set_flags(g, i, j, F_LIGHTED);
         return false;
-    } else if (game_is_lightbulb(g, i,
-                                 j)) {  // lightbulbs cause an error
-        game_set_square(g, i, j,
-                        (game_get_state(g, i, j) | F_LIGHTED | F_ERROR));
+    } else if (game_is_lightbulb(g, i, j)) {
+        // colliding with another lightbulb causes an error
+        game_set_flags(g, i, j, (F_LIGHTED | F_ERROR));
         return true;
     } else  // walls stop the light
         return true;
@@ -591,14 +579,16 @@ void update_lightbulb_flags(game g, uint i, uint j) {
 
     game_line *line = get_ajacent_lines(g, i, j);
 
-    for (uint x = 0; x < 4; x++) {
-        for (uint y = 0; y < line[x].size; y++) {
-            if (apply_effect_of_lightbulb_on_square(g, line[x].line[y].row,
-                                                    line[x].line[y].col))
+    // For each line in the array of lines (up = 0, down = 2, right = 1 and left
+    // = 3)
+    for (uint direction = 0; direction < 4; direction++) {
+        for (uint cell = 0; cell < line[direction].size; cell++) {
+            if (apply_effect_of_lightbulb(g, line[direction].line[cell].row,
+                                          line[direction].line[cell].col))
                 break;
         }
-        free(line[x].line);
-        line[x].line = NULL;
+        free(line[direction].line);
+        line[direction].line = NULL;
     }
 
     free(line);
@@ -615,37 +605,44 @@ void update_wall_flags(game g, uint i, uint j) {
     int wallLimit = game_get_black_number(g, i, j);
     // If there is a limit verify it
     if (wallLimit != -1) {
-        uint sizeOfCells = 0;
-
-        game_cell *ajacent_cells = get_ajacent_cells(g, i, j, &sizeOfCells);
+        game_cell *ajacent_cells = get_ajacent_cells(g, i, j);
 
         // Find the number of ajacent lightbulbs
         int noAjacentLightbulbs = 0;
-        for (uint x = 0; x < sizeOfCells; x++) {
-            if (game_is_lightbulb(g, ajacent_cells[x].row,
-                                  ajacent_cells[x].col))
-                noAjacentLightbulbs++;
+        for (uint direction = 0; direction < 4; direction++) {
+            int row = ajacent_cells[direction].row;
+            int col = ajacent_cells[direction].col;
+            if (row != -1 && col != -1) {
+                if (game_is_lightbulb(g, row, col)) noAjacentLightbulbs++;
+            }
         }
 
+        // Too many lightbulbs next to wall
         if (noAjacentLightbulbs > wallLimit)
-            game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
-        else {
-            // If the ajacent lightbulbs havent caused an error
-            // check if other (non-ajacent) lightbulbs cause an error
-            int noAvailableValidLightbulbSpots = sizeOfCells;
+            game_set_flags(g, i, j, F_ERROR);
+        else {  // Check that non-ajacent lightbulbs don't cause an error
+            int noAvailableValidLightbulbSpots = 4;
 
-            for (uint x = 0; x < sizeOfCells; x++) {
-                uint row = ajacent_cells[x].row;
-                uint col = ajacent_cells[x].col;
-                if (game_is_black(g, row, col) || game_is_lighted(g, row, col))
+            for (uint direction = 0; direction < 4; direction++) {
+                int row = ajacent_cells[direction].row;
+                int col = ajacent_cells[direction].col;
+                if (row == -1 && col == -1)  // If the cell is invalid
+                    noAvailableValidLightbulbSpots--;
+                else
+                    // A wall will remove the number of lights we can place
+                    // A lighted square will cause an error if we try to place a
+                    // lightbulb in the square
+                    if (game_is_black(g, row, col) ||
+                        game_is_lighted(g, row, col))
                     noAvailableValidLightbulbSpots--;
             }
 
-            // If the number of lightbulbs that can be placed will be less
-            // the required amount the wall is flagged as in error
+            // If the number of lightbulbs that can be placed and ahve been
+            // placed is less than required amount of lightbulbs the wall is
+            // flagged as in error
             if (noAjacentLightbulbs + noAvailableValidLightbulbSpots <
                 wallLimit)
-                game_set_square(g, i, j, (game_get_state(g, i, j) | F_ERROR));
+                game_set_flags(g, i, j, F_ERROR);
         }
 
         if (ajacent_cells != NULL) {
@@ -671,23 +668,29 @@ void game_update_flags(game g) {
     // Validate parameters
     assert(g);
 
+    // Ensure the current flags doesn't mess with the update
     remove_all_flags(g);
 
-    // Check each square is valid
+    // Check each square for a lightbulb
     for (uint row = 0; row < game_nb_rows(g); row++) {
         for (uint column = 0; column < game_nb_cols(g); column++) {
             if (game_is_lightbulb(g, row, column)) {
-                // Add light to lightbulb
-                game_set_square(g, row, column,
-                                (game_get_square(g, row, column) | F_LIGHTED));
+                game_add_flags(g, row, column, F_LIGHTED);
+                // Light the ajacent lines of squares
                 update_lightbulb_flags(g, row, column);
             }
         }
     }
 
+    // Note: updating the flags for the walls are in a separate for loop as we
+    // need to have all the squares lit in order to simplify the
+    // calculations for the wall error flags Check each square for a wall
+
+    // Check each square for a wall
     for (uint row = 0; row < game_nb_rows(g); row++) {
         for (uint column = 0; column < game_nb_cols(g); column++) {
             if (game_is_black(g, row, column)) {
+                // Check the ajacent squares and toggle the error flag if needed
                 update_wall_flags(g, row, column);
             }
         }
