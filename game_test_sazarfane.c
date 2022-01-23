@@ -63,6 +63,7 @@ bool test_game_copy() {
         game_delete(game_test);
         game_delete(game_test_copy);
     }
+
     // Clean up
     free(array_with_all);
     return true;
@@ -151,6 +152,13 @@ bool test_game_equal() {
     ASSERT(!game_equal(g1, g2));
     ASSERT(!game_equal(g2, g1));
 
+    game g4 = game_new_empty_ext(5, 7, false);
+    game g5 = game_new_empty_ext(7, 5, false);
+
+    ASSERT(!game_equal(g4, g5));
+    ASSERT(!game_equal(g5, g4));
+
+    // Check if wrapping is set correctly
     game g3 = game_new_empty_ext(5, 5, true);
 
     ASSERT(!game_equal(g1, g3));
