@@ -554,26 +554,43 @@ bool test_game_restart() {
     }
 
     // [3] Test undo
+    square S_moov[3] = {S_MARK, S_LIGHTBULB, S_BLANK};
+
     game testGameTwo = game_new_empty();
-    game_play_move(testGameTwo, 1, 1, S_LIGHTBULB);
-    ASSERT(game_is_lightbulb(testGameTwo, 1, 1));
-    game_restart(testGameTwo);
-    ASSERT(!game_is_lightbulb(testGameTwo, 1, 1));
-    game_undo(testGameTwo);
-    ASSERT(!game_is_lightbulb(testGameTwo, 1, 1));
+
+    for (uint row = 0; row < DEFAULT_SIZE; row++) {
+        for (uint column = 0; column < DEFAULT_SIZE; column++) {
+            // For each possible value of a square
+            for (uint i = 0; i < 2; i++) {
+                game_play_move(testGameTwo, row, column, S_moov[i]);
+                ASSERT(game_get_state(testGameTwo, row, column) == S_moov[i]);
+                game_restart(testGameTwo);
+                ASSERT(game_get_state(testGameTwo, row, column) == S_BLANK);
+                game_undo(testGameTwo);
+                ASSERT(game_get_state(testGameTwo, row, column) == S_BLANK);
+            }
+        }
+    }
 
     // [4] Test redo
     game testGameThree = game_new_empty();
-    game_play_move(testGameThree, 1, 1, S_LIGHTBULB);
-    ASSERT(game_is_lightbulb(testGameThree, 1, 1));
-    game_restart(testGameThree);
-    ASSERT(!game_is_lightbulb(testGameThree, 1, 1));
-    game_redo(testGameThree);
-    ASSERT(!game_is_lightbulb(testGameThree, 1, 1));
+
+    for (uint row = 0; row < DEFAULT_SIZE; row++) {
+        for (uint column = 0; column < DEFAULT_SIZE; column++) {
+            // For each possible value of a square
+            for (uint i = 0; i < 2; i++) {
+                game_play_move(testGameThree, row, column, S_moov[i]);
+                ASSERT(game_get_state(testGameThree, row, column) == S_moov[i]);
+                game_restart(testGameThree);
+                ASSERT(game_get_state(testGameThree, row, column) == S_BLANK);
+                game_redo(testGameThree);
+                ASSERT(game_get_state(testGameThree, row, column) == S_BLANK);
+            }
+        }
+    }
 
     // Clean-up test game restart on each square for each value
     free(allSquares);
-    game_delete(testGame);
     game_delete(testGameTwo);
     game_delete(testGameThree);
 
@@ -686,4 +703,4 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Test \"%s\" finished: FAILURE\n", argv[1]);
         return EXIT_FAILURE;
     }
-}
+} 
