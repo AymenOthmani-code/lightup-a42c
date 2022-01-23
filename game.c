@@ -338,12 +338,13 @@ void game_undo(game g) {
 
     if (!queue_is_empty(g->undo_queue)) {
         game_move *data = (game_move *)queue_pop_head(g->undo_queue);
-
+        // Make sure the undo data retrieved matches the current state
         assert(data->current == game_get_state(g, data->row, data->col));
 
         game_set_square(g, data->row, data->col, data->previous);
         game_update_flags(g);
 
+        // Push undo to redo to be able to redo afterwards
         queue_push_head(g->redo_queue, data);
     }
 }
@@ -354,12 +355,13 @@ void game_redo(game g) {
 
     if (!queue_is_empty(g->redo_queue)) {
         game_move *data = (game_move *)queue_pop_head(g->redo_queue);
-
+        // Make sure the redo previous data retrieved matches the current state
         assert(data->previous == game_get_state(g, data->row, data->col));
 
         game_set_square(g, data->row, data->col, data->current);
         game_update_flags(g);
 
+        // Push redo to undo to be able to undo afterwards
         queue_push_head(g->undo_queue, data);
     }
 }
@@ -371,20 +373,25 @@ void game_play_move(game g, uint i, uint j, square s) {
     assert(j < game_nb_cols(g) && i >= 0);
     assert(s == S_BLANK || s == S_LIGHTBULB || s == S_MARK);
 
+    // Data for undo
     game_move *data = (game_move *)malloc(sizeof(game_move));
     assert(data);
 
+    // Assign the data
     data->col = j;
     data->row = i;
     data->previous = game_get_state(g, i, j);
 
+    // Play the move
     game_set_square(g, i, j, s);
     game_update_flags(g);
 
     data->current = game_get_state(g, i, j);
 
+    // Allow undo later
     queue_push_head(g->undo_queue, data);
 
+    // We cannot redo after playing a move
     queue_clear_full(g->redo_queue, free);
 }
 
