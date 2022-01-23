@@ -25,17 +25,6 @@ bool test_game_new() {
         game_delete(game_test);
     }
 
-    // test inversion of parameters
-    for (int i = 0; i < 4 * 5; i++) {
-        // Fill array_elements with all the squares possible
-        array_element[i] = S_BLANK;
-    }
-
-    game game_test = game_new_ext(4, 5, array_element, false);
-    ASSERT(game_test->width == 5);
-    ASSERT(game_test->height == 4);
-    game_delete(game_test);
-
     // clean-up test array
     free(array_with_all);
     return true;
@@ -410,11 +399,15 @@ bool test_game_new_ext() {
                 // Test height, width and wrapping (game_test)
                 ASSERT(game_nb_cols(game_test) == width);
                 ASSERT(game_nb_rows(game_test) == height);
+                ASSERT(game_test->width == width);
+                ASSERT(game_test->height == height);
                 ASSERT(game_is_wrapping(game_test) == false);
 
                 // Test height, width and wrapping (game_test_wrapping)
                 ASSERT(game_nb_cols(game_test_wrapping) == width);
                 ASSERT(game_nb_rows(game_test_wrapping) == height);
+                ASSERT(game_test_wrapping->width == width);
+                ASSERT(game_test_wrapping->height == height);
                 ASSERT(game_is_wrapping(game_test_wrapping) == true);
 
                 // Delete games
