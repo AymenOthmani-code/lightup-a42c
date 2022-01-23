@@ -109,6 +109,11 @@ bool test_game_equal() {
     ASSERT(game_equal(gameWrappingFalse, gameWrappingFalseCopy));
     ASSERT(!game_equal(gameWrappingTrue, gameWrappingFalse));
 
+    game_delete(gameWrappingTrue);
+    game_delete(gameWrappingTrueCopy);
+    game_delete(gameWrappingFalse);
+    game_delete(gameWrappingFalseCopy);
+
     // [3] Test for different heights
     square *array_with_all = create_array_all_values();
 
@@ -178,6 +183,9 @@ bool test_game_equal() {
         }
     }
 
+    game_delete(testGame);
+    game_delete(testGameTwo);
+
     // Check if it is not checking flags
     testGame = game_new_empty();
     testGameTwo = game_new_empty();
@@ -186,6 +194,9 @@ bool test_game_equal() {
     game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
 
     ASSERT(!game_equal(testGame, testGameTwo));
+
+    game_delete(testGame);
+    game_delete(testGameTwo);
 
     // Check if it is not checking state
     testGame = game_new_empty();
@@ -394,6 +405,35 @@ bool test_game_is_marked() {
 /* ********** TEST GAME_NEW_EXT********** */
 
 bool test_game_new_ext() {
+    square array_gameone[1] = {S_BLANK};
+    game gameone = game_new_ext(1, 1, array_gameone, true);
+    ASSERT(game_get_square(gameone, 0, 0) == S_BLANK);
+    ASSERT(game_is_wrapping(gameone));
+    ASSERT(game_nb_rows(gameone) == 1);
+    ASSERT(game_nb_cols(gameone) == 1);
+
+    square array_gametwo[2] = {S_BLANK, S_LIGHTBULB};
+    game gametwo = game_new_ext(1, 2, array_gametwo, true);
+    ASSERT(game_get_square(gametwo, 0, 1) == S_LIGHTBULB);
+    ASSERT(game_is_wrapping(gametwo));
+    ASSERT(game_nb_rows(gametwo) == 1);
+    ASSERT(game_nb_cols(gametwo) == 2);
+
+    square array_gamethree[3 * 3] = {S_BLANK,  S_LIGHTBULB, S_MARK,
+                                     S_BLACK2, S_LIGHTBULB, S_MARK,
+                                     S_BLANK,  S_BLACK1,    S_MARK};
+    game gamethree = game_new_ext(3, 3, array_gamethree, true);
+    ASSERT(game_get_square(gamethree, 2, 1) == S_BLACK1);
+    ASSERT(game_get_square(gamethree, 2, 2) == S_MARK);
+    ASSERT(game_get_square(gamethree, 0, 1) == S_LIGHTBULB);
+    ASSERT(game_is_wrapping(gamethree));
+    ASSERT(game_nb_rows(gamethree) == 3);
+    ASSERT(game_nb_cols(gamethree) == 3);
+
+    game_delete(gameone);
+    game_delete(gametwo);
+    game_delete(gamethree);
+
     square *array_with_all = create_array_all_values();
 
     for (int z = 0; z < SIZE_ALL_VALUES; z++) {
