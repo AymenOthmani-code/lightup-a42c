@@ -553,9 +553,19 @@ bool test_game_restart() {
         }
     }
 
+    // [3] Test undo
+    game testGameTwo = game_new_empty();
+    game_play_move(testGameTwo, 1, 1, S_LIGHTBULB);
+    ASSERT(game_is_lightbulb(testGameTwo, 1, 1));
+    game_restart(testGameTwo);
+    ASSERT(!game_is_lightbulb(testGameTwo, 1, 1));
+    game_undo(testGameTwo);
+    ASSERT(!game_is_lightbulb(testGameTwo, 1, 1));
+
     // Clean-up test game restart on each square for each value
     free(allSquares);
     game_delete(testGame);
+    game_delete(testGameTwo);
 
     return true;
 }
