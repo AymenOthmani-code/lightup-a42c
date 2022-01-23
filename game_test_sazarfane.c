@@ -74,8 +74,10 @@ bool test_game_equal() {
     // Create array
     square *array_with_all = create_array_all_values();
     square array_element[DEFAULT_SIZE * DEFAULT_SIZE];
+
     // Create game_sol with game_default_solution
     game game_sol = game_default_solution();
+
     for (int z = 0; z < SIZE_ALL_VALUES; z++) {
         for (int i = 0; i < DEFAULT_SIZE * DEFAULT_SIZE; i++) {
             array_element[i] = array_with_all[z];
@@ -129,6 +131,15 @@ bool test_game_equal() {
     testGameTwo = game_new_empty();
 
     game_set_square(testGame, 0, 0, S_BLANK);
+    game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
+
+    ASSERT(!game_equal(testGame, testGameTwo));
+
+    // Check if it is not checking state
+    testGame = game_new_empty();
+    testGameTwo = game_new_empty();
+
+    game_set_square(testGame, 0, 0, S_LIGHTBULB | F_LIGHTED);
     game_set_square(testGameTwo, 0, 0, (S_BLANK | F_LIGHTED));
 
     ASSERT(!game_equal(testGame, testGameTwo));

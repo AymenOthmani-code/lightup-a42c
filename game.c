@@ -134,7 +134,7 @@ bool game_equal(cgame g1, cgame g2) {
 
     // Check if values are equal
     for (uint row = 0; row < game_nb_rows(g1); row++)
-        for (uint column = 0; column < game_nb_cols(g2); column++)
+        for (uint column = 0; column < game_nb_cols(g1); column++)
             if (game_get_square(g1, row, column) !=
                 game_get_square(g2, row, column))
                 return false;
