@@ -23,7 +23,28 @@
 #define ERROR_MESSAGE_GENERIC "\nError on printing game: "
 #define ERROR_INVALID_CELL_STATE "Invalid cell state at (%u, %u), state = %d.\n"
 
+/* ********** ASSERT ********** */
+
+#define ASSERT(expr)                                                      \
+    do {                                                                  \
+        if ((expr) == 0) {                                                \
+            fprintf(stderr, "[%s:%d] Assertion '%s' failed!\n", __FILE__, \
+                    __LINE__, #expr);                                     \
+            abort();                                                      \
+        }                                                                 \
+    } while (0)
+
+/* ************************************************************************** */
+
 void game_print(cgame g) {
+    // Validate parameters
+    ASSERT(g);
+
+    // Initialise variables
+    square cell = S_BLANK;
+    square cellState = S_BLANK;
+    square cellFlag = S_BLANK;
+
     // Print numbers at top of game and line
     printf(TOP_ROW_NUM);
     printf(T_B_ROW_LINE);
@@ -31,10 +52,6 @@ void game_print(cgame g) {
     // Get width and height of game (use default for now)
     int gameWidth = game_nb_cols(g);
     int gameHeight = game_nb_rows(g);
-
-    square cell = S_BLANK;
-    square cellState = S_BLANK;
-    square cellFlag = S_BLANK;
 
     // Iterate over rows
     for (uint i = 0; i < gameHeight; i++) {
@@ -98,7 +115,7 @@ void game_print(cgame g) {
 }
 
 game game_default(void) {
-    // Variables
+    // Initialise variables
     square blackWallUnnumbered = S_BLACKU;
     square blackWallOne = S_BLACK1;
     square blackWallTwo = S_BLACK2;
@@ -120,13 +137,13 @@ game game_default(void) {
 }
 
 game game_default_solution(void) {
-    // Variables
+    // Initialise variables
     square lightbulb = S_LIGHTBULB;
 
     // Get default game to get a game prefilled with walls
     game newGameSolution = game_default();
 
-    // Set lightbulbs
+    // Set lightbulbs by playing the moves to update the flags
     game_play_move(newGameSolution, 0, 0, lightbulb);
     game_play_move(newGameSolution, 0, 3, lightbulb);
     game_play_move(newGameSolution, 1, 1, lightbulb);

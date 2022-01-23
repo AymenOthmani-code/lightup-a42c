@@ -24,23 +24,30 @@ void print_invalid_command();
 void print_help();
 void undo_game(game g);
 void redo_game(game g);
+bool get_play_move(game gameBeingPlayed, char c);
+
+/* ********** ASSERT ********** */
+
+#define ASSERT(expr)                                                      \
+    do {                                                                  \
+        if ((expr) == 0) {                                                \
+            fprintf(stderr, "[%s:%d] Assertion '%s' failed!\n", __FILE__, \
+                    __LINE__, #expr);                                     \
+            abort();                                                      \
+        }                                                                 \
+    } while (0)
+
+/* ************************************************************************** */
 
 int main(void) {
     // Variables
     char c;
-    uint i, j;
     int r;
-    square squareToAdd;
 
     // Create game
     game gameBeingPlayed = game_default();
 
     while (!game_is_over(gameBeingPlayed)) {
-        // Intialize variables
-        i = 0;
-        j = 0;
-        squareToAdd = S_BLANK;
-
         // Print game
         game_print(gameBeingPlayed);
 
@@ -50,46 +57,21 @@ int main(void) {
         printf(TEXT_INPUT_PROMPT);
         r = scanf(" %c", &c);
         if (r == 1) {
-            if (c == 'l' || c == 'm' || c == 'b') {
-                r = scanf("%u %u", &i, &j);
-                if (r == 2) {
-                    printf(TEXT_ACTION_MOVE, c, i, j);
-                    // Set square to the value of the command
-                    switch (c) {
-                        case 'l':
-                            squareToAdd = S_LIGHTBULB;
-                            break;
-                        case 'm':
-                            squareToAdd = S_MARK;
-                            break;
-                        case 'b':
-                            squareToAdd = S_BLANK;
-                            break;
-                    }
-                    // Check that the square can be added
-                    if (game_check_move(gameBeingPlayed, i, j, squareToAdd))
-                        game_play_move(gameBeingPlayed, i, j,
-                                       squareToAdd);  // Play the move
-                    else
-                        print_invalid_move();
-                } else if (r == EOF) {
-                    printf("EOF recieved, ending game\n");
-                    break;
-                } else
-                    print_invalid_input();
-            } else if (c == 'h') {
+            if (c == 'l' || c == 'm' || c == 'b') {  // Play one of the moves
+                if (!get_play_move(gameBeingPlayed, c)) break;
+            } else if (c == 'h') {  // Display help
                 printf(TEXT_ACTION_COMMAND, TEXT_HELP);
                 print_help();
-            } else if (c == 'r') {
+            } else if (c == 'r') {  // Reset game
                 printf(TEXT_ACTION_COMMAND, TEXT_RESET);
                 reset_game(gameBeingPlayed);
-            } else if (c == 'z') {
+            } else if (c == 'z') {  // Undo last move
                 printf(TEXT_ACTION_COMMAND, TEXT_UNDO);
                 game_undo(gameBeingPlayed);
-            } else if (c == 'y') {
+            } else if (c == 'y') {  // Redo last move
                 printf(TEXT_ACTION_COMMAND, TEXT_REDO);
                 game_redo(gameBeingPlayed);
-            } else if (c == 'q') {
+            } else if (c == 'q') {  // Quit game
                 printf(TEXT_ACTION_COMMAND, TEXT_QUIT);
                 printf("shame\n");
                 break;
@@ -118,6 +100,45 @@ void end_game(game g) { game_delete(g); }
 void undo_game(game g) { game_undo(g); }
 
 void redo_game(game g) { game_redo(g); }
+
+bool get_play_move(game gameBeingPlayed, char c) {
+    // Validate parameters
+    ASSERT(gameBeingPlayed);
+
+    // Initialize variables
+    uint i, j;
+    square squareToAdd = S_BLANK;
+
+    // Get the move positions
+    int r = scanf("%u %u", &i, &j);
+    if (r == 2) {
+        printf(TEXT_ACTION_MOVE, c, i, j);
+        // Set square to the value of the command
+        switch (c) {
+            case 'l':
+                squareToAdd = S_LIGHTBULB;
+                break;
+            case 'm':
+                squareToAdd = S_MARK;
+                break;
+            case 'b':
+                squareToAdd = S_BLANK;
+                break;
+        }
+        // Check that the square can be added
+        if (game_check_move(gameBeingPlayed, i, j, squareToAdd))
+            game_play_move(gameBeingPlayed, i, j,
+                           squareToAdd);  // Play the move
+        else
+            print_invalid_move();
+    } else if (r == EOF) {
+        printf("EOF recieved, ending game\n");
+        return false;
+    } else
+        print_invalid_input();
+
+    return true;
+}
 
 void print_errors(cgame g) {
     // For each square in the game check if it has an error
